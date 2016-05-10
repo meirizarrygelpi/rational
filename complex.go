@@ -71,12 +71,12 @@ func (z *Complex) Copy(y *Complex) *Complex {
 	return z
 }
 
-// NewComplex returns a pointer to a Complex value made from two given pointers
-// to big.Rat values.
-func NewComplex(a, b *big.Rat) *Complex {
+// NewComplex returns a pointer to a Complex value a/b + c/d i made from four
+// given int64 values.
+func NewComplex(a, b, c, d int64) *Complex {
 	z := new(Complex)
-	z.SetReal(a)
-	z.SetImag(b)
+	z.SetReal(big.NewRat(a, b))
+	z.SetImag(big.NewRat(c, d))
 	return z
 }
 

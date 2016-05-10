@@ -71,12 +71,12 @@ func (z *Dual) Copy(y *Dual) *Dual {
 	return z
 }
 
-// NewDual returns a pointer to a Dual value made from two given pointers
-// to big.Rat values.
-func NewDual(a, b *big.Rat) *Dual {
+// NewDual returns a pointer to a Dual value a/b + c/d ε made from four given
+// int64 values.
+func NewDual(a, b, c, d int64) *Dual {
 	z := new(Dual)
-	z.SetReal(a)
-	z.SetImag(b)
+	z.SetReal(big.NewRat(a, b))
+	z.SetImag(big.NewRat(c, d))
 	return z
 }
 
@@ -134,12 +134,24 @@ func (z *Dual) Quad() *big.Rat {
 	return new(big.Rat).Mul(z.Real(), z.Real())
 }
 
+// IsZeroDiv returns true if z is a zero divisor. This is equivalent to z being
+// nilpotent.
+func (z *Dual) IsZeroDiv() bool {
+	return z.Real().Num().Cmp(big.NewInt(0)) == 0
+}
+
 // Inv sets z equal to the inverse of y, and returns z.
 func (z *Dual) Inv(y *Dual) *Dual {
+	if y.IsZeroDiv() {
+		panic("zero divisor inverse")
+	}
 	return z.Scal(z.Conj(y), new(big.Rat).Inv(y.Quad()))
 }
 
 // Quo sets z equal to the quotient of x and y, and returns z.
 func (z *Dual) Quo(x, y *Dual) *Dual {
+	if y.IsZeroDiv() {
+		panic("zero divisor denominator")
+	}
 	return z.Mul(x, z.Inv(y))
 }

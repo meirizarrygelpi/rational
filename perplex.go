@@ -71,12 +71,12 @@ func (z *Perplex) Copy(y *Perplex) *Perplex {
 	return z
 }
 
-// NewPerplex returns a pointer to a Perplex value made from two given pointers
-// to big.Rat values.
-func NewPerplex(a, b *big.Rat) *Perplex {
+// NewPerplex returns a pointer to a Perplex value a/b + c/d s made from four
+// given int64 values.
+func NewPerplex(a, b, c, d int64) *Perplex {
 	z := new(Perplex)
-	z.SetReal(a)
-	z.SetImag(b)
+	z.SetReal(big.NewRat(a, b))
+	z.SetImag(big.NewRat(c, d))
 	return z
 }
 
@@ -138,12 +138,40 @@ func (z *Perplex) Quad() *big.Rat {
 	)
 }
 
+// IsZeroDiv returns true if z is a zero divisor.
+func (z *Perplex) IsZeroDiv() bool {
+	if z.Real().Cmp(z.Imag()) == 0 {
+		return true
+	}
+	if z.Real().Cmp(new(big.Rat).Neg(z.Imag())) == 0 {
+		return true
+	}
+	return false
+}
+
 // Inv sets z equal to the inverse of y, and returns z.
 func (z *Perplex) Inv(y *Perplex) *Perplex {
+	if y.IsZeroDiv() {
+		panic("zero divisor inverse")
+	}
 	return z.Scal(z.Conj(y), new(big.Rat).Inv(y.Quad()))
 }
 
 // Quo sets z equal to the quotient of x and y, and returns z.
 func (z *Perplex) Quo(x, y *Perplex) *Perplex {
+	if y.IsZeroDiv() {
+		panic("zero divisor denominator")
+	}
 	return z.Mul(x, z.Inv(y))
+}
+
+// Idempotent sets z equal to a pointer to an idempotent Perplex.
+func (z *Perplex) Idempotent(sign int) *Perplex {
+	z.SetReal(big.NewRat(1, 2))
+	if sign < 0 {
+		z.SetImag(big.NewRat(-1, 2))
+		return z
+	}
+	z.SetImag(big.NewRat(1, 2))
+	return z
 }
