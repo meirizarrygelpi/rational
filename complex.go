@@ -41,8 +41,8 @@ func (z *Complex) Cartesian() (a, b *big.Rat) {
 	return
 }
 
-// String returns the string version of a Complex value. If z = a + bι, then
-// the string is "(a+bι)", similar to complex128 values.
+// String returns the string version of a Complex value. If z = a + bi, then
+// the string is "(a+bi)", similar to complex128 values.
 func (z *Complex) String() string {
 	a := make([]string, 5)
 	a[0] = "("
@@ -52,7 +52,7 @@ func (z *Complex) String() string {
 	} else {
 		a[2] = fmt.Sprintf("+%v", z.Im())
 	}
-	a[3] = "ι"
+	a[3] = "i"
 	a[4] = ")"
 	return strings.Join(a, "")
 }
@@ -72,8 +72,8 @@ func (z *Complex) Copy(y *Complex) *Complex {
 	return z
 }
 
-// NewComplex returns a pointer to a Complex value a/b + c/d ι made from four
-// given int64 values.
+// NewComplex returns a pointer to a Complex value made from four given int64
+// values.
 func NewComplex(a, b, c, d int64) *Complex {
 	z := new(Complex)
 	z.SetRe(big.NewRat(a, b))
@@ -118,8 +118,8 @@ func (z *Complex) Sub(x, y *Complex) *Complex {
 
 // Mul sets z equal to the product of x and y, and returns z.
 //
-// The multiplication table is:
-// 		Mul(ι, ι) = -1
+// The multiplication rule is:
+// 		Mul(i, i) = -1
 // This binary operation is commutative and associative.
 func (z *Complex) Mul(x, y *Complex) *Complex {
 	p := new(Complex).Copy(x)

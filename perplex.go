@@ -71,8 +71,8 @@ func (z *Perplex) Copy(y *Perplex) *Perplex {
 	return z
 }
 
-// NewPerplex returns a pointer to a Perplex value a/b + c/d κ made from four
-// given int64 values.
+// NewPerplex returns a pointer to a Perplex value made from four given int64
+// values.
 func NewPerplex(a, b, c, d int64) *Perplex {
 	z := new(Perplex)
 	z.SetRe(big.NewRat(a, b))
@@ -117,7 +117,7 @@ func (z *Perplex) Sub(x, y *Perplex) *Perplex {
 
 // Mul sets z equal to the product of x and y, and returns z.
 //
-// The multiplication table is:
+// The multiplication rule is:
 // 		Mul(κ, κ) = +1
 // This binary operation is commutative and associative.
 func (z *Perplex) Mul(x, y *Perplex) *Perplex {

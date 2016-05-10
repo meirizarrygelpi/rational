@@ -6,7 +6,7 @@ import (
 	"strings"
 )
 
-var symbHamilton = [4]string{"", "ι₁", "ι₂", "ι₃"}
+var symbHamilton = [4]string{"", "λ₁", "λ₂", "λ₃"}
 
 // A Hamilton represents a rational Hamilton quaternion.
 type Hamilton struct {
@@ -42,8 +42,8 @@ func (z *Hamilton) Cartesian() (a, b, c, d *big.Rat) {
 }
 
 // String returns the string representation of a Hamilton value. If z
-// corresponds to the Hamilton quaternion a + bι₁ + cι₂ + dι₃, then the string
-// is "(a+bι₁+cι₂+dι₃)", similar to complex128 values.
+// corresponds to the Hamilton quaternion a + bλ₁ + cλ₂ + dλ₃, then the string
+// is "(a+bλ₁+cλ₂+dλ₃)", similar to complex128 values.
 func (z *Hamilton) String() string {
 	v := make([]*big.Rat, 4)
 	v[0], v[1] = z.Re().Cartesian()
@@ -90,14 +90,7 @@ func NewHamilton(a, b, c, d, e, f, g, h int64) *Hamilton {
 }
 
 // Scal sets z equal to y scaled by a, and returns z.
-func (z *Hamilton) Scal(y *Hamilton, a *Complex) *Hamilton {
-	z.SetRe(new(Complex).Mul(y.Re(), a))
-	z.SetIm(new(Complex).Mul(y.Im(), a))
-	return z
-}
-
-// Dil sets z equal to y dilated by a, and returns z.
-func (z *Hamilton) Dil(y *Hamilton, a *big.Rat) *Hamilton {
+func (z *Hamilton) Scal(y *Hamilton, a *big.Rat) *Hamilton {
 	z.SetRe(new(Complex).Scal(y.Re(), a))
 	z.SetIm(new(Complex).Scal(y.Im(), a))
 	return z
@@ -133,13 +126,13 @@ func (z *Hamilton) Sub(x, y *Hamilton) *Hamilton {
 
 // Mul sets z equal to the product of x and y, and returns z.
 //
-// The multiplication table is:
-// 		Mul(ι₁, ι₁) = -1
-// 		Mul(ι₂, ι₂) = -1
-// 		Mul(ι₃, ι₃) = -1
-// 		Mul(ι₁, ι₂) = -Mul(ι₂, ι₁) = ι₃
-// 		Mul(ι₂, ι₃) = -Mul(ι₃, ι₂) = ι₁
-// 		Mul(ι₃, ι₁) = -Mul(ι₁, ι₃) = ι₂
+// The multiplication rule is:
+// 		Mul(λ₁, λ₁) = -1
+// 		Mul(λ₂, λ₂) = -1
+// 		Mul(λ₃, λ₃) = -1
+// 		Mul(λ₁, λ₂) = -Mul(λ₂, λ₁) = λ₃
+// 		Mul(λ₂, λ₃) = -Mul(λ₃, λ₂) = λ₁
+// 		Mul(λ₃, λ₁) = -Mul(λ₁, λ₃) = λ₂
 // This binary operation is noncommutative but associative.
 func (z *Hamilton) Mul(x, y *Hamilton) *Hamilton {
 	p := new(Hamilton).Copy(x)
@@ -155,6 +148,14 @@ func (z *Hamilton) Mul(x, y *Hamilton) *Hamilton {
 	return z
 }
 
+// Commutator sets z equal to the commutator of x and y, and returns z.
+func (z *Hamilton) Commutator(x, y *Hamilton) *Hamilton {
+	return z.Sub(
+		new(Hamilton).Mul(x, y),
+		new(Hamilton).Mul(y, x),
+	)
+}
+
 // Quad returns the quadrance of z, a pointer to a big.Rat value.
 func (z *Hamilton) Quad() *big.Rat {
 	return new(big.Rat).Add(
@@ -165,7 +166,7 @@ func (z *Hamilton) Quad() *big.Rat {
 
 // Inv sets z equal to the inverse of y, and returns z.
 func (z *Hamilton) Inv(y *Hamilton) *Hamilton {
-	return z.Dil(new(Hamilton).Conj(y), new(big.Rat).Inv(y.Quad()))
+	return z.Scal(new(Hamilton).Conj(y), new(big.Rat).Inv(y.Quad()))
 }
 
 // Quo sets z equal to the quotient of x and y, and returns z.

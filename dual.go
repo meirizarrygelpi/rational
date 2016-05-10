@@ -72,8 +72,7 @@ func (z *Dual) Copy(y *Dual) *Dual {
 	return z
 }
 
-// NewDual returns a pointer to a Dual value a/b + c/d ε made from four given
-// int64 values.
+// NewDual returns a pointer to a Dual value made from four given int64 values.
 func NewDual(a, b, c, d int64) *Dual {
 	z := new(Dual)
 	z.SetRe(big.NewRat(a, b))
@@ -118,7 +117,7 @@ func (z *Dual) Sub(x, y *Dual) *Dual {
 
 // Mul sets z to the product of x and y, and returns z.
 //
-// The multiplication table is:
+// The multiplication rule is:
 // 		Mul(ε, ε) = 0
 // This binary operation is commutative and associative.
 func (z *Dual) Mul(x, y *Dual) *Dual {
