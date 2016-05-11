@@ -183,3 +183,20 @@ func (z *Cockle) Quo(x, y *Cockle) *Cockle {
 	}
 	return z.Mul(x, new(Cockle).Inv(y))
 }
+
+// IsNilpotent returns true if z raised to the nth power vanishes.
+func (z *Cockle) IsNilpotent(n int) bool {
+	zeroRat := big.NewRat(0, 1)
+	zero := NewCockle(zeroRat, zeroRat, zeroRat, zeroRat)
+	if z.Equals(zero) {
+		return true
+	}
+	p := NewCockle(big.NewRat(1, 1), zeroRat, zeroRat, zeroRat)
+	for i := 0; i < n; i++ {
+		p.Mul(p, z)
+		if p.Equals(zero) {
+			return true
+		}
+	}
+	return false
+}
