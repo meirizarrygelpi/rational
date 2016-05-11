@@ -6,32 +6,32 @@ import (
 	"strings"
 )
 
-var symbHamilton = [4]string{"", "λ₁", "λ₂", "λ₃"}
+var symbHamilton = [4]string{"", "i₁", "i₂", "i₃"}
 
 // A Hamilton represents a rational Hamilton quaternion.
 type Hamilton struct {
-	body [2]*Complex
+	re, im *Complex
 }
 
 // Re returns the Cayley-Dickson real part of z, a pointer to a Complex value.
 func (z *Hamilton) Re() *Complex {
-	return z.body[0]
+	return z.re
 }
 
 // Im returns the Cayley-Dickson imaginary part of z, a pointer to a Complex
 // value.
 func (z *Hamilton) Im() *Complex {
-	return z.body[1]
+	return z.im
 }
 
 // SetRe sets the Cayley-Dickson real part of z equal to a.
 func (z *Hamilton) SetRe(a *Complex) {
-	z.body[0] = a
+	z.re = a
 }
 
 // SetIm sets the Cayley-Dickson imaginary part of z equal to b.
 func (z *Hamilton) SetIm(b *Complex) {
-	z.body[1] = b
+	z.im = b
 }
 
 // Cartesian returns the four Cartesian components of z.
@@ -42,8 +42,8 @@ func (z *Hamilton) Cartesian() (a, b, c, d *big.Rat) {
 }
 
 // String returns the string representation of a Hamilton value. If z
-// corresponds to the Hamilton quaternion a + bλ₁ + cλ₂ + dλ₃, then the string
-// is "(a+bλ₁+cλ₂+dλ₃)", similar to complex128 values.
+// corresponds to the Hamilton quaternion a + bi₁ + ci₂ + di₃, then the string
+// is "(a+bi₁+ci₂+di₃)", similar to complex128 values.
 func (z *Hamilton) String() string {
 	v := make([]*big.Rat, 4)
 	v[0], v[1] = z.Re().Cartesian()
@@ -126,13 +126,11 @@ func (z *Hamilton) Sub(x, y *Hamilton) *Hamilton {
 
 // Mul sets z equal to the product of x and y, and returns z.
 //
-// The multiplication rule is:
-// 		Mul(λ₁, λ₁) = -1
-// 		Mul(λ₂, λ₂) = -1
-// 		Mul(λ₃, λ₃) = -1
-// 		Mul(λ₁, λ₂) = -Mul(λ₂, λ₁) = λ₃
-// 		Mul(λ₂, λ₃) = -Mul(λ₃, λ₂) = λ₁
-// 		Mul(λ₃, λ₁) = -Mul(λ₁, λ₃) = λ₂
+// The multiplication rules are:
+// 		Mul(i₁, i₁) = Mul(i₂, i₂) = Mul(i₃, i₃) = -1
+// 		Mul(i₁, i₂) = -Mul(i₂, i₁) = i₃
+// 		Mul(i₂, i₃) = -Mul(i₃, i₂) = i₁
+// 		Mul(i₃, i₁) = -Mul(i₁, i₃) = i₂
 // This binary operation is noncommutative but associative.
 func (z *Hamilton) Mul(x, y *Hamilton) *Hamilton {
 	p := new(Hamilton).Copy(x)

@@ -11,27 +11,27 @@ import (
 
 // A Complex represents a rational complex number.
 type Complex struct {
-	body [2]*big.Rat
+	re, im *big.Rat
 }
 
 // Re returns the real part of z, a pointer to a big.Rat value.
 func (z *Complex) Re() *big.Rat {
-	return z.body[0]
+	return z.re
 }
 
 // Im returns the imaginary part of z, a pointer to a big.Rat value.
 func (z *Complex) Im() *big.Rat {
-	return z.body[1]
+	return z.im
 }
 
 // SetRe sets the real part of z equal to a.
 func (z *Complex) SetRe(a *big.Rat) {
-	z.body[0] = a
+	z.re = a
 }
 
 // SetIm sets the imaginary part of z equal to b.
 func (z *Complex) SetIm(b *big.Rat) {
-	z.body[1] = b
+	z.im = b
 }
 
 // Cartesian returns the two Cartesian components of z.

@@ -11,37 +11,37 @@ import (
 
 // A Perplex represents a rational split-complex number.
 type Perplex struct {
-	body [2]*big.Rat
+	re, sp *big.Rat
 }
 
 // Re returns the real part of z, a pointer to a big.Rat value.
 func (z *Perplex) Re() *big.Rat {
-	return z.body[0]
+	return z.re
 }
 
 // Sp returns the split part of z, a pointer to a big.Rat value.
 func (z *Perplex) Sp() *big.Rat {
-	return z.body[1]
+	return z.sp
 }
 
 // SetRe sets the real part of z equal to a.
 func (z *Perplex) SetRe(a *big.Rat) {
-	z.body[0] = a
+	z.re = a
 }
 
 // SetSp sets the split part of z equal to b.
 func (z *Perplex) SetSp(b *big.Rat) {
-	z.body[1] = b
+	z.sp = b
 }
 
 // Cartesian returns the two Cartesian components of z.
 func (z *Perplex) Cartesian() (a, b *big.Rat) {
-	a, b = z.body[0], z.body[1]
+	a, b = z.Re(), z.Sp()
 	return
 }
 
-// String returns the string version of a Perplex value. If z = a + bκ, then
-// the string is "(a+bκ)", similar to complex128 values.
+// String returns the string version of a Perplex value. If z = a + bs, then
+// the string is "(a+bs)", similar to complex128 values.
 func (z *Perplex) String() string {
 	a := make([]string, 5)
 	a[0] = "("
@@ -51,7 +51,7 @@ func (z *Perplex) String() string {
 	} else {
 		a[2] = fmt.Sprintf("+%v", z.Sp())
 	}
-	a[3] = "κ"
+	a[3] = "s"
 	a[4] = ")"
 	return strings.Join(a, "")
 }
@@ -118,7 +118,7 @@ func (z *Perplex) Sub(x, y *Perplex) *Perplex {
 // Mul sets z equal to the product of x and y, and returns z.
 //
 // The multiplication rule is:
-// 		Mul(κ, κ) = +1
+// 		Mul(s, s) = +1
 // This binary operation is commutative and associative.
 func (z *Perplex) Mul(x, y *Perplex) *Perplex {
 	p := new(Perplex).Copy(x)

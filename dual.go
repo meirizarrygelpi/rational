@@ -11,27 +11,27 @@ import (
 
 // A Dual represents a rational dual number.
 type Dual struct {
-	body [2]*big.Rat
+	re, du *big.Rat
 }
 
 // Re returns the real part of z, a pointer to a big.Rat value.
 func (z *Dual) Re() *big.Rat {
-	return z.body[0]
+	return z.re
 }
 
 // Du returns the dual part of z, a pointer to a big.Rat value.
 func (z *Dual) Du() *big.Rat {
-	return z.body[1]
+	return z.du
 }
 
 // SetRe sets the real part of z equal to a.
 func (z *Dual) SetRe(a *big.Rat) {
-	z.body[0] = a
+	z.re = a
 }
 
 // SetDu sets the dual part of z equal to b.
 func (z *Dual) SetDu(b *big.Rat) {
-	z.body[1] = b
+	z.du = b
 }
 
 // Cartesian returns the two Cartesian components of z.

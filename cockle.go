@@ -6,32 +6,32 @@ import (
 	"strings"
 )
 
-var symbCockle = [4]string{"", "i₁", "κ₂", "κ₃"}
+var symbCockle = [4]string{"", "i₁", "s₂", "s₃"}
 
 // A Cockle represents a rational Cockle quaternion.
 type Cockle struct {
-	body [2]*Complex
+	re, sp *Complex
 }
 
 // Re returns the Cayley-Dickson real part of z, a pointer to a Complex value.
 func (z *Cockle) Re() *Complex {
-	return z.body[0]
+	return z.re
 }
 
 // Sp returns the Cayley-Dickson split part of z, a pointer to a Complex
 // value.
 func (z *Cockle) Sp() *Complex {
-	return z.body[1]
+	return z.sp
 }
 
 // SetRe sets the Cayley-Dickson real part of z equal to a.
 func (z *Cockle) SetRe(a *Complex) {
-	z.body[0] = a
+	z.re = a
 }
 
 // SetSp sets the Cayley-Dickson split part of z equal to b.
 func (z *Cockle) SetSp(b *Complex) {
-	z.body[1] = b
+	z.sp = b
 }
 
 // Cartesian returns the four Cartesian components of z.
@@ -42,8 +42,8 @@ func (z *Cockle) Cartesian() (a, b, c, d *big.Rat) {
 }
 
 // String returns the string representation of a Cockle value. If z
-// corresponds to the Cockle quaternion a + bi₁ + cκ₂ + dκ₃, then the string
-// is "(a+bi₁+cκ₂+dκ₃)", similar to complex128 values.
+// corresponds to the Cockle quaternion a + bi₁ + cs₂ + ds₃, then the string
+// is "(a+bi₁+cs₂+ds₃)", similar to complex128 values.
 func (z *Cockle) String() string {
 	v := make([]*big.Rat, 4)
 	v[0], v[1] = z.Re().Cartesian()
@@ -126,13 +126,12 @@ func (z *Cockle) Sub(x, y *Cockle) *Cockle {
 
 // Mul sets z equal to the product of x and y, and returns z.
 //
-// The multiplication rule is:
+// The multiplication rules are:
 // 		Mul(i₁, i₁) = -1
-// 		Mul(κ₂, κ₂) = -1
-// 		Mul(κ₃, κ₃) = -1
-// 		Mul(i₁, κ₂) = -Mul(κ₂, i₁) = +κ₃
-// 		Mul(κ₂, κ₃) = -Mul(κ₃, κ₂) = -i₁
-// 		Mul(κ₃, i₁) = -Mul(i₁, κ₃) = +κ₂
+// 		Mul(s₂, s₂) = Mul(s₃, s₃) = +1
+// 		Mul(i₁, s₂) = -Mul(s₂, i₁) = +s₃
+// 		Mul(s₂, s₃) = -Mul(s₃, s₂) = -i₁
+// 		Mul(s₃, i₁) = -Mul(i₁, s₃) = +s₂
 // This binary operation is noncommutative but associative.
 func (z *Cockle) Mul(x, y *Cockle) *Cockle {
 	p := new(Cockle).Copy(x)
