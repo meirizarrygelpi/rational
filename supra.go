@@ -9,45 +9,45 @@ import (
 	"strings"
 )
 
-var symbSuper = [4]string{"", "ε₁", "ε₂", "ε₃"}
+var symbSupra = [4]string{"", "ε₁", "ε₂", "ε₃"}
 
-// A Super represents a rational super dual number.
-type Super struct {
-	re, du *Dual
+// A Supra represents a rational supra number.
+type Supra struct {
+	re, du *Infra
 }
 
-// Re returns the real part of z, a pointer to a Dual value.
-func (z *Super) Re() *Dual {
+// Re returns the real part of z, a pointer to a Infra value.
+func (z *Supra) Re() *Infra {
 	return z.re
 }
 
-// Du returns the dual part of z, a pointer to a Dual value.
-func (z *Super) Du() *Dual {
+// Du returns the dual part of z, a pointer to a Infra value.
+func (z *Supra) Du() *Infra {
 	return z.du
 }
 
 // SetRe sets the real part of z equal to a.
-func (z *Super) SetRe(a *Dual) {
+func (z *Supra) SetRe(a *Infra) {
 	z.re = a
 }
 
 // SetDu sets the dual part of z equal to b.
-func (z *Super) SetDu(b *Dual) {
+func (z *Supra) SetDu(b *Infra) {
 	z.du = b
 }
 
 // Cartesian returns the four Cartesian components of z.
-func (z *Super) Cartesian() (a, b, c, d *big.Rat) {
+func (z *Supra) Cartesian() (a, b, c, d *big.Rat) {
 	a, b = z.Re().Cartesian()
 	c, d = z.Du().Cartesian()
 	return
 }
 
-// String returns the string representation of a Super value.
+// String returns the string representation of a Supra value.
 //
 // If z corresponds to a + bε₁ + cε₂ + dε₃, then the string is "(a+bε₁+cε₂+dε₃)",
 // similar to complex128 values.
-func (z *Super) String() string {
+func (z *Supra) String() string {
 	v := make([]*big.Rat, 4)
 	v[0], v[1] = z.Re().Cartesian()
 	v[2], v[3] = z.Du().Cartesian()
@@ -61,7 +61,7 @@ func (z *Super) String() string {
 		} else {
 			a[j] = fmt.Sprintf("+%v", v[i])
 		}
-		a[j+1] = symbSuper[i]
+		a[j+1] = symbSupra[i]
 		i++
 	}
 	a[8] = ")"
@@ -69,7 +69,7 @@ func (z *Super) String() string {
 }
 
 // Equals returns true if y and z are equal.
-func (z *Super) Equals(y *Super) bool {
+func (z *Supra) Equals(y *Supra) bool {
 	if !z.Re().Equals(y.Re()) || !z.Du().Equals(y.Du()) {
 		return false
 	}
@@ -77,53 +77,53 @@ func (z *Super) Equals(y *Super) bool {
 }
 
 // Copy copies y onto z, and returns z.
-func (z *Super) Copy(y *Super) *Super {
+func (z *Supra) Copy(y *Supra) *Supra {
 	z.SetRe(y.Re())
 	z.SetDu(y.Du())
 	return z
 }
 
-// NewSuper returns a pointer to a Super value made from four given
-// pointers to Dual values.
-func NewSuper(a, b, c, d *big.Rat) *Super {
-	z := new(Super)
-	z.SetRe(NewDual(a, b))
-	z.SetDu(NewDual(c, d))
+// NewSupra returns a pointer to a Supra value made from four given
+// pointers to Infra values.
+func NewSupra(a, b, c, d *big.Rat) *Supra {
+	z := new(Supra)
+	z.SetRe(NewInfra(a, b))
+	z.SetDu(NewInfra(c, d))
 	return z
 }
 
 // Scal sets z equal to y scaled by a, and returns z.
-func (z *Super) Scal(y *Super, a *big.Rat) *Super {
-	z.SetRe(new(Dual).Scal(y.Re(), a))
-	z.SetDu(new(Dual).Scal(y.Du(), a))
+func (z *Supra) Scal(y *Supra, a *big.Rat) *Supra {
+	z.SetRe(new(Infra).Scal(y.Re(), a))
+	z.SetDu(new(Infra).Scal(y.Du(), a))
 	return z
 }
 
 // Neg sets z equal to the negative of y, and returns z.
-func (z *Super) Neg(y *Super) *Super {
-	z.SetRe(new(Dual).Neg(y.Re()))
-	z.SetDu(new(Dual).Neg(y.Du()))
+func (z *Supra) Neg(y *Supra) *Supra {
+	z.SetRe(new(Infra).Neg(y.Re()))
+	z.SetDu(new(Infra).Neg(y.Du()))
 	return z
 }
 
 // Conj sets z equal to the conjugate of y, and returns z.
-func (z *Super) Conj(y *Super) *Super {
-	z.SetRe(new(Dual).Conj(y.Re()))
-	z.SetDu(new(Dual).Neg(y.Du()))
+func (z *Supra) Conj(y *Supra) *Supra {
+	z.SetRe(new(Infra).Conj(y.Re()))
+	z.SetDu(new(Infra).Neg(y.Du()))
 	return z
 }
 
 // Add sets z equal to the sum of x and y, and returns z.
-func (z *Super) Add(x, y *Super) *Super {
-	z.SetRe(new(Dual).Add(x.Re(), y.Re()))
-	z.SetDu(new(Dual).Add(x.Du(), y.Du()))
+func (z *Supra) Add(x, y *Supra) *Supra {
+	z.SetRe(new(Infra).Add(x.Re(), y.Re()))
+	z.SetDu(new(Infra).Add(x.Du(), y.Du()))
 	return z
 }
 
 // Sub sets z equal to the difference of x and y, and returns z.
-func (z *Super) Sub(x, y *Super) *Super {
-	z.SetRe(new(Dual).Sub(x.Re(), y.Re()))
-	z.SetDu(new(Dual).Sub(x.Du(), y.Du()))
+func (z *Supra) Sub(x, y *Supra) *Supra {
+	z.SetRe(new(Infra).Sub(x.Re(), y.Re()))
+	z.SetDu(new(Infra).Sub(x.Du(), y.Du()))
 	return z
 }
 
@@ -135,41 +135,41 @@ func (z *Super) Sub(x, y *Super) *Super {
 // 		Mul(ε₂, ε₃) = Mul(ε₃, ε₂) = 0
 // 		Mul(ε₃, ε₁) = Mul(ε₁, ε₃) = 0
 // This binary operation is noncommutative but associative.
-func (z *Super) Mul(x, y *Super) *Super {
-	p := new(Super).Copy(x)
-	q := new(Super).Copy(y)
-	z.SetRe(new(Dual).Mul(p.Re(), q.Re()))
-	z.SetDu(new(Dual).Add(
-		new(Dual).Mul(q.Du(), p.Re()),
-		new(Dual).Mul(p.Du(), new(Dual).Conj(q.Re())),
+func (z *Supra) Mul(x, y *Supra) *Supra {
+	p := new(Supra).Copy(x)
+	q := new(Supra).Copy(y)
+	z.SetRe(new(Infra).Mul(p.Re(), q.Re()))
+	z.SetDu(new(Infra).Add(
+		new(Infra).Mul(q.Du(), p.Re()),
+		new(Infra).Mul(p.Du(), new(Infra).Conj(q.Re())),
 	))
 	return z
 }
 
 // Commutator sets z equal to the commutator of x and y, and returns z.
-func (z *Super) Commutator(x, y *Super) *Super {
+func (z *Supra) Commutator(x, y *Supra) *Supra {
 	return z.Sub(
-		new(Super).Mul(x, y),
-		new(Super).Mul(y, x),
+		new(Supra).Mul(x, y),
+		new(Supra).Mul(y, x),
 	)
 }
 
 // Quad returns the quadrance of z, a pointer to a big.Rat value.
-func (z *Super) Quad() *big.Rat {
+func (z *Supra) Quad() *big.Rat {
 	return z.Re().Quad()
 }
 
 // IsZeroDiv returns true if z is a zero divisor.
-func (z *Super) IsZeroDiv() bool {
+func (z *Supra) IsZeroDiv() bool {
 	return z.Re().IsZeroDiv()
 }
 
 // Inv sets z equal to the inverse of y, and returns z.
-func (z *Super) Inv(y *Super) *Super {
-	return z.Scal(new(Super).Conj(y), new(big.Rat).Inv(y.Quad()))
+func (z *Supra) Inv(y *Supra) *Supra {
+	return z.Scal(new(Supra).Conj(y), new(big.Rat).Inv(y.Quad()))
 }
 
 // Quo sets z equal to the quotient of x and y, and returns z.
-func (z *Super) Quo(x, y *Super) *Super {
-	return z.Mul(x, new(Super).Inv(y))
+func (z *Supra) Quo(x, y *Supra) *Supra {
+	return z.Mul(x, new(Supra).Inv(y))
 }

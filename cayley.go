@@ -84,8 +84,8 @@ func (z *Cayley) Copy(y *Cayley) *Cayley {
 	return z
 }
 
-// NewCayley returns a pointer to a Cayley value made from eight given
-// int64 values.
+// NewCayley returns a pointer to a Cayley value made from eight given pointers
+// to big.Rat values.
 func NewCayley(a, b, c, d, e, f, g, h *big.Rat) *Cayley {
 	z := new(Cayley)
 	z.SetRe(NewHamilton(a, b, c, d))

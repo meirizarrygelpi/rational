@@ -84,8 +84,8 @@ func (z *Klein) Copy(y *Klein) *Klein {
 	return z
 }
 
-// NewKlein returns a pointer to a Klein value made from eight given
-// int64 values.
+// NewKlein returns a pointer to a Klein value made from eight given pointers
+// to big.Rat values.
 func NewKlein(a, b, c, d, e, f, g, h *big.Rat) *Klein {
 	z := new(Klein)
 	z.SetRe(NewHamilton(a, b, c, d))

@@ -84,8 +84,8 @@ func (z *Hamilton) Copy(y *Hamilton) *Hamilton {
 	return z
 }
 
-// NewHamilton returns a pointer to a Hamilton value made from eight given
-// int64 values.
+// NewHamilton returns a pointer to a Hamilton value made from four given
+// pointers to big.Rat values.
 func NewHamilton(a, b, c, d *big.Rat) *Hamilton {
 	z := new(Hamilton)
 	z.SetRe(NewComplex(a, b))
