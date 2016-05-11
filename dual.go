@@ -41,8 +41,10 @@ func (z *Dual) Cartesian() (a, b *big.Rat) {
 	return
 }
 
-// String returns the string version of a Dual value. If z = a + bε, then
-// the string is "(a+bε)", similar to complex128 values.
+// String returns the string version of a Dual value.
+//
+// If z corresponds to a + bε, then the string is "(a+bε)", similar to
+// complex128 values.
 func (z *Dual) String() string {
 	a := make([]string, 5)
 	a[0] = "("
@@ -72,11 +74,12 @@ func (z *Dual) Copy(y *Dual) *Dual {
 	return z
 }
 
-// NewDual returns a pointer to a Dual value made from four given int64 values.
-func NewDual(a, b, c, d int64) *Dual {
+// NewDual returns a pointer to a Dual value made from two given pointers to
+// big.Rat values.
+func NewDual(a, b *big.Rat) *Dual {
 	z := new(Dual)
-	z.SetRe(big.NewRat(a, b))
-	z.SetDu(big.NewRat(c, d))
+	z.SetRe(a)
+	z.SetDu(b)
 	return z
 }
 

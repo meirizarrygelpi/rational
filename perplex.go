@@ -40,8 +40,10 @@ func (z *Perplex) Cartesian() (a, b *big.Rat) {
 	return
 }
 
-// String returns the string version of a Perplex value. If z = a + bs, then
-// the string is "(a+bs)", similar to complex128 values.
+// String returns the string version of a Perplex value.
+//
+// If z corresponds to a + bs, then the string is "(a+bs)", similar to
+// complex128 values.
 func (z *Perplex) String() string {
 	a := make([]string, 5)
 	a[0] = "("
@@ -71,12 +73,12 @@ func (z *Perplex) Copy(y *Perplex) *Perplex {
 	return z
 }
 
-// NewPerplex returns a pointer to a Perplex value made from four given int64
-// values.
-func NewPerplex(a, b, c, d int64) *Perplex {
+// NewPerplex returns a pointer to a Perplex value made from two given pointers
+// to big.Rat values.
+func NewPerplex(a, b *big.Rat) *Perplex {
 	z := new(Perplex)
-	z.SetRe(big.NewRat(a, b))
-	z.SetSp(big.NewRat(c, d))
+	z.SetRe(a)
+	z.SetSp(b)
 	return z
 }
 

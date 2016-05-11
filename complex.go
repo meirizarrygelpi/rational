@@ -41,8 +41,10 @@ func (z *Complex) Cartesian() (a, b *big.Rat) {
 	return
 }
 
-// String returns the string version of a Complex value. If z = a + bi, then
-// the string is "(a+bi)", similar to complex128 values.
+// String returns the string version of a Complex value.
+//
+// If z corresponds to a + bi, then the string is "(a+bi)", similar to
+// complex128 values.
 func (z *Complex) String() string {
 	a := make([]string, 5)
 	a[0] = "("
@@ -72,12 +74,12 @@ func (z *Complex) Copy(y *Complex) *Complex {
 	return z
 }
 
-// NewComplex returns a pointer to a Complex value made from four given int64
-// values.
-func NewComplex(a, b, c, d int64) *Complex {
+// NewComplex returns a pointer to a Complex value made from two given pointers
+// to big.Rat values.
+func NewComplex(a, b *big.Rat) *Complex {
 	z := new(Complex)
-	z.SetRe(big.NewRat(a, b))
-	z.SetIm(big.NewRat(c, d))
+	z.SetRe(a)
+	z.SetIm(b)
 	return z
 }
 

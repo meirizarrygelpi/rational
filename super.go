@@ -43,9 +43,10 @@ func (z *Super) Cartesian() (a, b, c, d *big.Rat) {
 	return
 }
 
-// String returns the string representation of a Super value. If z
-// corresponds to the Super dual a + bε₁ + cε₂ + dε₃, then the string
-// is "(a+bε₁+cε₂+dε₃)", similar to complex128 values.
+// String returns the string representation of a Super value.
+//
+// If z corresponds to a + bε₁ + cε₂ + dε₃, then the string is "(a+bε₁+cε₂+dε₃)",
+// similar to complex128 values.
 func (z *Super) String() string {
 	v := make([]*big.Rat, 4)
 	v[0], v[1] = z.Re().Cartesian()
@@ -82,12 +83,12 @@ func (z *Super) Copy(y *Super) *Super {
 	return z
 }
 
-// NewSuper returns a pointer to a Super value made from eight given
-// int64 values.
-func NewSuper(a, b, c, d, e, f, g, h int64) *Super {
+// NewSuper returns a pointer to a Super value made from four given
+// pointers to Dual values.
+func NewSuper(a, b, c, d *big.Rat) *Super {
 	z := new(Super)
-	z.SetRe(NewDual(a, b, c, d))
-	z.SetDu(NewDual(e, f, g, h))
+	z.SetRe(NewDual(a, b))
+	z.SetDu(NewDual(c, d))
 	return z
 }
 

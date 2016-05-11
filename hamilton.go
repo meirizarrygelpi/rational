@@ -41,9 +41,10 @@ func (z *Hamilton) Cartesian() (a, b, c, d *big.Rat) {
 	return
 }
 
-// String returns the string representation of a Hamilton value. If z
-// corresponds to the Hamilton quaternion a + bi₁ + ci₂ + di₃, then the string
-// is "(a+bi₁+ci₂+di₃)", similar to complex128 values.
+// String returns the string representation of a Hamilton value.
+//
+// If z corresponds to a + bi₁ + ci₂ + di₃, then the string is"(a+bi₁+ci₂+di₃)",
+// similar to complex128 values.
 func (z *Hamilton) String() string {
 	v := make([]*big.Rat, 4)
 	v[0], v[1] = z.Re().Cartesian()
@@ -82,10 +83,10 @@ func (z *Hamilton) Copy(y *Hamilton) *Hamilton {
 
 // NewHamilton returns a pointer to a Hamilton value made from eight given
 // int64 values.
-func NewHamilton(a, b, c, d, e, f, g, h int64) *Hamilton {
+func NewHamilton(a, b, c, d *big.Rat) *Hamilton {
 	z := new(Hamilton)
-	z.SetRe(NewComplex(a, b, c, d))
-	z.SetIm(NewComplex(e, f, g, h))
+	z.SetRe(NewComplex(a, b))
+	z.SetIm(NewComplex(c, d))
 	return z
 }
 

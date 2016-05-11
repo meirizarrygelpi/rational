@@ -41,9 +41,9 @@ func (z *Cockle) Cartesian() (a, b, c, d *big.Rat) {
 	return
 }
 
-// String returns the string representation of a Cockle value. If z
-// corresponds to the Cockle quaternion a + bi₁ + cs₂ + ds₃, then the string
-// is "(a+bi₁+cs₂+ds₃)", similar to complex128 values.
+// String returns the string representation of a Cockle value.
+// If z corresponds to a + bi₁ + cs₂ + ds₃, then the string is "(a+bi₁+cs₂+ds₃)",
+// similar to complex128 values.
 func (z *Cockle) String() string {
 	v := make([]*big.Rat, 4)
 	v[0], v[1] = z.Re().Cartesian()
@@ -80,12 +80,12 @@ func (z *Cockle) Copy(y *Cockle) *Cockle {
 	return z
 }
 
-// NewCockle returns a pointer to a Cockle value made from eight given
-// int64 values.
-func NewCockle(a, b, c, d, e, f, g, h int64) *Cockle {
+// NewCockle returns a pointer to a Cockle value made from four given pointers
+// to big.Rat values.
+func NewCockle(a, b, c, d *big.Rat) *Cockle {
 	z := new(Cockle)
-	z.SetRe(NewComplex(a, b, c, d))
-	z.SetSp(NewComplex(e, f, g, h))
+	z.SetRe(NewComplex(a, b))
+	z.SetSp(NewComplex(c, d))
 	return z
 }
 
