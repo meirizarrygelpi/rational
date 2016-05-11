@@ -130,7 +130,7 @@ func (z *Dual) Mul(x, y *Dual) *Dual {
 		new(big.Rat).Mul(p.Re(), q.Re()),
 	)
 	z.SetDu(new(big.Rat).Add(
-		new(big.Rat).Mul(p.Re(), q.Du()),
+		new(big.Rat).Mul(q.Du(), p.Re()),
 		new(big.Rat).Mul(p.Du(), q.Re()),
 	))
 	return z
@@ -150,7 +150,7 @@ func (z *Dual) IsZeroDiv() bool {
 // Inv sets z equal to the inverse of y, and returns z.
 func (z *Dual) Inv(y *Dual) *Dual {
 	if y.IsZeroDiv() {
-		panic("zero divisor inverse")
+		panic("inverse of zero divisor")
 	}
 	return z.Scal(new(Dual).Conj(y), new(big.Rat).Inv(y.Quad()))
 }
@@ -158,7 +158,7 @@ func (z *Dual) Inv(y *Dual) *Dual {
 // Quo sets z equal to the quotient of x and y, and returns z.
 func (z *Dual) Quo(x, y *Dual) *Dual {
 	if y.IsZeroDiv() {
-		panic("zero divisor denominator")
+		panic("denominator is zero divisor")
 	}
 	return z.Mul(x, new(Dual).Inv(y))
 }

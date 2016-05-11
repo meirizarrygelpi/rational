@@ -140,7 +140,7 @@ func (z *Super) Mul(x, y *Super) *Super {
 	q := new(Super).Copy(y)
 	z.SetRe(new(Dual).Mul(p.Re(), q.Re()))
 	z.SetDu(new(Dual).Add(
-		new(Dual).Mul(p.Re(), q.Du()),
+		new(Dual).Mul(q.Du(), p.Re()),
 		new(Dual).Mul(p.Du(), new(Dual).Conj(q.Re())),
 	))
 	return z
@@ -156,10 +156,12 @@ func (z *Super) Commutator(x, y *Super) *Super {
 
 // Quad returns the quadrance of z, a pointer to a big.Rat value.
 func (z *Super) Quad() *big.Rat {
-	return new(big.Rat).Add(
-		z.Re().Quad(),
-		z.Du().Quad(),
-	)
+	return z.Re().Quad()
+}
+
+// IsZeroDiv returns true if z is a zero divisor.
+func (z *Super) IsZeroDiv() bool {
+	return z.Re().IsZeroDiv()
 }
 
 // Inv sets z equal to the inverse of y, and returns z.

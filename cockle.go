@@ -144,7 +144,7 @@ func (z *Cockle) Mul(x, y *Cockle) *Cockle {
 		new(Complex).Mul(new(Complex).Conj(q.Sp()), p.Sp()),
 	))
 	z.SetSp(new(Complex).Add(
-		new(Complex).Mul(p.Re(), q.Sp()),
+		new(Complex).Mul(q.Sp(), p.Re()),
 		new(Complex).Mul(p.Sp(), new(Complex).Conj(q.Re())),
 	))
 	return z
@@ -174,7 +174,7 @@ func (z *Cockle) IsZeroDiv() bool {
 // Inv sets z equal to the inverse of y, and returns z.
 func (z *Cockle) Inv(y *Cockle) *Cockle {
 	if y.IsZeroDiv() {
-		panic("zero divisor inverse")
+		panic("inverse of zero divisor")
 	}
 	return z.Scal(new(Cockle).Conj(y), new(big.Rat).Inv(y.Quad()))
 }
@@ -182,7 +182,7 @@ func (z *Cockle) Inv(y *Cockle) *Cockle {
 // Quo sets z equal to the quotient of x and y, and returns z.
 func (z *Cockle) Quo(x, y *Cockle) *Cockle {
 	if y.IsZeroDiv() {
-		panic("zero divisor denominator")
+		panic("denominator is zero divisor")
 	}
 	return z.Mul(x, new(Cockle).Inv(y))
 }

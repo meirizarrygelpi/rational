@@ -128,10 +128,10 @@ func (z *Complex) Mul(x, y *Complex) *Complex {
 	q := new(Complex).Copy(y)
 	z.SetRe(new(big.Rat).Sub(
 		new(big.Rat).Mul(p.Re(), q.Re()),
-		new(big.Rat).Mul(p.Im(), q.Im()),
+		new(big.Rat).Mul(q.Im(), p.Im()),
 	))
 	z.SetIm(new(big.Rat).Add(
-		new(big.Rat).Mul(p.Re(), q.Im()),
+		new(big.Rat).Mul(q.Im(), p.Re()),
 		new(big.Rat).Mul(p.Im(), q.Re()),
 	))
 	return z

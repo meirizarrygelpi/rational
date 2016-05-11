@@ -131,23 +131,22 @@ func (z *Cayley) Sub(x, y *Cayley) *Cayley {
 // Mul sets z equal to the product of x and y, and returns z.
 //
 // The multiplication rules are:
-// a + bi₁ + ci₂ + di₃ + ei₄ + fi₅ + gi₆ + hi₇
 // 		Mul(i₁, i₁) = Mul(i₂, i₂) = Mul(i₃, i₃) = -1
 // 		Mul(i₄, i₄) = Mul(i₅, i₅) = Mul(i₆, i₆) = Mul(i₇, i₇) = -1
 // 		Mul(i₁, i₂) = -Mul(i₂, i₁) = +i₃
 // 		Mul(i₁, i₃) = -Mul(i₃, i₁) = -i₂
 // 		Mul(i₁, i₄) = -Mul(i₄, i₁) = +i₅
 // 		Mul(i₁, i₅) = -Mul(i₅, i₁) = -i₄
-// 		Mul(i₁, i₆) = +Mul(i₆, i₁) = +i₇
-// 		Mul(i₁, i₇) = +Mul(i₇, i₁) = -i₆
+// 		Mul(i₁, i₆) = -Mul(i₆, i₁) = -i₇
+// 		Mul(i₁, i₇) = -Mul(i₇, i₁) = +i₆
 // 		Mul(i₂, i₃) = -Mul(i₃, i₂) = +i₁
 // 		Mul(i₂, i₄) = -Mul(i₄, i₂) = +i₆
-// 		Mul(i₂, i₅) = +Mul(i₅, i₂) = -i₇
+// 		Mul(i₂, i₅) = -Mul(i₅, i₂) = +i₇
 // 		Mul(i₂, i₆) = -Mul(i₆, i₂) = -i₄
-// 		Mul(i₂, i₇) = +Mul(i₇, i₂) = +i₅
+// 		Mul(i₂, i₇) = -Mul(i₇, i₂) = -i₅
 // 		Mul(i₃, i₄) = -Mul(i₄, i₃) = +i₇
-// 		Mul(i₃, i₅) = +Mul(i₅, i₃) = +i₆
-// 		Mul(i₃, i₆) = +Mul(i₆, i₃) = -i₅
+// 		Mul(i₃, i₅) = -Mul(i₅, i₃) = -i₆
+// 		Mul(i₃, i₆) = -Mul(i₆, i₃) = +i₅
 // 		Mul(i₃, i₇) = -Mul(i₇, i₃) = -i₄
 // 		Mul(i₄, i₅) = -Mul(i₅, i₄) = +i₁
 // 		Mul(i₄, i₆) = -Mul(i₆, i₄) = +i₂
@@ -164,7 +163,7 @@ func (z *Cayley) Mul(x, y *Cayley) *Cayley {
 		new(Hamilton).Mul(new(Hamilton).Conj(q.Im()), p.Im()),
 	))
 	z.SetIm(new(Hamilton).Add(
-		new(Hamilton).Mul(p.Re(), q.Im()),
+		new(Hamilton).Mul(q.Im(), p.Re()),
 		new(Hamilton).Mul(p.Im(), new(Hamilton).Conj(q.Re())),
 	))
 	return z

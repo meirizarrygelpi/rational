@@ -127,10 +127,10 @@ func (z *Perplex) Mul(x, y *Perplex) *Perplex {
 	q := new(Perplex).Copy(y)
 	z.SetRe(new(big.Rat).Add(
 		new(big.Rat).Mul(p.Re(), q.Re()),
-		new(big.Rat).Mul(p.Sp(), q.Sp()),
+		new(big.Rat).Mul(q.Sp(), p.Sp()),
 	))
 	z.SetSp(new(big.Rat).Add(
-		new(big.Rat).Mul(p.Re(), q.Sp()),
+		new(big.Rat).Mul(q.Sp(), p.Re()),
 		new(big.Rat).Mul(p.Sp(), q.Re()),
 	))
 	return z
@@ -158,7 +158,7 @@ func (z *Perplex) IsZeroDiv() bool {
 // Inv sets z equal to the inverse of y, and returns z.
 func (z *Perplex) Inv(y *Perplex) *Perplex {
 	if y.IsZeroDiv() {
-		panic("zero divisor inverse")
+		panic("inverse of zero divisor")
 	}
 	return z.Scal(z.Conj(y), new(big.Rat).Inv(y.Quad()))
 }
@@ -166,7 +166,7 @@ func (z *Perplex) Inv(y *Perplex) *Perplex {
 // Quo sets z equal to the quotient of x and y, and returns z.
 func (z *Perplex) Quo(x, y *Perplex) *Perplex {
 	if y.IsZeroDiv() {
-		panic("zero divisor denominator")
+		panic("denominator is zero divisor")
 	}
 	return z.Mul(x, z.Inv(y))
 }

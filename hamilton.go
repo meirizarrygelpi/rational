@@ -144,7 +144,7 @@ func (z *Hamilton) Mul(x, y *Hamilton) *Hamilton {
 		new(Complex).Mul(new(Complex).Conj(q.Im()), p.Im()),
 	))
 	z.SetIm(new(Complex).Add(
-		new(Complex).Mul(p.Re(), q.Im()),
+		new(Complex).Mul(q.Im(), p.Re()),
 		new(Complex).Mul(p.Im(), new(Complex).Conj(q.Re())),
 	))
 	return z
