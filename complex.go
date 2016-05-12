@@ -6,6 +6,8 @@ package rational
 import (
 	"fmt"
 	"math/big"
+	"math/rand"
+	"reflect"
 	"strings"
 )
 
@@ -153,4 +155,13 @@ func (z *Complex) Inv(y *Complex) *Complex {
 // Quo sets z equal to the quotient of x and y, and returns z.
 func (z *Complex) Quo(x, y *Complex) *Complex {
 	return z.Mul(x, new(Complex).Inv(y))
+}
+
+// Generate a random Complex value for quick.Check.
+func (z *Complex) Generate(rand *rand.Rand, size int) reflect.Value {
+	randomComplex := &Complex{
+		re: big.NewRat(rand.Int63(), rand.Int63()),
+		im: big.NewRat(rand.Int63(), rand.Int63()),
+	}
+	return reflect.ValueOf(randomComplex)
 }
