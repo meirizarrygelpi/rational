@@ -11,7 +11,7 @@ import (
 
 var symbInfraComplex = [4]string{"", "i", "α", "β"}
 
-// An InfraComplex represents a rational infra complex number.
+// An InfraComplex represents a rational infra-complex number.
 type InfraComplex struct {
 	l, r *Complex
 }
