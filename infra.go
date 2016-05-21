@@ -149,7 +149,8 @@ func (z *Infra) Quad() *big.Rat {
 // IsZeroDiv returns true if z is a zero divisor. This is equivalent to z being
 // nilpotent.
 func (z *Infra) IsZeroDiv() bool {
-	return z.L().Num().Cmp(big.NewInt(0)) == 0
+	a := z.L()
+	return a.Num().Cmp(big.NewInt(0)) == 0
 }
 
 // Inv sets z equal to the inverse of y, and returns z.
