@@ -60,7 +60,35 @@ The `rational.InfraPerplex` type represents a rational infra perplex number. It 
 
 ## Eight-Dimensional Types
 
-There are seven eight-dimensional types: `rational.Cayley`, `rational.Klein`, `rational.Ultra`, `rational.InfraHamilton`, `rational.InfraCockle`, `rational.SupraComplex`, and `rational.SupraPerplex`. The (binary) multiplication operation for all eight-dimensional types is **noncommutative** and **nonassociative**.
+There are seven eight-dimensional types. The (binary) multiplication operation for all eight-dimensional types is **noncommutative** and **nonassociative**.
+
+### rational.Cayley
+
+...
+
+### rational.Klein
+
+...
+
+### rational.Ultra
+
+...
+
+### rational.InfraHamilton
+
+...
+
+### rational.InfraCockle
+
+...
+
+### rational.SupraComplex
+
+...
+
+### rational.SupraPerplex
+
+...
 
 ## To Do
 
@@ -68,7 +96,6 @@ There are seven eight-dimensional types: `rational.Cayley`, `rational.Klein`, `r
 1. Tests
 1. Improve README
 1. Improve memory management
-1. Add InfraPerplex type
 1. Add InfraHamilton type
 1. Add InfraCockle type
 1. Add SupraComplex type

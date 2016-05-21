@@ -53,13 +53,13 @@ func (z *Cayley) String() string {
 	v[4], v[5], v[6], v[7] = z.R().Cartesian()
 	a := make([]string, 17)
 	a[0] = "("
-	a[1] = fmt.Sprintf("%v", v[0])
+	a[1] = fmt.Sprintf("%v", v[0].RatString())
 	i := 1
 	for j := 2; j < 16; j = j + 2 {
 		if v[i].Sign() < 0 {
-			a[j] = fmt.Sprintf("%v", v[i])
+			a[j] = fmt.Sprintf("%v", v[i].RatString())
 		} else {
-			a[j] = fmt.Sprintf("+%v", v[i])
+			a[j] = fmt.Sprintf("+%v", v[i].RatString())
 		}
 		a[j+1] = symbCayley[i]
 		i++

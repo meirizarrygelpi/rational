@@ -52,11 +52,11 @@ func (z *Infra) Cartesian() (a, b *big.Rat) {
 func (z *Infra) String() string {
 	a := make([]string, 5)
 	a[0] = "("
-	a[1] = fmt.Sprintf("%v", z.L())
+	a[1] = fmt.Sprintf("%v", z.L().RatString())
 	if z.R().Sign() == -1 {
-		a[2] = fmt.Sprintf("%v", z.R())
+		a[2] = fmt.Sprintf("%v", z.R().RatString())
 	} else {
-		a[2] = fmt.Sprintf("+%v", z.R())
+		a[2] = fmt.Sprintf("+%v", z.R().RatString())
 	}
 	a[3] = "α"
 	a[4] = ")"

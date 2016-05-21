@@ -53,13 +53,13 @@ func (z *InfraComplex) String() string {
 	v[2], v[3] = z.R().Cartesian()
 	a := make([]string, 9)
 	a[0] = "("
-	a[1] = fmt.Sprintf("%v", v[0])
+	a[1] = fmt.Sprintf("%v", v[0].RatString())
 	i := 1
 	for j := 2; j < 8; j = j + 2 {
 		if v[i].Sign() < 0 {
-			a[j] = fmt.Sprintf("%v", v[i])
+			a[j] = fmt.Sprintf("%v", v[i].RatString())
 		} else {
-			a[j] = fmt.Sprintf("+%v", v[i])
+			a[j] = fmt.Sprintf("+%v", v[i].RatString())
 		}
 		a[j+1] = symbInfraComplex[i]
 		i++

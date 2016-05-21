@@ -52,11 +52,11 @@ func (z *Complex) Cartesian() (a, b *big.Rat) {
 func (z *Complex) String() string {
 	a := make([]string, 5)
 	a[0] = "("
-	a[1] = fmt.Sprintf("%v", z.L())
+	a[1] = fmt.Sprintf("%v", z.L().RatString())
 	if z.R().Sign() < 0 {
-		a[2] = fmt.Sprintf("%v", z.R())
+		a[2] = fmt.Sprintf("%v", z.R().RatString())
 	} else {
-		a[2] = fmt.Sprintf("+%v", z.R())
+		a[2] = fmt.Sprintf("+%v", z.R().RatString())
 	}
 	a[3] = "i"
 	a[4] = ")"
