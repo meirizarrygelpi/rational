@@ -13,33 +13,35 @@ import (
 
 // A Complex represents a rational complex number.
 type Complex struct {
-	re, im *big.Rat
+	l, r *big.Rat
 }
 
-// Re returns the real part of z, a pointer to a big.Rat value.
-func (z *Complex) Re() *big.Rat {
-	return z.re
+// L returns the left Cayley-Dickson part of z, a pointer to a big.Rat value.
+// This coincides with the real part of z.
+func (z *Complex) L() *big.Rat {
+	return z.l
 }
 
-// Im returns the imaginary part of z, a pointer to a big.Rat value.
-func (z *Complex) Im() *big.Rat {
-	return z.im
+// R returns the right Cayley-Dickson part of z, a pointer to a big.Rat value.
+// This coincides with imaginary part of z.
+func (z *Complex) R() *big.Rat {
+	return z.r
 }
 
-// SetRe sets the real part of z equal to a.
-func (z *Complex) SetRe(a *big.Rat) {
-	z.re = a
+// SetL sets the left Cayley-Dickson part of z equal to a.
+func (z *Complex) SetL(a *big.Rat) {
+	z.l = a
 }
 
-// SetIm sets the imaginary part of z equal to b.
-func (z *Complex) SetIm(b *big.Rat) {
-	z.im = b
+// SetR sets the right Cayley-Dickson part of z equal to b.
+func (z *Complex) SetR(b *big.Rat) {
+	z.r = b
 }
 
 // Cartesian returns the two Cartesian components of z.
 func (z *Complex) Cartesian() (a, b *big.Rat) {
-	a = z.Re()
-	b = z.Im()
+	a = z.L()
+	b = z.R()
 	return
 }
 
@@ -50,11 +52,11 @@ func (z *Complex) Cartesian() (a, b *big.Rat) {
 func (z *Complex) String() string {
 	a := make([]string, 5)
 	a[0] = "("
-	a[1] = fmt.Sprintf("%v", z.Re())
-	if z.Im().Sign() == -1 {
-		a[2] = fmt.Sprintf("%v", z.Im())
+	a[1] = fmt.Sprintf("%v", z.L())
+	if z.R().Sign() < 0 {
+		a[2] = fmt.Sprintf("%v", z.R())
 	} else {
-		a[2] = fmt.Sprintf("+%v", z.Im())
+		a[2] = fmt.Sprintf("+%v", z.R())
 	}
 	a[3] = "i"
 	a[4] = ")"
@@ -63,7 +65,7 @@ func (z *Complex) String() string {
 
 // Equals returns true if y and z are equal.
 func (z *Complex) Equals(y *Complex) bool {
-	if z.Re().Cmp(y.Re()) != 0 || z.Im().Cmp(y.Im()) != 0 {
+	if z.L().Cmp(y.L()) != 0 || z.R().Cmp(y.R()) != 0 {
 		return false
 	}
 	return true
@@ -71,8 +73,8 @@ func (z *Complex) Equals(y *Complex) bool {
 
 // Copy copies y onto z, and returns z.
 func (z *Complex) Copy(y *Complex) *Complex {
-	z.SetRe(y.Re())
-	z.SetIm(y.Im())
+	z.SetL(y.L())
+	z.SetR(y.R())
 	return z
 }
 
@@ -80,43 +82,43 @@ func (z *Complex) Copy(y *Complex) *Complex {
 // to big.Rat values.
 func NewComplex(a, b *big.Rat) *Complex {
 	z := new(Complex)
-	z.SetRe(a)
-	z.SetIm(b)
+	z.SetL(a)
+	z.SetR(b)
 	return z
 }
 
 // Scal sets z equal to y scaled by a, and returns z.
 func (z *Complex) Scal(y *Complex, a *big.Rat) *Complex {
-	z.SetRe(new(big.Rat).Mul(y.Re(), a))
-	z.SetIm(new(big.Rat).Mul(y.Im(), a))
+	z.SetL(new(big.Rat).Mul(y.L(), a))
+	z.SetR(new(big.Rat).Mul(y.R(), a))
 	return z
 }
 
 // Neg sets z equal to the negative of y, and returns z.
 func (z *Complex) Neg(y *Complex) *Complex {
-	z.SetRe(new(big.Rat).Neg(y.Re()))
-	z.SetIm(new(big.Rat).Neg(y.Im()))
+	z.SetL(new(big.Rat).Neg(y.L()))
+	z.SetR(new(big.Rat).Neg(y.R()))
 	return z
 }
 
 // Conj sets z equal to the conjugate of y, and returns z.
 func (z *Complex) Conj(y *Complex) *Complex {
-	z.SetRe(y.Re())
-	z.SetIm(new(big.Rat).Neg(y.Im()))
+	z.SetL(y.L())
+	z.SetR(new(big.Rat).Neg(y.R()))
 	return z
 }
 
 // Add sets z equal to the sum of x and y, and returns z.
 func (z *Complex) Add(x, y *Complex) *Complex {
-	z.SetRe(new(big.Rat).Add(x.Re(), y.Re()))
-	z.SetIm(new(big.Rat).Add(x.Im(), y.Im()))
+	z.SetL(new(big.Rat).Add(x.L(), y.L()))
+	z.SetR(new(big.Rat).Add(x.R(), y.R()))
 	return z
 }
 
 // Sub sets z equal to the difference of x and y, and returns z.
 func (z *Complex) Sub(x, y *Complex) *Complex {
-	z.SetRe(new(big.Rat).Sub(x.Re(), y.Re()))
-	z.SetIm(new(big.Rat).Sub(x.Im(), y.Im()))
+	z.SetL(new(big.Rat).Sub(x.L(), y.L()))
+	z.SetR(new(big.Rat).Sub(x.R(), y.R()))
 	return z
 }
 
@@ -126,42 +128,44 @@ func (z *Complex) Sub(x, y *Complex) *Complex {
 // 		Mul(i, i) = -1
 // This binary operation is commutative and associative.
 func (z *Complex) Mul(x, y *Complex) *Complex {
-	p := new(Complex).Copy(x)
-	q := new(Complex).Copy(y)
-	z.SetRe(new(big.Rat).Sub(
-		new(big.Rat).Mul(p.Re(), q.Re()),
-		new(big.Rat).Mul(q.Im(), p.Im()),
+	a, b := x.L(), x.R()
+	c, d := y.L(), y.R()
+	s, t, u := new(big.Rat), new(big.Rat), new(big.Rat)
+	z.SetL(s.Sub(
+		s.Mul(a, c),
+		u.Mul(d, b),
 	))
-	z.SetIm(new(big.Rat).Add(
-		new(big.Rat).Mul(q.Im(), p.Re()),
-		new(big.Rat).Mul(p.Im(), q.Re()),
+	z.SetR(t.Add(
+		t.Mul(d, a),
+		u.Mul(b, c),
 	))
 	return z
 }
 
 // Quad returns the quadrance of z, a pointer to a big.Rat value.
 func (z *Complex) Quad() *big.Rat {
-	return new(big.Rat).Add(
-		new(big.Rat).Mul(z.Re(), z.Re()),
-		new(big.Rat).Mul(z.Im(), z.Im()),
+	t := new(big.Rat)
+	return t.Add(
+		t.Mul(z.L(), z.L()),
+		new(big.Rat).Mul(z.R(), z.R()),
 	)
 }
 
 // Inv sets z equal to the inverse of y, and returns z.
 func (z *Complex) Inv(y *Complex) *Complex {
-	return z.Scal(new(Complex).Conj(y), new(big.Rat).Inv(y.Quad()))
+	return z.Scal(z.Conj(y), new(big.Rat).Inv(y.Quad()))
 }
 
 // Quo sets z equal to the quotient of x and y, and returns z.
 func (z *Complex) Quo(x, y *Complex) *Complex {
-	return z.Mul(x, new(Complex).Inv(y))
+	return z.Mul(x, z.Inv(y))
 }
 
 // Generate a random Complex value for quick.Check.
 func (z *Complex) Generate(rand *rand.Rand, size int) reflect.Value {
 	randomComplex := &Complex{
-		re: big.NewRat(rand.Int63(), rand.Int63()),
-		im: big.NewRat(rand.Int63(), rand.Int63()),
+		l: big.NewRat(rand.Int63(), rand.Int63()),
+		r: big.NewRat(rand.Int63(), rand.Int63()),
 	}
 	return reflect.ValueOf(randomComplex)
 }

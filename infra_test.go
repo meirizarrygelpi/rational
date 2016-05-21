@@ -6,10 +6,10 @@ import (
 	"testing/quick"
 )
 
-func TestComplexAddCommutative(t *testing.T) {
-	f := func(x, y *Complex) bool {
-		l := new(Complex).Add(x, y)
-		r := new(Complex).Add(y, x)
+func TestInfraAddCommutative(t *testing.T) {
+	f := func(x, y *Infra) bool {
+		l := new(Infra).Add(x, y)
+		r := new(Infra).Add(y, x)
 		return l.Equals(r)
 	}
 	if err := quick.Check(f, nil); err != nil {
@@ -17,9 +17,9 @@ func TestComplexAddCommutative(t *testing.T) {
 	}
 }
 
-func TestComplexAddAssociative(t *testing.T) {
-	f := func(x, y, z *Complex) bool {
-		l, r := new(Complex), new(Complex)
+func TestInfraAddAssociative(t *testing.T) {
+	f := func(x, y, z *Infra) bool {
+		l, r := new(Infra), new(Infra)
 		l.Add(l.Add(x, y), z)
 		r.Add(x, r.Add(y, z))
 		return l.Equals(r)
@@ -29,13 +29,13 @@ func TestComplexAddAssociative(t *testing.T) {
 	}
 }
 
-func TestComplexAddZero(t *testing.T) {
-	zero := &Complex{
+func TestInfraAddZero(t *testing.T) {
+	zero := &Infra{
 		l: big.NewRat(0, 1),
 		r: big.NewRat(0, 1),
 	}
-	f := func(x *Complex) bool {
-		l := new(Complex).Add(x, zero)
+	f := func(x *Infra) bool {
+		l := new(Infra).Add(x, zero)
 		return l.Equals(x)
 	}
 	if err := quick.Check(f, nil); err != nil {
@@ -43,10 +43,10 @@ func TestComplexAddZero(t *testing.T) {
 	}
 }
 
-func TestComplexMulCommutative(t *testing.T) {
-	f := func(x, y *Complex) bool {
-		l := new(Complex).Mul(x, y)
-		r := new(Complex).Mul(y, x)
+func TestInfraMulCommutative(t *testing.T) {
+	f := func(x, y *Infra) bool {
+		l := new(Infra).Mul(x, y)
+		r := new(Infra).Mul(y, x)
 		return l.Equals(r)
 	}
 	if err := quick.Check(f, nil); err != nil {
@@ -54,9 +54,9 @@ func TestComplexMulCommutative(t *testing.T) {
 	}
 }
 
-func TestComplexMulAssociative(t *testing.T) {
-	f := func(x, y, z *Complex) bool {
-		l, r := new(Complex), new(Complex)
+func TestInfraMulAssociative(t *testing.T) {
+	f := func(x, y, z *Infra) bool {
+		l, r := new(Infra), new(Infra)
 		l.Mul(l.Mul(x, y), z)
 		r.Mul(x, r.Mul(y, z))
 		return l.Equals(r)
@@ -66,13 +66,13 @@ func TestComplexMulAssociative(t *testing.T) {
 	}
 }
 
-func TestComplexMulOne(t *testing.T) {
-	one := &Complex{
+func TestInfraMulOne(t *testing.T) {
+	one := &Infra{
 		l: big.NewRat(1, 1),
 		r: big.NewRat(0, 1),
 	}
-	f := func(x *Complex) bool {
-		l := new(Complex).Mul(x, one)
+	f := func(x *Infra) bool {
+		l := new(Infra).Mul(x, one)
 		return l.Equals(x)
 	}
 	if err := quick.Check(f, nil); err != nil {
@@ -80,9 +80,9 @@ func TestComplexMulOne(t *testing.T) {
 	}
 }
 
-func TestComplexInvInvolutive(t *testing.T) {
-	f := func(x *Complex) bool {
-		l := new(Complex)
+func TestInfraInvInvolutive(t *testing.T) {
+	f := func(x *Infra) bool {
+		l := new(Infra)
 		l.Inv(l.Inv(x))
 		return l.Equals(x)
 	}
@@ -91,9 +91,9 @@ func TestComplexInvInvolutive(t *testing.T) {
 	}
 }
 
-func TestComplexNegInvolutive(t *testing.T) {
-	f := func(x *Complex) bool {
-		l := new(Complex)
+func TestInfraNegInvolutive(t *testing.T) {
+	f := func(x *Infra) bool {
+		l := new(Infra)
 		l.Neg(l.Neg(x))
 		return l.Equals(x)
 	}
@@ -102,9 +102,9 @@ func TestComplexNegInvolutive(t *testing.T) {
 	}
 }
 
-func TestComplexConjInvolutive(t *testing.T) {
-	f := func(x *Complex) bool {
-		l := new(Complex)
+func TestInfraConjInvolutive(t *testing.T) {
+	f := func(x *Infra) bool {
+		l := new(Infra)
 		l.Conj(l.Conj(x))
 		return l.Equals(x)
 	}
@@ -113,9 +113,9 @@ func TestComplexConjInvolutive(t *testing.T) {
 	}
 }
 
-func TestComplexNegConjCommutative(t *testing.T) {
-	f := func(x *Complex) bool {
-		l, r := new(Complex), new(Complex)
+func TestInfraNegConjCommutative(t *testing.T) {
+	f := func(x *Infra) bool {
+		l, r := new(Infra), new(Infra)
 		l.Neg(l.Conj(x))
 		r.Conj(r.Neg(x))
 		return l.Equals(r)
@@ -125,13 +125,13 @@ func TestComplexNegConjCommutative(t *testing.T) {
 	}
 }
 
-func TestComplexMulInvOne(t *testing.T) {
-	one := &Complex{
+func TestInfraMulInvOne(t *testing.T) {
+	one := &Infra{
 		l: big.NewRat(1, 1),
 		r: big.NewRat(0, 1),
 	}
-	f := func(x *Complex) bool {
-		l := new(Complex)
+	f := func(x *Infra) bool {
+		l := new(Infra)
 		l.Mul(x, l.Inv(x))
 		return l.Equals(one)
 	}
@@ -140,11 +140,11 @@ func TestComplexMulInvOne(t *testing.T) {
 	}
 }
 
-func TestComplexMulConjAntiDistributive(t *testing.T) {
-	f := func(x, y *Complex) bool {
-		l, r := new(Complex), new(Complex)
+func TestInfraMulConjAntiDistributive(t *testing.T) {
+	f := func(x, y *Infra) bool {
+		l, r := new(Infra), new(Infra)
 		l.Conj(l.Mul(x, y))
-		r.Mul(r.Conj(y), new(Complex).Conj(x))
+		r.Mul(r.Conj(y), new(Infra).Conj(x))
 		return l.Equals(r)
 	}
 	if err := quick.Check(f, nil); err != nil {
@@ -152,11 +152,11 @@ func TestComplexMulConjAntiDistributive(t *testing.T) {
 	}
 }
 
-func TestComplexMulInvAntiDistributive(t *testing.T) {
-	f := func(x, y *Complex) bool {
-		l, r := new(Complex), new(Complex)
+func TestInfraMulInvAntiDistributive(t *testing.T) {
+	f := func(x, y *Infra) bool {
+		l, r := new(Infra), new(Infra)
 		l.Inv(l.Mul(x, y))
-		r.Mul(r.Inv(y), new(Complex).Inv(x))
+		r.Mul(r.Inv(y), new(Infra).Inv(x))
 		return l.Equals(r)
 	}
 	if err := quick.Check(f, nil); err != nil {

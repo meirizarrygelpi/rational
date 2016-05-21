@@ -9,48 +9,48 @@ import (
 	"strings"
 )
 
-var symbCockle = [4]string{"", "i₁", "s₂", "s₃"}
+var symbCockle = [4]string{"", "i", "t", "u"}
 
 // A Cockle represents a rational Cockle quaternion.
 type Cockle struct {
-	re, sp *Complex
+	l, r *Complex
 }
 
-// Re returns the Cayley-Dickson real part of z, a pointer to a Complex value.
-func (z *Cockle) Re() *Complex {
-	return z.re
+// L returns the left Cayley-Dickson part of z, a pointer to a Complex value.
+func (z *Cockle) L() *Complex {
+	return z.l
 }
 
-// Sp returns the Cayley-Dickson split part of z, a pointer to a Complex
+// R returns the right Cayley-Dickson part of z, a pointer to a Complex
 // value.
-func (z *Cockle) Sp() *Complex {
-	return z.sp
+func (z *Cockle) R() *Complex {
+	return z.r
 }
 
-// SetRe sets the Cayley-Dickson real part of z equal to a.
-func (z *Cockle) SetRe(a *Complex) {
-	z.re = a
+// SetL sets the left Cayley-Dickson part of z equal to a.
+func (z *Cockle) SetL(a *Complex) {
+	z.l = a
 }
 
-// SetSp sets the Cayley-Dickson split part of z equal to b.
-func (z *Cockle) SetSp(b *Complex) {
-	z.sp = b
+// SetR sets the right Cayley-Dickson part of z equal to b.
+func (z *Cockle) SetR(b *Complex) {
+	z.r = b
 }
 
 // Cartesian returns the four Cartesian components of z.
 func (z *Cockle) Cartesian() (a, b, c, d *big.Rat) {
-	a, b = z.Re().Cartesian()
-	c, d = z.Sp().Cartesian()
+	a, b = z.L().Cartesian()
+	c, d = z.R().Cartesian()
 	return
 }
 
 // String returns the string representation of a Cockle value.
-// If z corresponds to a + bi₁ + cs₂ + ds₃, then the string is "(a+bi₁+cs₂+ds₃)",
+// If z corresponds to a + bi + ct + du, then the string is "(a+bi+ct+du)",
 // similar to complex128 values.
 func (z *Cockle) String() string {
 	v := make([]*big.Rat, 4)
-	v[0], v[1] = z.Re().Cartesian()
-	v[2], v[3] = z.Sp().Cartesian()
+	v[0], v[1] = z.L().Cartesian()
+	v[2], v[3] = z.R().Cartesian()
 	a := make([]string, 9)
 	a[0] = "("
 	a[1] = fmt.Sprintf("%v", v[0])
@@ -70,7 +70,7 @@ func (z *Cockle) String() string {
 
 // Equals returns true if y and z are equal.
 func (z *Cockle) Equals(y *Cockle) bool {
-	if !z.Re().Equals(y.Re()) || !z.Sp().Equals(y.Sp()) {
+	if !z.L().Equals(y.L()) || !z.R().Equals(y.R()) {
 		return false
 	}
 	return true
@@ -78,8 +78,8 @@ func (z *Cockle) Equals(y *Cockle) bool {
 
 // Copy copies y onto z, and returns z.
 func (z *Cockle) Copy(y *Cockle) *Cockle {
-	z.SetRe(y.Re())
-	z.SetSp(y.Sp())
+	z.SetL(y.L())
+	z.SetR(y.R())
 	return z
 }
 
@@ -87,65 +87,66 @@ func (z *Cockle) Copy(y *Cockle) *Cockle {
 // to big.Rat values.
 func NewCockle(a, b, c, d *big.Rat) *Cockle {
 	z := new(Cockle)
-	z.SetRe(NewComplex(a, b))
-	z.SetSp(NewComplex(c, d))
+	z.SetL(NewComplex(a, b))
+	z.SetR(NewComplex(c, d))
 	return z
 }
 
 // Scal sets z equal to y scaled by a, and returns z.
 func (z *Cockle) Scal(y *Cockle, a *big.Rat) *Cockle {
-	z.SetRe(new(Complex).Scal(y.Re(), a))
-	z.SetSp(new(Complex).Scal(y.Sp(), a))
+	z.SetL(new(Complex).Scal(y.L(), a))
+	z.SetR(new(Complex).Scal(y.R(), a))
 	return z
 }
 
 // Neg sets z equal to the negative of y, and returns z.
 func (z *Cockle) Neg(y *Cockle) *Cockle {
-	z.SetRe(new(Complex).Neg(y.Re()))
-	z.SetSp(new(Complex).Neg(y.Sp()))
+	z.SetL(new(Complex).Neg(y.L()))
+	z.SetR(new(Complex).Neg(y.R()))
 	return z
 }
 
 // Conj sets z equal to the conjugate of y, and returns z.
 func (z *Cockle) Conj(y *Cockle) *Cockle {
-	z.SetRe(new(Complex).Conj(y.Re()))
-	z.SetSp(new(Complex).Neg(y.Sp()))
+	z.SetL(new(Complex).Conj(y.L()))
+	z.SetR(new(Complex).Neg(y.R()))
 	return z
 }
 
 // Add sets z equal to the sum of x and y, and returns z.
 func (z *Cockle) Add(x, y *Cockle) *Cockle {
-	z.SetRe(new(Complex).Add(x.Re(), y.Re()))
-	z.SetSp(new(Complex).Add(x.Sp(), y.Sp()))
+	z.SetL(new(Complex).Add(x.L(), y.L()))
+	z.SetR(new(Complex).Add(x.R(), y.R()))
 	return z
 }
 
 // Sub sets z equal to the difference of x and y, and returns z.
 func (z *Cockle) Sub(x, y *Cockle) *Cockle {
-	z.SetRe(new(Complex).Sub(x.Re(), y.Re()))
-	z.SetSp(new(Complex).Sub(x.Sp(), y.Sp()))
+	z.SetL(new(Complex).Sub(x.L(), y.L()))
+	z.SetR(new(Complex).Sub(x.R(), y.R()))
 	return z
 }
 
 // Mul sets z equal to the product of x and y, and returns z.
 //
 // The multiplication rules are:
-// 		Mul(i₁, i₁) = -1
-// 		Mul(s₂, s₂) = Mul(s₃, s₃) = +1
-// 		Mul(i₁, s₂) = -Mul(s₂, i₁) = +s₃
-// 		Mul(s₂, s₃) = -Mul(s₃, s₂) = -i₁
-// 		Mul(s₃, i₁) = -Mul(i₁, s₃) = +s₂
+// 		Mul(i, i) = -1
+// 		Mul(t, t) = Mul(u, u) = +1
+// 		Mul(i, t) = -Mul(t, i) = +u
+// 		Mul(t, u) = -Mul(u, t) = -i
+// 		Mul(u, i) = -Mul(i, u) = +t
 // This binary operation is noncommutative but associative.
 func (z *Cockle) Mul(x, y *Cockle) *Cockle {
-	p := new(Cockle).Copy(x)
-	q := new(Cockle).Copy(y)
-	z.SetRe(new(Complex).Add(
-		new(Complex).Mul(p.Re(), q.Re()),
-		new(Complex).Mul(new(Complex).Conj(q.Sp()), p.Sp()),
+	a, b := x.L(), x.R()
+	c, d := y.L(), y.R()
+	s, t, u := new(Complex), new(Complex), new(Complex)
+	z.SetL(s.Add(
+		s.Mul(a, c),
+		u.Mul(u.Conj(d), b),
 	))
-	z.SetSp(new(Complex).Add(
-		new(Complex).Mul(q.Sp(), p.Re()),
-		new(Complex).Mul(p.Sp(), new(Complex).Conj(q.Re())),
+	z.SetR(t.Add(
+		t.Mul(d, a),
+		u.Mul(b, u.Conj(c)),
 	))
 	return z
 }
@@ -153,7 +154,7 @@ func (z *Cockle) Mul(x, y *Cockle) *Cockle {
 // Commutator sets z equal to the commutator of x and y, and returns z.
 func (z *Cockle) Commutator(x, y *Cockle) *Cockle {
 	return z.Sub(
-		new(Cockle).Mul(x, y),
+		z.Mul(x, y),
 		new(Cockle).Mul(y, x),
 	)
 }
@@ -161,14 +162,14 @@ func (z *Cockle) Commutator(x, y *Cockle) *Cockle {
 // Quad returns the quadrance of z, a pointer to a big.Rat value.
 func (z *Cockle) Quad() *big.Rat {
 	return new(big.Rat).Sub(
-		z.Re().Quad(),
-		z.Sp().Quad(),
+		z.L().Quad(),
+		z.R().Quad(),
 	)
 }
 
 // IsZeroDiv returns true if z is a zero divisor.
 func (z *Cockle) IsZeroDiv() bool {
-	return z.Re().Quad().Cmp(z.Sp().Quad()) == 0
+	return z.L().Quad().Cmp(z.R().Quad()) == 0
 }
 
 // Inv sets z equal to the inverse of y, and returns z.
@@ -176,7 +177,7 @@ func (z *Cockle) Inv(y *Cockle) *Cockle {
 	if y.IsZeroDiv() {
 		panic("inverse of zero divisor")
 	}
-	return z.Scal(new(Cockle).Conj(y), new(big.Rat).Inv(y.Quad()))
+	return z.Scal(z.Conj(y), new(big.Rat).Inv(y.Quad()))
 }
 
 // Quo sets z equal to the quotient of x and y, and returns z.
@@ -184,7 +185,7 @@ func (z *Cockle) Quo(x, y *Cockle) *Cockle {
 	if y.IsZeroDiv() {
 		panic("denominator is zero divisor")
 	}
-	return z.Mul(x, new(Cockle).Inv(y))
+	return z.Mul(x, z.Inv(y))
 }
 
 // IsNilpotent returns true if z raised to the nth power vanishes.
