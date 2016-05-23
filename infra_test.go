@@ -6,6 +6,8 @@ import (
 	"testing/quick"
 )
 
+// Commutativity
+
 func TestInfraAddCommutative(t *testing.T) {
 	f := func(x, y *Infra) bool {
 		// t.Logf("x = %v, y = %v", x, y)
@@ -18,12 +20,11 @@ func TestInfraAddCommutative(t *testing.T) {
 	}
 }
 
-func TestInfraAddAssociative(t *testing.T) {
-	f := func(x, y, z *Infra) bool {
-		// t.Logf("x = %v, y = %v, z = %v", x, y, z)
-		l, r := new(Infra), new(Infra)
-		l.Add(l.Add(x, y), z)
-		r.Add(x, r.Add(y, z))
+func TestInfraMulCommutative(t *testing.T) {
+	f := func(x, y *Infra) bool {
+		// t.Logf("x = %v, y = %v", x, y)
+		l := new(Infra).Mul(x, y)
+		r := new(Infra).Mul(y, x)
 		return l.Equals(r)
 	}
 	if err := quick.Check(f, nil); err != nil {
@@ -31,23 +32,43 @@ func TestInfraAddAssociative(t *testing.T) {
 	}
 }
 
-func TestInfraAddZero(t *testing.T) {
-	zero := new(Infra)
+func TestInfraNegConjCommutative(t *testing.T) {
 	f := func(x *Infra) bool {
 		// t.Logf("x = %v", x)
-		l := new(Infra).Add(x, zero)
-		return l.Equals(x)
+		l, r := new(Infra), new(Infra)
+		l.Neg(l.Conj(x))
+		r.Conj(r.Neg(x))
+		return l.Equals(r)
 	}
 	if err := quick.Check(f, nil); err != nil {
 		t.Error(err)
 	}
 }
 
-func TestInfraMulCommutative(t *testing.T) {
+// Anti-commutativity
+
+func TestInfraSubAntiCommutative(t *testing.T) {
 	f := func(x, y *Infra) bool {
 		// t.Logf("x = %v, y = %v", x, y)
-		l := new(Infra).Mul(x, y)
-		r := new(Infra).Mul(y, x)
+		l, r := new(Infra), new(Infra)
+		l.Sub(x, y)
+		r.Sub(y, x)
+		r.Neg(r)
+		return l.Equals(r)
+	}
+	if err := quick.Check(f, nil); err != nil {
+		t.Error(err)
+	}
+}
+
+// Associativity
+
+func TestInfraAddAssociative(t *testing.T) {
+	f := func(x, y, z *Infra) bool {
+		// t.Logf("x = %v, y = %v, z = %v", x, y, z)
+		l, r := new(Infra), new(Infra)
+		l.Add(l.Add(x, y), z)
+		r.Add(x, r.Add(y, z))
 		return l.Equals(r)
 	}
 	if err := quick.Check(f, nil); err != nil {
@@ -68,6 +89,20 @@ func TestInfraMulAssociative(t *testing.T) {
 	}
 }
 
+// Identity
+
+func TestInfraAddZero(t *testing.T) {
+	zero := new(Infra)
+	f := func(x *Infra) bool {
+		// t.Logf("x = %v", x)
+		l := new(Infra).Add(x, zero)
+		return l.Equals(x)
+	}
+	if err := quick.Check(f, nil); err != nil {
+		t.Error(err)
+	}
+}
+
 func TestInfraMulOne(t *testing.T) {
 	one := new(Infra)
 	one.SetL(big.NewRat(1, 1))
@@ -81,6 +116,49 @@ func TestInfraMulOne(t *testing.T) {
 		t.Error(err)
 	}
 }
+
+func TestInfraMulInvOne(t *testing.T) {
+	one := new(Infra)
+	one.SetL(big.NewRat(1, 1))
+	one.SetR(big.NewRat(0, 1))
+	f := func(x *Infra) bool {
+		// t.Logf("x = %v", x)
+		l := new(Infra)
+		l.Mul(x, l.Inv(x))
+		return l.Equals(one)
+	}
+	if err := quick.Check(f, nil); err != nil {
+		t.Error(err)
+	}
+}
+
+func TestInfraAddNegSub(t *testing.T) {
+	f := func(x, y *Infra) bool {
+		// t.Logf("x = %v, y = %v", x, y)
+		l, r := new(Infra), new(Infra)
+		l.Sub(x, y)
+		r.Add(x, r.Neg(y))
+		return l.Equals(r)
+	}
+	if err := quick.Check(f, nil); err != nil {
+		t.Error(err)
+	}
+}
+
+func TestInfraAddScalDouble(t *testing.T) {
+	f := func(x *Infra) bool {
+		// t.Logf("x = %v", x)
+		l, r := new(Infra), new(Infra)
+		l.Add(x, x)
+		r.Scal(x, big.NewRat(2, 1))
+		return l.Equals(r)
+	}
+	if err := quick.Check(f, nil); err != nil {
+		t.Error(err)
+	}
+}
+
+// Involutivity
 
 func TestInfraInvInvolutive(t *testing.T) {
 	f := func(x *Infra) bool {
@@ -118,33 +196,7 @@ func TestInfraConjInvolutive(t *testing.T) {
 	}
 }
 
-func TestInfraNegConjCommutative(t *testing.T) {
-	f := func(x *Infra) bool {
-		// t.Logf("x = %v", x)
-		l, r := new(Infra), new(Infra)
-		l.Neg(l.Conj(x))
-		r.Conj(r.Neg(x))
-		return l.Equals(r)
-	}
-	if err := quick.Check(f, nil); err != nil {
-		t.Error(err)
-	}
-}
-
-func TestInfraMulInvOne(t *testing.T) {
-	one := new(Infra)
-	one.SetL(big.NewRat(1, 1))
-	one.SetR(big.NewRat(0, 1))
-	f := func(x *Infra) bool {
-		// t.Logf("x = %v", x)
-		l := new(Infra)
-		l.Mul(x, l.Inv(x))
-		return l.Equals(one)
-	}
-	if err := quick.Check(f, nil); err != nil {
-		t.Error(err)
-	}
-}
+// Anti-distributivity
 
 func TestInfraMulConjAntiDistributive(t *testing.T) {
 	f := func(x, y *Infra) bool {
@@ -172,32 +224,7 @@ func TestInfraMulInvAntiDistributive(t *testing.T) {
 	}
 }
 
-func TestInfraAddScalDouble(t *testing.T) {
-	f := func(x *Infra) bool {
-		// t.Logf("x = %v", x)
-		l, r := new(Infra), new(Infra)
-		l.Add(x, x)
-		r.Scal(x, big.NewRat(2, 1))
-		return l.Equals(r)
-	}
-	if err := quick.Check(f, nil); err != nil {
-		t.Error(err)
-	}
-}
-
-func TestInfraSubAntiCommutative(t *testing.T) {
-	f := func(x, y *Infra) bool {
-		// t.Logf("x = %v, y = %v", x, y)
-		l, r := new(Infra), new(Infra)
-		l.Sub(x, y)
-		r.Sub(y, x)
-		r.Neg(r)
-		return l.Equals(r)
-	}
-	if err := quick.Check(f, nil); err != nil {
-		t.Error(err)
-	}
-}
+// Distributivity
 
 func TestInfraAddConjDistributive(t *testing.T) {
 	f := func(x, y *Infra) bool {
@@ -255,18 +282,33 @@ func TestInfraSubScalDistributive(t *testing.T) {
 	}
 }
 
-func TestInfraAddNegSub(t *testing.T) {
-	f := func(x, y *Infra) bool {
-		// t.Logf("x = %v, y = %v", x, y)
+func TestInfraAddMulDistributive(t *testing.T) {
+	f := func(x, y, z *Infra) bool {
+		// t.Logf("x = %v, y = %v, z = %v", x, y, z)
 		l, r := new(Infra), new(Infra)
-		l.Sub(x, y)
-		r.Add(x, r.Neg(y))
+		l.Mul(l.Add(x, y), z)
+		r.Add(r.Mul(x, z), new(Infra).Mul(y, z))
 		return l.Equals(r)
 	}
 	if err := quick.Check(f, nil); err != nil {
 		t.Error(err)
 	}
 }
+
+func TestInfraSubMulDistributive(t *testing.T) {
+	f := func(x, y, z *Infra) bool {
+		// t.Logf("x = %v, y = %v, z = %v", x, y, z)
+		l, r := new(Infra), new(Infra)
+		l.Mul(l.Sub(x, y), z)
+		r.Sub(r.Mul(x, z), new(Infra).Mul(y, z))
+		return l.Equals(r)
+	}
+	if err := quick.Check(f, nil); err != nil {
+		t.Error(err)
+	}
+}
+
+// Positivity
 
 func TestInfraQuadPositive(t *testing.T) {
 	f := func(x *Infra) bool {
