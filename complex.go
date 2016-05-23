@@ -13,29 +13,29 @@ import (
 
 // A Complex represents a rational complex number.
 type Complex struct {
-	l, r *big.Rat
+	l, r big.Rat
 }
 
 // L returns the left Cayley-Dickson part of z, a pointer to a big.Rat value.
 // This coincides with the real part of z.
 func (z *Complex) L() *big.Rat {
-	return z.l
+	return &z.l
 }
 
 // R returns the right Cayley-Dickson part of z, a pointer to a big.Rat value.
 // This coincides with imaginary part of z.
 func (z *Complex) R() *big.Rat {
-	return z.r
+	return &z.r
 }
 
 // SetL sets the left Cayley-Dickson part of z equal to a.
 func (z *Complex) SetL(a *big.Rat) {
-	z.l = a
+	z.l = *a
 }
 
 // SetR sets the right Cayley-Dickson part of z equal to b.
 func (z *Complex) SetR(b *big.Rat) {
-	z.r = b
+	z.r = *b
 }
 
 // Cartesian returns the two Cartesian components of z.
@@ -128,8 +128,10 @@ func (z *Complex) Sub(x, y *Complex) *Complex {
 // 		Mul(i, i) = -1
 // This binary operation is commutative and associative.
 func (z *Complex) Mul(x, y *Complex) *Complex {
-	a, b := x.L(), x.R()
-	c, d := y.L(), y.R()
+	a := new(big.Rat).Set(x.L())
+	b := new(big.Rat).Set(x.R())
+	c := new(big.Rat).Set(y.L())
+	d := new(big.Rat).Set(y.R())
 	s, t, u := new(big.Rat), new(big.Rat), new(big.Rat)
 	z.SetL(s.Sub(
 		s.Mul(a, c),
@@ -142,7 +144,7 @@ func (z *Complex) Mul(x, y *Complex) *Complex {
 	return z
 }
 
-// Quad returns the quadrance of z, a pointer to a big.Rat value.
+// Quad returns the non-negative quadrance of z, a pointer to a big.Rat value.
 func (z *Complex) Quad() *big.Rat {
 	t := new(big.Rat)
 	return t.Add(
@@ -161,11 +163,20 @@ func (z *Complex) Quo(x, y *Complex) *Complex {
 	return z.Mul(x, z.Inv(y))
 }
 
-// Generate a random Complex value for quick.Check.
+// Gauss returns a Complex value corresponding to a Gaussian integer with real
+// part equal to a and imaginary part equal to b.
+func Gauss(a, b *big.Int) *Complex {
+	z := new(Complex)
+	z.SetL(new(big.Rat).SetInt(a))
+	z.SetR(new(big.Rat).SetInt(b))
+	return z
+}
+
+// Generate a random Complex value for quick.Check testing.
 func (z *Complex) Generate(rand *rand.Rand, size int) reflect.Value {
 	randomComplex := &Complex{
-		l: big.NewRat(rand.Int63(), rand.Int63()),
-		r: big.NewRat(rand.Int63(), rand.Int63()),
+		*big.NewRat(rand.Int63(), rand.Int63()),
+		*big.NewRat(rand.Int63(), rand.Int63()),
 	}
 	return reflect.ValueOf(randomComplex)
 }

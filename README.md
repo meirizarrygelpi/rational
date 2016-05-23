@@ -48,7 +48,7 @@ Cockle quaternions are more commonly known as [split-quaternions](https://en.wik
 
 The `rational.Supra` type represents a rational supra number. It corresponds to a null Cayley-Dickson construct with `rational.Infra` values. The dual unit elements are denoted `α`, `β`, and `γ`.
 
-Note that supra numbers are very different from [hyper-dual numbers](http://adl.stanford.edu/hyperdual/): the multiplication operation for supra numbers is noncommutative.
+Note that supra numbers are very different from [hyper-dual numbers](http://adl.stanford.edu/hyperdual/): the multiplication operation for supra numbers is noncommutative. In some ways, supra numbers are the dual analog of quaternions.
 
 ### rational.InfraComplex
 
@@ -100,3 +100,4 @@ There are seven eight-dimensional types. The (binary) multiplication operation f
 1. Add InfraCockle type
 1. Add SupraComplex type
 1. Add SupraPerplex type
+1. Change struct attributes to values; change getter and setter methods; change Mul methods

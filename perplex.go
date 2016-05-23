@@ -13,34 +13,35 @@ import (
 
 // A Perplex represents a rational split-complex number.
 type Perplex struct {
-	l, r *big.Rat
+	l, r big.Rat
 }
 
 // L returns the left Cayley-Dickson part of z, a pointer to a big.Rat value.
 // This is equivalent to the real part of z.
 func (z *Perplex) L() *big.Rat {
-	return z.l
+	return &z.l
 }
 
 // R returns the right Cayley-Dickson part of z, a pointer to a big.Rat value.
 // This is equivalent to the split part of z.
 func (z *Perplex) R() *big.Rat {
-	return z.r
+	return &z.r
 }
 
 // SetL sets the left Cayley-Dickson part of z equal to a.
 func (z *Perplex) SetL(a *big.Rat) {
-	z.l = a
+	z.l = *a
 }
 
 // SetR sets the right Cayley-Dickson part of z equal to b.
 func (z *Perplex) SetR(b *big.Rat) {
-	z.r = b
+	z.r = *b
 }
 
 // Cartesian returns the two Cartesian components of z.
 func (z *Perplex) Cartesian() (a, b *big.Rat) {
-	a, b = z.L(), z.R()
+	a = z.L()
+	b = z.R()
 	return
 }
 
@@ -127,8 +128,10 @@ func (z *Perplex) Sub(x, y *Perplex) *Perplex {
 // 		Mul(s, s) = +1
 // This binary operation is commutative and associative.
 func (z *Perplex) Mul(x, y *Perplex) *Perplex {
-	a, b := x.L(), x.R()
-	c, d := y.L(), y.R()
+	a := new(big.Rat).Set(x.L())
+	b := new(big.Rat).Set(x.R())
+	c := new(big.Rat).Set(y.L())
+	d := new(big.Rat).Set(y.R())
 	s, t, u := new(big.Rat), new(big.Rat), new(big.Rat)
 	z.SetL(s.Add(
 		s.Mul(a, c),
@@ -188,11 +191,11 @@ func (z *Perplex) Idempotent(sign int) *Perplex {
 	return z
 }
 
-// Generate a random Perplex value for quick.Check.
+// Generate a random Perplex value for quick.Check testing.
 func (z *Perplex) Generate(rand *rand.Rand, size int) reflect.Value {
 	randomPerplex := &Perplex{
-		l: big.NewRat(rand.Int63(), rand.Int63()),
-		r: big.NewRat(rand.Int63(), rand.Int63()),
+		*big.NewRat(rand.Int63(), rand.Int63()),
+		*big.NewRat(rand.Int63(), rand.Int63()),
 	}
 	return reflect.ValueOf(randomPerplex)
 }

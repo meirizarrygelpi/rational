@@ -8,6 +8,7 @@ import (
 
 func TestComplexAddCommutative(t *testing.T) {
 	f := func(x, y *Complex) bool {
+		// t.Logf("x = %v, y = %v", x, y)
 		l := new(Complex).Add(x, y)
 		r := new(Complex).Add(y, x)
 		return l.Equals(r)
@@ -19,6 +20,7 @@ func TestComplexAddCommutative(t *testing.T) {
 
 func TestComplexAddAssociative(t *testing.T) {
 	f := func(x, y, z *Complex) bool {
+		// t.Logf("x = %v, y = %v, z = %v", x, y, z)
 		l, r := new(Complex), new(Complex)
 		l.Add(l.Add(x, y), z)
 		r.Add(x, r.Add(y, z))
@@ -30,11 +32,9 @@ func TestComplexAddAssociative(t *testing.T) {
 }
 
 func TestComplexAddZero(t *testing.T) {
-	zero := &Complex{
-		l: big.NewRat(0, 1),
-		r: big.NewRat(0, 1),
-	}
+	zero := new(Complex)
 	f := func(x *Complex) bool {
+		// t.Logf("x = %v", x)
 		l := new(Complex).Add(x, zero)
 		return l.Equals(x)
 	}
@@ -45,6 +45,7 @@ func TestComplexAddZero(t *testing.T) {
 
 func TestComplexMulCommutative(t *testing.T) {
 	f := func(x, y *Complex) bool {
+		// t.Logf("x = %v, y = %v", x, y)
 		l := new(Complex).Mul(x, y)
 		r := new(Complex).Mul(y, x)
 		return l.Equals(r)
@@ -56,6 +57,7 @@ func TestComplexMulCommutative(t *testing.T) {
 
 func TestComplexMulAssociative(t *testing.T) {
 	f := func(x, y, z *Complex) bool {
+		// t.Logf("x = %v, y = %v, z = %v", x, y, z)
 		l, r := new(Complex), new(Complex)
 		l.Mul(l.Mul(x, y), z)
 		r.Mul(x, r.Mul(y, z))
@@ -67,11 +69,11 @@ func TestComplexMulAssociative(t *testing.T) {
 }
 
 func TestComplexMulOne(t *testing.T) {
-	one := &Complex{
-		l: big.NewRat(1, 1),
-		r: big.NewRat(0, 1),
-	}
+	one := new(Complex)
+	one.SetL(big.NewRat(1, 1))
+	one.SetR(big.NewRat(0, 1))
 	f := func(x *Complex) bool {
+		// t.Logf("x = %v", x)
 		l := new(Complex).Mul(x, one)
 		return l.Equals(x)
 	}
@@ -82,6 +84,7 @@ func TestComplexMulOne(t *testing.T) {
 
 func TestComplexInvInvolutive(t *testing.T) {
 	f := func(x *Complex) bool {
+		// t.Logf("x = %v", x)
 		l := new(Complex)
 		l.Inv(l.Inv(x))
 		return l.Equals(x)
@@ -93,6 +96,7 @@ func TestComplexInvInvolutive(t *testing.T) {
 
 func TestComplexNegInvolutive(t *testing.T) {
 	f := func(x *Complex) bool {
+		// t.Logf("x = %v", x)
 		l := new(Complex)
 		l.Neg(l.Neg(x))
 		return l.Equals(x)
@@ -104,6 +108,7 @@ func TestComplexNegInvolutive(t *testing.T) {
 
 func TestComplexConjInvolutive(t *testing.T) {
 	f := func(x *Complex) bool {
+		// t.Logf("x = %v", x)
 		l := new(Complex)
 		l.Conj(l.Conj(x))
 		return l.Equals(x)
@@ -115,6 +120,7 @@ func TestComplexConjInvolutive(t *testing.T) {
 
 func TestComplexNegConjCommutative(t *testing.T) {
 	f := func(x *Complex) bool {
+		// t.Logf("x = %v", x)
 		l, r := new(Complex), new(Complex)
 		l.Neg(l.Conj(x))
 		r.Conj(r.Neg(x))
@@ -126,11 +132,11 @@ func TestComplexNegConjCommutative(t *testing.T) {
 }
 
 func TestComplexMulInvOne(t *testing.T) {
-	one := &Complex{
-		l: big.NewRat(1, 1),
-		r: big.NewRat(0, 1),
-	}
+	one := new(Complex)
+	one.SetL(big.NewRat(1, 1))
+	one.SetR(big.NewRat(0, 1))
 	f := func(x *Complex) bool {
+		// t.Logf("x = %v", x)
 		l := new(Complex)
 		l.Mul(x, l.Inv(x))
 		return l.Equals(one)
@@ -142,6 +148,7 @@ func TestComplexMulInvOne(t *testing.T) {
 
 func TestComplexMulConjAntiDistributive(t *testing.T) {
 	f := func(x, y *Complex) bool {
+		// t.Logf("x = %v, y = %v", x, y)
 		l, r := new(Complex), new(Complex)
 		l.Conj(l.Mul(x, y))
 		r.Mul(r.Conj(y), new(Complex).Conj(x))
@@ -154,10 +161,117 @@ func TestComplexMulConjAntiDistributive(t *testing.T) {
 
 func TestComplexMulInvAntiDistributive(t *testing.T) {
 	f := func(x, y *Complex) bool {
+		// t.Logf("x = %v, y = %v", x, y)
 		l, r := new(Complex), new(Complex)
 		l.Inv(l.Mul(x, y))
 		r.Mul(r.Inv(y), new(Complex).Inv(x))
 		return l.Equals(r)
+	}
+	if err := quick.Check(f, nil); err != nil {
+		t.Error(err)
+	}
+}
+
+func TestComplexAddScalDouble(t *testing.T) {
+	f := func(x *Complex) bool {
+		// t.Logf("x = %v", x)
+		l, r := new(Complex), new(Complex)
+		l.Add(x, x)
+		r.Scal(x, big.NewRat(2, 1))
+		return l.Equals(r)
+	}
+	if err := quick.Check(f, nil); err != nil {
+		t.Error(err)
+	}
+}
+
+func TestComplexSubAntiCommutative(t *testing.T) {
+	f := func(x, y *Complex) bool {
+		// t.Logf("x = %v, y = %v", x, y)
+		l, r := new(Complex), new(Complex)
+		l.Sub(x, y)
+		r.Sub(y, x)
+		r.Neg(r)
+		return l.Equals(r)
+	}
+	if err := quick.Check(f, nil); err != nil {
+		t.Error(err)
+	}
+}
+
+func TestComplexAddConjDistributive(t *testing.T) {
+	f := func(x, y *Complex) bool {
+		// t.Logf("x = %v, y = %v", x, y)
+		l, r := new(Complex), new(Complex)
+		l.Add(x, y)
+		l.Conj(l)
+		r.Add(r.Conj(x), new(Complex).Conj(y))
+		return l.Equals(r)
+	}
+	if err := quick.Check(f, nil); err != nil {
+		t.Error(err)
+	}
+}
+
+func TestComplexSubConjDistributive(t *testing.T) {
+	f := func(x, y *Complex) bool {
+		// t.Logf("x = %v, y = %v", x, y)
+		l, r := new(Complex), new(Complex)
+		l.Sub(x, y)
+		l.Conj(l)
+		r.Sub(r.Conj(x), new(Complex).Conj(y))
+		return l.Equals(r)
+	}
+	if err := quick.Check(f, nil); err != nil {
+		t.Error(err)
+	}
+}
+
+func TestComplexAddScalDistributive(t *testing.T) {
+	f := func(x, y *Complex) bool {
+		// t.Logf("x = %v, y = %v", x, y)
+		a := big.NewRat(2, 1)
+		l, r := new(Complex), new(Complex)
+		l.Scal(l.Add(x, y), a)
+		r.Add(r.Scal(x, a), new(Complex).Scal(y, a))
+		return l.Equals(r)
+	}
+	if err := quick.Check(f, nil); err != nil {
+		t.Error(err)
+	}
+}
+
+func TestComplexSubScalDistributive(t *testing.T) {
+	f := func(x, y *Complex) bool {
+		// t.Logf("x = %v, y = %v", x, y)
+		a := big.NewRat(2, 1)
+		l, r := new(Complex), new(Complex)
+		l.Scal(l.Sub(x, y), a)
+		r.Sub(r.Scal(x, a), new(Complex).Scal(y, a))
+		return l.Equals(r)
+	}
+	if err := quick.Check(f, nil); err != nil {
+		t.Error(err)
+	}
+}
+
+func TestComplexAddNegSub(t *testing.T) {
+	f := func(x, y *Complex) bool {
+		// t.Logf("x = %v, y = %v", x, y)
+		l, r := new(Complex), new(Complex)
+		l.Sub(x, y)
+		r.Add(x, r.Neg(y))
+		return l.Equals(r)
+	}
+	if err := quick.Check(f, nil); err != nil {
+		t.Error(err)
+	}
+}
+
+func TestComplexQuadPositive(t *testing.T) {
+	f := func(x *Complex) bool {
+		// t.Logf("x = %v", x)
+		return x.Quad().Sign() > 0
 	}
 	if err := quick.Check(f, nil); err != nil {
 		t.Error(err)
