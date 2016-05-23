@@ -9,45 +9,45 @@ import (
 	"strings"
 )
 
-var symbKlein = [8]string{"", "i", "j", "k", "r", "s", "t", "u"}
+var symbZorn = [8]string{"", "i", "j", "k", "r", "s", "t", "u"}
 
-// A Klein represents a rational Klein octonion.
-type Klein struct {
+// A Zorn represents a rational Zorn octonion.
+type Zorn struct {
 	l, r *Hamilton
 }
 
 // L returns the left Cayley-Dickson part of z, a pointer to a Hamilton value.
-func (z *Klein) L() *Hamilton {
+func (z *Zorn) L() *Hamilton {
 	return z.l
 }
 
 // R returns the right Cayley-Dickson part of z, a pointer to a Hamilton value.
-func (z *Klein) R() *Hamilton {
+func (z *Zorn) R() *Hamilton {
 	return z.r
 }
 
 // SetL sets the left Cayley-Dickson part of z equal to a.
-func (z *Klein) SetL(a *Hamilton) {
+func (z *Zorn) SetL(a *Hamilton) {
 	z.l = a
 }
 
 // SetR sets the right Cayley-Dickson part of z equal to b.
-func (z *Klein) SetR(b *Hamilton) {
+func (z *Zorn) SetR(b *Hamilton) {
 	z.r = b
 }
 
 // Cartesian returns the eight Cartesian components of z.
-func (z *Klein) Cartesian() (a, b, c, d, e, f, g, h *big.Rat) {
+func (z *Zorn) Cartesian() (a, b, c, d, e, f, g, h *big.Rat) {
 	a, b, c, d = z.L().Cartesian()
 	e, f, g, h = z.R().Cartesian()
 	return
 }
 
-// String returns the string representation of a Klein value.
+// String returns the string representation of a Zorn value.
 //
 // If z corresponds to a + bi + cj + dk + er + fs + gt + hu, then the
 // string is"(a+bi+cj+dk+er+fs+gt+hu)", similar to complex128 values.
-func (z *Klein) String() string {
+func (z *Zorn) String() string {
 	v := make([]*big.Rat, 8)
 	v[0], v[1], v[2], v[3] = z.L().Cartesian()
 	v[4], v[5], v[6], v[7] = z.R().Cartesian()
@@ -61,7 +61,7 @@ func (z *Klein) String() string {
 		} else {
 			a[j] = fmt.Sprintf("+%v", v[i].RatString())
 		}
-		a[j+1] = symbKlein[i]
+		a[j+1] = symbZorn[i]
 		i++
 	}
 	a[16] = ")"
@@ -69,7 +69,7 @@ func (z *Klein) String() string {
 }
 
 // Equals returns true if y and z are equal.
-func (z *Klein) Equals(y *Klein) bool {
+func (z *Zorn) Equals(y *Zorn) bool {
 	if !z.L().Equals(y.L()) || !z.R().Equals(y.R()) {
 		return false
 	}
@@ -77,51 +77,51 @@ func (z *Klein) Equals(y *Klein) bool {
 }
 
 // Copy copies y onto z, and returns z.
-func (z *Klein) Copy(y *Klein) *Klein {
+func (z *Zorn) Copy(y *Zorn) *Zorn {
 	z.SetL(y.L())
 	z.SetR(y.R())
 	return z
 }
 
-// NewKlein returns a pointer to a Klein value made from eight given pointers
+// NewZorn returns a pointer to a Zorn value made from eight given pointers
 // to big.Rat values.
-func NewKlein(a, b, c, d, e, f, g, h *big.Rat) *Klein {
-	z := new(Klein)
+func NewZorn(a, b, c, d, e, f, g, h *big.Rat) *Zorn {
+	z := new(Zorn)
 	z.SetL(NewHamilton(a, b, c, d))
 	z.SetR(NewHamilton(e, f, g, h))
 	return z
 }
 
 // Scal sets z equal to y scaled by a, and returns z.
-func (z *Klein) Scal(y *Klein, a *big.Rat) *Klein {
+func (z *Zorn) Scal(y *Zorn, a *big.Rat) *Zorn {
 	z.SetL(new(Hamilton).Scal(y.L(), a))
 	z.SetR(new(Hamilton).Scal(y.R(), a))
 	return z
 }
 
 // Neg sets z equal to the negative of y, and returns z.
-func (z *Klein) Neg(y *Klein) *Klein {
+func (z *Zorn) Neg(y *Zorn) *Zorn {
 	z.SetL(new(Hamilton).Neg(y.L()))
 	z.SetR(new(Hamilton).Neg(y.R()))
 	return z
 }
 
 // Conj sets z equal to the conjugate of y, and returns z.
-func (z *Klein) Conj(y *Klein) *Klein {
+func (z *Zorn) Conj(y *Zorn) *Zorn {
 	z.SetL(new(Hamilton).Conj(y.L()))
 	z.SetR(new(Hamilton).Neg(y.R()))
 	return z
 }
 
 // Add sets z equal to the sum of x and y, and returns z.
-func (z *Klein) Add(x, y *Klein) *Klein {
+func (z *Zorn) Add(x, y *Zorn) *Zorn {
 	z.SetL(new(Hamilton).Add(x.L(), y.L()))
 	z.SetR(new(Hamilton).Add(x.R(), y.R()))
 	return z
 }
 
 // Sub sets z equal to the difference of x and y, and returns z.
-func (z *Klein) Sub(x, y *Klein) *Klein {
+func (z *Zorn) Sub(x, y *Zorn) *Zorn {
 	z.SetL(new(Hamilton).Sub(x.L(), y.L()))
 	z.SetR(new(Hamilton).Sub(x.R(), y.R()))
 	return z
@@ -154,7 +154,7 @@ func (z *Klein) Sub(x, y *Klein) *Klein {
 // 		Mul(s, u) = -Mul(u, s) = -j
 // 		Mul(t, u) = -Mul(u, t) = +i
 // This binary operation is noncommutative and nonassociative.
-func (z *Klein) Mul(x, y *Klein) *Klein {
+func (z *Zorn) Mul(x, y *Zorn) *Zorn {
 	a, b := x.L(), x.R()
 	c, d := y.L(), y.R()
 	s, t, u := new(Hamilton), new(Hamilton), new(Hamilton)
@@ -170,16 +170,16 @@ func (z *Klein) Mul(x, y *Klein) *Klein {
 }
 
 // Commutator sets z equal to the commutator of x and y, and returns z.
-func (z *Klein) Commutator(x, y *Klein) *Klein {
+func (z *Zorn) Commutator(x, y *Zorn) *Zorn {
 	return z.Sub(
 		z.Mul(x, y),
-		new(Klein).Mul(y, x),
+		new(Zorn).Mul(y, x),
 	)
 }
 
 // Associator sets z equal to the associator of w, x, and y, and returns z.
-func (z *Klein) Associator(w, x, y *Klein) *Klein {
-	t := new(Klein)
+func (z *Zorn) Associator(w, x, y *Zorn) *Zorn {
+	t := new(Zorn)
 	return z.Sub(
 		z.Mul(z.Mul(w, x), y),
 		t.Mul(w, t.Mul(x, y)),
@@ -187,7 +187,7 @@ func (z *Klein) Associator(w, x, y *Klein) *Klein {
 }
 
 // Quad returns the quadrance of z, a pointer to a big.Rat value.
-func (z *Klein) Quad() *big.Rat {
+func (z *Zorn) Quad() *big.Rat {
 	return new(big.Rat).Sub(
 		z.L().Quad(),
 		z.R().Quad(),
@@ -195,12 +195,12 @@ func (z *Klein) Quad() *big.Rat {
 }
 
 // IsZeroDiv returns true if z is a zero divisor.
-func (z *Klein) IsZeroDiv() bool {
+func (z *Zorn) IsZeroDiv() bool {
 	return z.L().Quad().Cmp(z.R().Quad()) == 0
 }
 
 // Inv sets z equal to the inverse of y, and returns z.
-func (z *Klein) Inv(y *Klein) *Klein {
+func (z *Zorn) Inv(y *Zorn) *Zorn {
 	if y.IsZeroDiv() {
 		panic("inverse of zero divisor")
 	}
@@ -208,7 +208,7 @@ func (z *Klein) Inv(y *Klein) *Klein {
 }
 
 // Quo sets z equal to the quotient of x and y, and returns z.
-func (z *Klein) Quo(x, y *Klein) *Klein {
+func (z *Zorn) Quo(x, y *Zorn) *Zorn {
 	if y.IsZeroDiv() {
 		panic("denominator is zero divisor")
 	}
