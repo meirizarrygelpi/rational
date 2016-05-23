@@ -6,6 +6,8 @@ package rational
 import (
 	"fmt"
 	"math/big"
+	"math/rand"
+	"reflect"
 	"strings"
 )
 
@@ -13,27 +15,27 @@ var symbInfraComplex = [4]string{"", "i", "α", "β"}
 
 // An InfraComplex represents a rational infra-complex number.
 type InfraComplex struct {
-	l, r *Complex
+	l, r Complex
 }
 
 // L returns the left Cayley-Dickson part of z, a pointer to a Complex value.
 func (z *InfraComplex) L() *Complex {
-	return z.l
+	return &z.l
 }
 
 // R returns the right Cayley-Dickson part of z, a pointer to a Complex value.
 func (z *InfraComplex) R() *Complex {
-	return z.r
+	return &z.r
 }
 
 // SetL sets the left Cayley-Dickson part of z equal to a.
 func (z *InfraComplex) SetL(a *Complex) {
-	z.l = a
+	z.l = *a
 }
 
 // SetR sets the right Cayley-Dickson part of z equal to b.
 func (z *InfraComplex) SetR(b *Complex) {
-	z.r = b
+	z.r = *b
 }
 
 // Cartesian returns the four Cartesian components of z.
@@ -137,8 +139,10 @@ func (z *InfraComplex) Sub(x, y *InfraComplex) *InfraComplex {
 // 		Mul(β, i) = -Mul(i, β) = α
 // This binary operation is noncommutative but associative.
 func (z *InfraComplex) Mul(x, y *InfraComplex) *InfraComplex {
-	a, b := x.L(), x.R()
-	c, d := y.L(), y.R()
+	a := new(Complex).Copy(x.L())
+	b := new(Complex).Copy(x.R())
+	c := new(Complex).Copy(y.L())
+	d := new(Complex).Copy(y.R())
 	s, t, u := new(Complex), new(Complex), new(Complex)
 	z.SetL(
 		s.Mul(a, c),
@@ -185,4 +189,19 @@ func (z *InfraComplex) Quo(x, y *InfraComplex) *InfraComplex {
 		panic("denominator is zero divisor")
 	}
 	return z.Mul(x, z.Inv(y))
+}
+
+// Generate returns a random InfraComplex value for quick.Check testing.
+func (z *InfraComplex) Generate(rand *rand.Rand, size int) reflect.Value {
+	randomInfraComplex := &InfraComplex{
+		*NewComplex(
+			big.NewRat(rand.Int63(), rand.Int63()),
+			big.NewRat(rand.Int63(), rand.Int63()),
+		),
+		*NewComplex(
+			big.NewRat(rand.Int63(), rand.Int63()),
+			big.NewRat(rand.Int63(), rand.Int63()),
+		),
+	}
+	return reflect.ValueOf(randomInfraComplex)
 }

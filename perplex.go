@@ -191,7 +191,7 @@ func (z *Perplex) Idempotent(sign int) *Perplex {
 	return z
 }
 
-// Generate a random Perplex value for quick.Check testing.
+// Generate returns a random Perplex value for quick.Check testing.
 func (z *Perplex) Generate(rand *rand.Rand, size int) reflect.Value {
 	randomPerplex := &Perplex{
 		*big.NewRat(rand.Int63(), rand.Int63()),

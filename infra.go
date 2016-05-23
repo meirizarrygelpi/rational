@@ -171,7 +171,7 @@ func (z *Infra) Quo(x, y *Infra) *Infra {
 	return z.Mul(x, z.Inv(y))
 }
 
-// Generate a random Infra value for quick.Check testing.
+// Generate returns a random Infra value for quick.Check testing.
 func (z *Infra) Generate(rand *rand.Rand, size int) reflect.Value {
 	randomInfra := &Infra{
 		*big.NewRat(rand.Int63(), rand.Int63()),

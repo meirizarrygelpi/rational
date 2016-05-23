@@ -6,6 +6,8 @@ package rational
 import (
 	"fmt"
 	"math/big"
+	"math/rand"
+	"reflect"
 	"strings"
 )
 
@@ -13,27 +15,27 @@ var symbInfraPerplex = [4]string{"", "s", "σ", "τ"}
 
 // An InfraPerplex represents a rational infra-perplex number.
 type InfraPerplex struct {
-	l, r *Perplex
+	l, r Perplex
 }
 
 // L returns the left Cayley-Dickson part of z, a pointer to a Perplex value.
 func (z *InfraPerplex) L() *Perplex {
-	return z.l
+	return &z.l
 }
 
 // R returns the right Cayley-Dickson part of z, a pointer to a Perplex value.
 func (z *InfraPerplex) R() *Perplex {
-	return z.r
+	return &z.r
 }
 
 // SetL sets the left Cayley-Dickson part of z equal to a.
 func (z *InfraPerplex) SetL(a *Perplex) {
-	z.l = a
+	z.l = *a
 }
 
 // SetR sets the right Cayley-Dickson part of z equal to b.
 func (z *InfraPerplex) SetR(b *Perplex) {
-	z.r = b
+	z.r = *b
 }
 
 // Cartesian returns the four Cartesian components of z.
@@ -137,8 +139,10 @@ func (z *InfraPerplex) Sub(x, y *InfraPerplex) *InfraPerplex {
 // 		Mul(s, τ) = -Mul(τ, s) = σ
 // This binary operation is noncommutative but associative.
 func (z *InfraPerplex) Mul(x, y *InfraPerplex) *InfraPerplex {
-	a, b := x.L(), x.R()
-	c, d := y.L(), y.R()
+	a := new(Perplex).Copy(x.L())
+	b := new(Perplex).Copy(x.R())
+	c := new(Perplex).Copy(y.L())
+	d := new(Perplex).Copy(y.R())
 	s, t, u := new(Perplex), new(Perplex), new(Perplex)
 	z.SetL(
 		s.Mul(a, c),
@@ -183,4 +187,19 @@ func (z *InfraPerplex) Quo(x, y *InfraPerplex) *InfraPerplex {
 		panic("denominator is zero divisor")
 	}
 	return z.Mul(x, z.Inv(y))
+}
+
+// Generate returns a random InfraPerplex value for quick.Check testing.
+func (z *InfraPerplex) Generate(rand *rand.Rand, size int) reflect.Value {
+	randomInfraPerplex := &InfraPerplex{
+		*NewPerplex(
+			big.NewRat(rand.Int63(), rand.Int63()),
+			big.NewRat(rand.Int63(), rand.Int63()),
+		),
+		*NewPerplex(
+			big.NewRat(rand.Int63(), rand.Int63()),
+			big.NewRat(rand.Int63(), rand.Int63()),
+		),
+	}
+	return reflect.ValueOf(randomInfraPerplex)
 }

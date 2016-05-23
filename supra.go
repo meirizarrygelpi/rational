@@ -6,6 +6,8 @@ package rational
 import (
 	"fmt"
 	"math/big"
+	"math/rand"
+	"reflect"
 	"strings"
 )
 
@@ -13,27 +15,27 @@ var symbSupra = [4]string{"", "α", "β", "γ"}
 
 // A Supra represents a rational supra number.
 type Supra struct {
-	l, r *Infra
+	l, r Infra
 }
 
 // L returns the left Cayley-Dickson part of z, a pointer to a Infra value.
 func (z *Supra) L() *Infra {
-	return z.l
+	return &z.l
 }
 
 // R returns the right Cayley-Dickson part of z, a pointer to a Infra value.
 func (z *Supra) R() *Infra {
-	return z.r
+	return &z.r
 }
 
 // SetL sets the left Cayley-Dickson part of z equal to a.
 func (z *Supra) SetL(a *Infra) {
-	z.l = a
+	z.l = *a
 }
 
 // SetR sets the right Cayley-Dickson part of z equal to b.
 func (z *Supra) SetR(b *Infra) {
-	z.r = b
+	z.r = *b
 }
 
 // Cartesian returns the four Cartesian components of z.
@@ -136,8 +138,10 @@ func (z *Supra) Sub(x, y *Supra) *Supra {
 // 		Mul(γ, α) = Mul(α, γ) = 0
 // This binary operation is noncommutative but associative.
 func (z *Supra) Mul(x, y *Supra) *Supra {
-	a, b := x.L(), x.R()
-	c, d := y.L(), y.R()
+	a := new(Infra).Copy(x.L())
+	b := new(Infra).Copy(x.R())
+	c := new(Infra).Copy(y.L())
+	d := new(Infra).Copy(y.R())
 	s, t, u := new(Infra), new(Infra), new(Infra)
 	z.SetL(
 		s.Mul(a, c),
@@ -169,10 +173,31 @@ func (z *Supra) IsZeroDiv() bool {
 
 // Inv sets z equal to the inverse of y, and returns z.
 func (z *Supra) Inv(y *Supra) *Supra {
+	if y.IsZeroDiv() {
+		panic("inverse of zero divisor")
+	}
 	return z.Scal(z.Conj(y), new(big.Rat).Inv(y.Quad()))
 }
 
 // Quo sets z equal to the quotient of x and y, and returns z.
 func (z *Supra) Quo(x, y *Supra) *Supra {
+	if y.IsZeroDiv() {
+		panic("denominator is zero divisor")
+	}
 	return z.Mul(x, z.Inv(y))
+}
+
+// Generate returns a random Supra value for quick.Check testing.
+func (z *Supra) Generate(rand *rand.Rand, size int) reflect.Value {
+	randomSupra := &Supra{
+		*NewInfra(
+			big.NewRat(rand.Int63(), rand.Int63()),
+			big.NewRat(rand.Int63(), rand.Int63()),
+		),
+		*NewInfra(
+			big.NewRat(rand.Int63(), rand.Int63()),
+			big.NewRat(rand.Int63(), rand.Int63()),
+		),
+	}
+	return reflect.ValueOf(randomSupra)
 }

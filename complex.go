@@ -172,7 +172,7 @@ func Gauss(a, b *big.Int) *Complex {
 	return z
 }
 
-// Generate a random Complex value for quick.Check testing.
+// Generate returns a random Complex value for quick.Check testing.
 func (z *Complex) Generate(rand *rand.Rand, size int) reflect.Value {
 	randomComplex := &Complex{
 		*big.NewRat(rand.Int63(), rand.Int63()),
