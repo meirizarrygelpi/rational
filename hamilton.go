@@ -183,19 +183,13 @@ func (z *Hamilton) Quo(x, y *Hamilton) *Hamilton {
 // Lipschitz sets z equal to a Lipschitz integer made from four given pointers
 // to big.Int values, and returns z.
 func (z *Hamilton) Lipschitz(a, b, c, d *big.Int) *Hamilton {
-	z.SetL(NewComplex(
-		new(big.Rat).SetInt(a),
-		new(big.Rat).SetInt(b),
-	))
-	z.SetR(NewComplex(
-		new(big.Rat).SetInt(c),
-		new(big.Rat).SetInt(d),
-	))
+	z.SetL(new(Complex).Gauss(a, b))
+	z.SetR(new(Complex).Gauss(c, d))
 	return z
 }
 
-// Hurwitz sets z equal to a Hurwitz integer made by adding 1/2 to each of four
-// given pointers to big.Int values, and returns z.
+// Hurwitz sets z equal to a Hurwitz integer made by adding 1/2 to each of the
+// four given pointers to big.Int values, and returns z.
 func (z *Hamilton) Hurwitz(a, b, c, d *big.Int) *Hamilton {
 	z.Lipschitz(a, b, c, d)
 	half := big.NewRat(1, 2)

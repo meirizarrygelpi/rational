@@ -208,6 +208,23 @@ func (z *Cayley) Quo(x, y *Cayley) *Cayley {
 	return z.Mul(x, z.Inv(y))
 }
 
+// Graves sets z equal to a Graves integer made from eight given pointers to
+// big.Int values, and returns z.
+func (z *Cayley) Graves(a, b, c, d, e, f, g, h *big.Int) *Cayley {
+	z.SetL(new(Hamilton).Lipschitz(a, b, c, d))
+	z.SetR(new(Hamilton).Lipschitz(e, f, g, h))
+	return z
+}
+
+// Klein sets z equal to a Klein integer made by adding 1/2 to each of the
+// eight given pointers to big.Int values, and returns z.
+func (z *Cayley) Klein(a, b, c, d, e, f, g, h *big.Int) *Cayley {
+	z.Graves(a, b, c, d, e, f, g, h)
+	half := big.NewRat(1, 2)
+	z.Add(z, NewCayley(half, half, half, half, half, half, half, half))
+	return z
+}
+
 // Generate returns a random Cayley value for quick.Check testing.
 func (z *Cayley) Generate(rand *rand.Rand, size int) reflect.Value {
 	randomCayley := &Cayley{
