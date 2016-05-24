@@ -11,7 +11,7 @@ import (
 	"strings"
 )
 
-var symbInfraComplex = [4]string{"", "i", "α", "β"}
+var symbInfraComplex = [4]string{"", "i", "β", "γ"}
 
 // An InfraComplex represents a rational infra-complex number.
 type InfraComplex struct {
@@ -47,7 +47,7 @@ func (z *InfraComplex) Cartesian() (a, b, c, d *big.Rat) {
 
 // String returns the string representation of an InfraComplex value.
 //
-// If z corresponds to a + bi + cα + dβ, then the string is"(a+bi+cα+dβ)",
+// If z corresponds to a + bi + cβ + dγ, then the string is"(a+bi+cβ+dγ)",
 // similar to complex128 values.
 func (z *InfraComplex) String() string {
 	v := make([]*big.Rat, 4)
@@ -133,10 +133,10 @@ func (z *InfraComplex) Sub(x, y *InfraComplex) *InfraComplex {
 //
 // The multiplication rules are:
 // 		Mul(i, i) = -1
-// 		Mul(α, α) = Mul(β, β) = 0
-// 		Mul(α, β) = Mul(β, α) = 0
-// 		Mul(i, α) = -Mul(α, i) = β
-// 		Mul(β, i) = -Mul(i, β) = α
+// 		Mul(β, β) = Mul(γ, γ) = 0
+// 		Mul(β, γ) = Mul(γ, β) = 0
+// 		Mul(i, β) = -Mul(β, i) = γ
+// 		Mul(γ, i) = -Mul(i, γ) = β
 // This binary operation is noncommutative but associative.
 func (z *InfraComplex) Mul(x, y *InfraComplex) *InfraComplex {
 	a := new(Complex).Copy(x.L())

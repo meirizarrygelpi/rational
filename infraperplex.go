@@ -11,7 +11,7 @@ import (
 	"strings"
 )
 
-var symbInfraPerplex = [4]string{"", "s", "σ", "τ"}
+var symbInfraPerplex = [4]string{"", "s", "τ", "υ"}
 
 // An InfraPerplex represents a rational infra-perplex number.
 type InfraPerplex struct {
@@ -47,7 +47,7 @@ func (z *InfraPerplex) Cartesian() (a, b, c, d *big.Rat) {
 
 // String returns the string representation of an InfraPerplex value.
 //
-// If z corresponds to a + bs + cσ + dτ, then the string is"(a+bs+cσ+dτ)",
+// If z corresponds to a + bs + cτ + dυ, then the string is"(a+bs+cτ+dυ)",
 // similar to complex128 values.
 func (z *InfraPerplex) String() string {
 	v := make([]*big.Rat, 4)
@@ -133,10 +133,10 @@ func (z *InfraPerplex) Sub(x, y *InfraPerplex) *InfraPerplex {
 //
 // The multiplication rules are:
 // 		Mul(s, s) = +1
-// 		Mul(σ, σ) = Mul(τ, τ) = 0
-// 		Mul(σ, τ) = Mul(τ, σ) = 0
-// 		Mul(s, σ) = -Mul(σ, s) = τ
-// 		Mul(s, τ) = -Mul(τ, s) = σ
+// 		Mul(τ, τ) = Mul(υ, υ) = 0
+// 		Mul(τ, υ) = Mul(υ, τ) = 0
+// 		Mul(s, τ) = -Mul(τ, s) = υ
+// 		Mul(s, υ) = -Mul(υ, s) = τ
 // This binary operation is noncommutative but associative.
 func (z *InfraPerplex) Mul(x, y *InfraPerplex) *InfraPerplex {
 	a := new(Perplex).Copy(x.L())
