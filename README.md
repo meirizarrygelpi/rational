@@ -10,20 +10,26 @@ There are three two-dimensional types. The (binary) multiplication operation for
 
 ### rational.Complex
 
-The `rational.Complex` type represents a rational complex number. It corresponds to a complex Cayley-Dickson construct with `big.Rat` values. The imaginary unit element is denoted `i`.
-
+The `rational.Complex` type represents a rational complex number. It corresponds to a complex Cayley-Dickson construct with `big.Rat` values. The imaginary unit element is denoted `i`. The multiplication rule is:
+```go
+	Mul(i, i) = -1
+```
 This type can be used to study [Gaussian integers](https://en.wikipedia.org/wiki/Gaussian_integer).
 
 ### rational.Perplex
 
-The `rational.Perplex` type represents a rational perplex number. It corresponds to a perplex Cayley-Dickson construct with `big.Rat` values. The split unit element is denoted `s`.
-
+The `rational.Perplex` type represents a rational perplex number. It corresponds to a perplex Cayley-Dickson construct with `big.Rat` values. The split unit element is denoted `s`. The multiplication rule is:
+```go
+	Mul(s, s) = +1
+```
 Perplex numbers are more commonly known as [split-complex numbers](https://en.wikipedia.org/wiki/Split-complex_number), but "perplex" is used here for brevity and symmetry with "complex".
 
 ### rational.Infra
 
-The `rational.Infra` type represents a rational infra number. It corresponds to a null Cayley-Dickson construct with `big.Rat` values. The dual unit element is denoted `α`.
-
+The `rational.Infra` type represents a rational infra number. It corresponds to a null Cayley-Dickson construct with `big.Rat` values. The dual unit element is denoted `α`. The multiplication rule is:
+```go
+	Mul(α, α) = 0
+```
 Infra numbers are more commonly known as [dual numbers](https://en.wikipedia.org/wiki/Dual_number), but "infra" is used here along with "supra" and "ultra" for the higher-dimensional analogs.
 
 ## Four-Dimensional Types
@@ -32,31 +38,63 @@ There are five four-dimensional types. The (binary) multiplication operation for
 
 ### rational.Hamilton
 
-The `rational.Hamilton` type represents a rational Hamilton quaternion. It corresponds to a complex Cayley-Dickson construct with `rational.Complex` values. The imaginary unit elements are denoted `i`, `j`, and `k`.
-
+The `rational.Hamilton` type represents a rational Hamilton quaternion. It corresponds to a complex Cayley-Dickson construct with `rational.Complex` values. The imaginary unit elements are denoted `i`, `j`, and `k`. The multiplication rules are:
+```go
+	Mul(i, i) = Mul(j, j) = Mul(k, k) = -1
+	Mul(i, j) = -Mul(j, i) = k
+	Mul(j, k) = -Mul(k, j) = i
+	Mul(k, i) = -Mul(i, k) = j
+```
 Hamilton quaternions are [traditional quaternions](https://en.wikipedia.org/wiki/Quaternion). The type is named after W.R. Hamilton, who discovered quaternions.
 
 This type can be used to study [Hurwitz and Lipschitz integers](https://en.wikipedia.org/wiki/Hurwitz_quaternion).
 
 ### rational.Cockle
 
-The `rational.Cockle` type represents a rational Cockle quaternion. It corresponds to a perplex Cayley-Dickson construct with `rational.Complex` values. The imaginary unit element is denoted `i`, and the split unit elements are denoted `t` and `u`.
-
+The `rational.Cockle` type represents a rational Cockle quaternion. It corresponds to a perplex Cayley-Dickson construct with `rational.Complex` values. The imaginary unit element is denoted `i`, and the split unit elements are denoted `t` and `u`. The multiplication rules are:
+```go
+	Mul(i, i) = -1
+	Mul(t, t) = Mul(u, u) = +1
+	Mul(i, t) = -Mul(t, i) = u
+	Mul(u, t) = -Mul(t, u) = i
+	Mul(u, i) = -Mul(i, u) = t
+```
 Cockle quaternions are more commonly known as [split-quaternions](https://en.wikipedia.org/wiki/Split-quaternion). The type is named after J. Cockle, who discovered them.
 
 ### rational.Supra
 
-The `rational.Supra` type represents a rational supra number. It corresponds to a null Cayley-Dickson construct with `rational.Infra` values. The dual unit elements are denoted `α`, `β`, and `γ`.
-
+The `rational.Supra` type represents a rational supra number. It corresponds to a null Cayley-Dickson construct with `rational.Infra` values. The dual unit elements are denoted `α`, `β`, and `γ`. The multiplication rules are:
+```go
+	Mul(α, α) = Mul(β, β) = Mul(γ, γ) = 0
+	Mul(α, β) = -Mul(β, α) = γ
+	Mul(β, γ) = Mul(γ, β) = 0
+	Mul(γ, α) = Mul(α, γ) = 0
+```
 Note that supra numbers are very different from [hyper-dual numbers](http://adl.stanford.edu/hyperdual/): the multiplication operation for supra numbers is noncommutative. In some ways, supra numbers are the dual analog of quaternions.
 
 ### rational.InfraComplex
 
-The `rational.InfraComplex` type represents a rational infra complex number. It corresponds to a null Cayley-Dickson construct with `rational.Complex` values. The imaginary unit element is denoted `i`, and the dual unit elements are denoted `α` and `β`.
+The `rational.InfraComplex` type represents a rational infra complex number. It corresponds to a null Cayley-Dickson construct with `rational.Complex` values. The imaginary unit element is denoted `i`, and the dual unit elements are denoted `β` and `γ`. The multiplication rules are:
+```go
+	Mul(i, i) = -1
+	Mul(β, β) = Mul(γ, γ) = 0
+	Mul(β, γ) = Mul(γ, β) = 0
+	Mul(i, β) = -Mul(β, i) = γ
+	Mul(γ, i) = -Mul(i, γ) = β
+```
+Note that `i` does not commute with either `β` or `γ`.
 
 ### rational.InfraPerplex
 
-The `rational.InfraPerplex` type represents a rational infra perplex number. It corresponds to a null Cayley-Dickson construct with `rational.Perplex` values. The split unit element is denoted `s`, and the dual unit elements are denoted `σ` and `τ`.
+The `rational.InfraPerplex` type represents a rational infra perplex number. It corresponds to a null Cayley-Dickson construct with `rational.Perplex` values. The split unit element is denoted `s`, and the dual unit elements are denoted `τ` and `υ`. The multiplication rules are:
+```go
+	Mul(s, s) = +1
+	Mul(τ, τ) = Mul(υ, υ) = 0
+	Mul(τ, υ) = Mul(υ, τ) = 0
+	Mul(s, τ) = -Mul(τ, s) = υ
+	Mul(s, υ) = -Mul(υ, s) = τ
+```
+Like `i` in the infra complex numbers, `s` does not commute with either `τ` or `υ`.
 
 ## Eight-Dimensional Types
 

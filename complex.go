@@ -163,10 +163,9 @@ func (z *Complex) Quo(x, y *Complex) *Complex {
 	return z.Mul(x, z.Inv(y))
 }
 
-// Gauss returns a Complex value corresponding to a Gaussian integer with real
-// part equal to a and imaginary part equal to b.
-func Gauss(a, b *big.Int) *Complex {
-	z := new(Complex)
+// Gauss sets z equal to a Gaussian integer with real part equal to a and
+// imaginary part equal to b, and returns z.
+func (z *Complex) Gauss(a, b *big.Int) *Complex {
 	z.SetL(new(big.Rat).SetInt(a))
 	z.SetR(new(big.Rat).SetInt(b))
 	return z
