@@ -102,37 +102,117 @@ There are seven eight-dimensional types. The (binary) multiplication operation f
 
 ### rational.Cayley
 
-The `rational.Cayley` type represents a rational Cayley octonion. It corresponds to a complex Cayley-Dickson construct with `rational.Hamilton` values. The imaginary unit elements are denoted `i`, `j`, `k`, `m`, `n`, `p`, and `q`.
-
+The `rational.Cayley` type represents a rational Cayley octonion. It corresponds to a complex Cayley-Dickson construct with `rational.Hamilton` values. The imaginary unit elements are denoted `i`, `j`, `k`, `m`, `n`, `p`, and `q`. The multiplication rules are:
+```go
+	Mul(i, i) = Mul(j, j) = Mul(k, k) = -1
+	Mul(m, m) = Mul(n, n) = Mul(p, p) = Mul(q, q) = -1
+	Mul(i, j) = -Mul(j, i) = +k
+	Mul(i, k) = -Mul(k, i) = -j
+	Mul(i, m) = -Mul(m, i) = +n
+	Mul(i, n) = -Mul(n, i) = -m
+	Mul(i, p) = -Mul(p, i) = -q
+	Mul(i, q) = -Mul(q, i) = +p
+	Mul(j, k) = -Mul(k, j) = +i
+	Mul(j, m) = -Mul(m, j) = +p
+	Mul(j, n) = -Mul(n, j) = +q
+	Mul(j, p) = -Mul(p, j) = -m
+	Mul(j, q) = -Mul(q, j) = -n
+	Mul(k, m) = -Mul(m, k) = +q
+	Mul(k, n) = -Mul(n, k) = -p
+	Mul(k, p) = -Mul(p, k) = +n
+	Mul(k, q) = -Mul(q, k) = -m
+	Mul(m, n) = -Mul(n, m) = +i
+	Mul(m, p) = -Mul(p, m) = +j
+	Mul(m, q) = -Mul(q, m) = +k
+	Mul(n, p) = -Mul(p, n) = -k
+	Mul(n, q) = -Mul(q, n) = +j
+	Mul(p, q) = -Mul(q, p) = -i
+```
 Cayley octonions are [traditional octonions](https://en.wikipedia.org/wiki/Octonion). The type is named after A. Cayley, who was **not** the first person to discover octonions. The first person to discover octonions was J.T. Graves.
 
 ### rational.Zorn
 
-The `rational.Zorn` type represents a rational Zorn octonion. It corresponds to a perplex Cayley-Dickson construct with `rational.Hamilton` values. The imaginary unit elements are denoted `i`, `j`, and `k`, and the split unit elements are `r`, `s`, `t`, and `u`.
-
+The `rational.Zorn` type represents a rational Zorn octonion. It corresponds to a perplex Cayley-Dickson construct with `rational.Hamilton` values. The imaginary unit elements are denoted `i`, `j`, and `k`, and the split unit elements are `r`, `s`, `t`, and `u`. The multiplication rules are:
+```go
+	Mul(i, i) = Mul(j, j) = Mul(k, k) = -1
+	Mul(r, r) = Mul(s, s) = Mul(t, t) = Mul(u, u) = +1
+	Mul(i, j) = -Mul(j, i) = +k
+	Mul(i, k) = -Mul(k, i) = -j
+	Mul(i, r) = -Mul(r, i) = +s
+	Mul(i, s) = -Mul(s, i) = -r
+	Mul(i, t) = -Mul(t, i) = -u
+	Mul(i, u) = -Mul(u, i) = +t
+	Mul(j, k) = -Mul(k, j) = +i
+	Mul(j, r) = -Mul(r, j) = +t
+	Mul(j, s) = -Mul(s, j) = +u
+	Mul(j, t) = -Mul(t, j) = -r
+	Mul(j, u) = -Mul(u, j) = -s
+	Mul(k, r) = -Mul(r, k) = +u
+	Mul(k, s) = -Mul(s, k) = -t
+	Mul(k, t) = -Mul(t, k) = +s
+	Mul(k, u) = -Mul(u, k) = -r
+	Mul(r, s) = -Mul(s, r) = -i
+	Mul(r, t) = -Mul(t, r) = -j
+	Mul(r, u) = -Mul(u, r) = -k
+	Mul(s, t) = -Mul(t, s) = +k
+	Mul(s, u) = -Mul(u, s) = -j
+	Mul(t, u) = -Mul(u, t) = +i
+```
 Zorn octonions are commonly known as [split-octonions](https://en.wikipedia.org/wiki/Split-octonion). The type is named after M.A. Zorn, who developed a vector-matrix algebra for working with split-octonions.
 
 ### rational.Ultra
 
-The `rational.Ultra` type represents a rational ultra number. It corresponds to a null Cayley-Dickson construct with `rational.Supra` values. The dual unit elements are denoted `α`, `β`, `γ`, `δ`, `ε`, `ζ`, and `η`.
-
+The `rational.Ultra` type represents a rational ultra number. It corresponds to a null Cayley-Dickson construct with `rational.Supra` values. The dual unit elements are denoted `α`, `β`, `γ`, `δ`, `ε`, `ζ`, and `η`. The multiplication rules are:
+```go
+	Mul(α, α) = Mul(β, β) = Mul(γ, γ) = 0
+	Mul(δ, δ) = Mul(ε, ε) = Mul(ζ, ζ) = Mul(η, η) = 0
+	Mul(α, β) = -Mul(β, α) = +γ
+	Mul(α, γ) = Mul(γ, α) = 0
+	Mul(α, δ) = -Mul(δ, α) = +ε
+	Mul(α, ε) = Mul(ε, α) = 0
+	Mul(α, ζ) = -Mul(ζ, α) = -η
+	Mul(α, η) = -Mul(η, α) = +ζ
+	Mul(β, γ) = Mul(γ, β) = 0
+	Mul(β, δ) = -Mul(δ, β) = +ζ
+	Mul(β, ε) = -Mul(ε, β) = +η
+	Mul(β, ζ) = Mul(ζ, β) = 0
+	Mul(β, η) = Mul(η, β) = 0
+	Mul(γ, δ) = -Mul(δ, γ) = +η
+	Mul(γ, ε) = Mul(ε, γ) = 0
+	Mul(γ, ζ) = Mul(ζ, γ) = 0
+	Mul(γ, η) = Mul(η, γ) = 0
+	Mul(δ, ε) = Mul(ε, δ) = 0
+	Mul(δ, ζ) = Mul(ζ, δ) = 0
+	Mul(δ, η) = Mul(η, δ) = 0
+	Mul(ε, ζ) = Mul(ζ, ε) = 0
+	Mul(ε, η) = Mul(η, ε) = 0
+	Mul(ζ, η) = Mul(η, ζ) = 0
+```
 In some ways, ultra numbers are the dual analog of octonions.
 
 ### rational.InfraHamilton
 
-The `rational.InfraHamilton` type represents a rational infra Hamilton quaternion. It corresponds to a null Cayley-Dickson construct with `rational.Hamilton` values. The imaginary unit elements are denoted `i`, `j` and `k`, and the dual unit elements are denoted `α`, `β`, `γ`, and `δ`.
+The `rational.InfraHamilton` type represents a rational infra Hamilton quaternion. It corresponds to a null Cayley-Dickson construct with `rational.Hamilton` values. The imaginary unit elements are denoted `i`, `j` and `k`, and the dual unit elements are denoted `α`, `β`, `γ`, and `δ`. The multiplication rules are:
+```go
+```
 
 ### rational.InfraCockle
 
-The `rational.InfraCockle` type represents a rational infra Cockle quaternion. It corresponds to a null Cayley-Dickson construct with `rational.Cockle` values. The imaginary unit element is denoted `i`, the split unit elements are denoted `t` and `u`, and the dual unit elements are denoted `ρ`, `σ`, `τ`, and `υ`.
+The `rational.InfraCockle` type represents a rational infra Cockle quaternion. It corresponds to a null Cayley-Dickson construct with `rational.Cockle` values. The imaginary unit element is denoted `i`, the split unit elements are denoted `t` and `u`, and the dual unit elements are denoted `ρ`, `σ`, `τ`, and `υ`. The multiplication rules are:
+```go
+```
 
 ### rational.SupraComplex
 
-The `rational.SupraComplex` type represents a rational supra complex number. It corresponds to a null Cayley-Dickson construct with `rational.InfraComplex` values. The imaginary unit element is denoted `i`, and the dual unit elements are denoted `α`, `β`, `γ`, `δ`, `ε`, and `ζ`.
+The `rational.SupraComplex` type represents a rational supra complex number. It corresponds to a null Cayley-Dickson construct with `rational.InfraComplex` values. The imaginary unit element is denoted `i`, and the dual unit elements are denoted `α`, `β`, `γ`, `δ`, `ε`, and `ζ`. The multiplication rules are:
+```go
+```
 
 ### rational.SupraPerplex
 
-The `rational.SupraPerplex` type represents a rational supra perplex number. It corresponds to a null Cayley-Dickson construct with `rational.InfraPerplex` values. The split unit element is denoted `s`, and the dual unit elements are denoted `ρ`, `σ`, `τ`, `υ`, `φ`, and `ψ`.
+The `rational.SupraPerplex` type represents a rational supra perplex number. It corresponds to a null Cayley-Dickson construct with `rational.InfraPerplex` values. The split unit element is denoted `s`, and the dual unit elements are denoted `ρ`, `σ`, `τ`, `υ`, `φ`, and `ψ`. The multiplication rules are:
+```go
+```
 
 ## To Do
 
