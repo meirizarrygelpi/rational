@@ -180,6 +180,29 @@ func (z *Hamilton) Quo(x, y *Hamilton) *Hamilton {
 	return z.Mul(x, z.Inv(y))
 }
 
+// Lipschitz sets z equal to a Lipschitz integer made from four given pointers
+// to big.Int values, and returns z.
+func (z *Hamilton) Lipschitz(a, b, c, d *big.Int) *Hamilton {
+	z.SetL(NewComplex(
+		new(big.Rat).SetInt(a),
+		new(big.Rat).SetInt(b),
+	))
+	z.SetR(NewComplex(
+		new(big.Rat).SetInt(c),
+		new(big.Rat).SetInt(d),
+	))
+	return z
+}
+
+// Hurwitz sets z equal to a Hurwitz integer made by adding 1/2 to each of four
+// given pointers to big.Int values, and returns z.
+func (z *Hamilton) Hurwitz(a, b, c, d *big.Int) *Hamilton {
+	z.Lipschitz(a, b, c, d)
+	half := big.NewRat(1, 2)
+	z.Add(z, NewHamilton(half, half, half, half))
+	return z
+}
+
 // Generate returns a random Hamilton value for quick.Check testing.
 func (z *Hamilton) Generate(rand *rand.Rand, size int) reflect.Value {
 	randomHamilton := &Hamilton{
