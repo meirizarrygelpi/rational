@@ -1,3 +1,6 @@
+// Copyright (c) 2016 Melvin Eloy Irizarry-Gelpí
+// Licenced under the MIT License.
+
 package rational
 
 import (
@@ -39,8 +42,8 @@ func TestSupraMulNonCommutative(t *testing.T) {
 	f := func(x, y *Supra) bool {
 		// t.Logf("x = %v, y = %v", x, y)
 		l := new(Supra).Commutator(x, y)
-		zero := new(Infra)
-		return !l.Equals(&Supra{*zero, *zero})
+		zero := new(Supra)
+		return !l.Equals(zero)
 	}
 	if err := quick.Check(f, nil); err != nil {
 		t.Error(err)
@@ -108,7 +111,6 @@ func TestSupraAddZero(t *testing.T) {
 func TestSupraMulOne(t *testing.T) {
 	one := new(Infra)
 	one.SetL(big.NewRat(1, 1))
-	one.SetR(big.NewRat(0, 1))
 	zero := new(Infra)
 	f := func(x *Supra) bool {
 		// t.Logf("x = %v", x)
@@ -123,7 +125,6 @@ func TestSupraMulOne(t *testing.T) {
 func TestSupraMulInvOne(t *testing.T) {
 	one := new(Infra)
 	one.SetL(big.NewRat(1, 1))
-	one.SetR(big.NewRat(0, 1))
 	zero := new(Infra)
 	f := func(x *Supra) bool {
 		// t.Logf("x = %v", x)

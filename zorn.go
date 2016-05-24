@@ -6,6 +6,8 @@ package rational
 import (
 	"fmt"
 	"math/big"
+	"math/rand"
+	"reflect"
 	"strings"
 )
 
@@ -13,27 +15,27 @@ var symbZorn = [8]string{"", "i", "j", "k", "r", "s", "t", "u"}
 
 // A Zorn represents a rational Zorn octonion.
 type Zorn struct {
-	l, r *Hamilton
+	l, r Hamilton
 }
 
 // L returns the left Cayley-Dickson part of z, a pointer to a Hamilton value.
 func (z *Zorn) L() *Hamilton {
-	return z.l
+	return &z.l
 }
 
 // R returns the right Cayley-Dickson part of z, a pointer to a Hamilton value.
 func (z *Zorn) R() *Hamilton {
-	return z.r
+	return &z.r
 }
 
 // SetL sets the left Cayley-Dickson part of z equal to a.
 func (z *Zorn) SetL(a *Hamilton) {
-	z.l = a
+	z.l = *a
 }
 
 // SetR sets the right Cayley-Dickson part of z equal to b.
 func (z *Zorn) SetR(b *Hamilton) {
-	z.r = b
+	z.r = *b
 }
 
 // Cartesian returns the eight Cartesian components of z.
@@ -155,8 +157,10 @@ func (z *Zorn) Sub(x, y *Zorn) *Zorn {
 // 		Mul(t, u) = -Mul(u, t) = +i
 // This binary operation is noncommutative and nonassociative.
 func (z *Zorn) Mul(x, y *Zorn) *Zorn {
-	a, b := x.L(), x.R()
-	c, d := y.L(), y.R()
+	a := new(Hamilton).Copy(x.L())
+	b := new(Hamilton).Copy(x.R())
+	c := new(Hamilton).Copy(y.L())
+	d := new(Hamilton).Copy(y.R())
 	s, t, u := new(Hamilton), new(Hamilton), new(Hamilton)
 	z.SetL(s.Add(
 		s.Mul(a, c),
@@ -213,4 +217,23 @@ func (z *Zorn) Quo(x, y *Zorn) *Zorn {
 		panic("denominator is zero divisor")
 	}
 	return z.Mul(x, z.Inv(y))
+}
+
+// Generate returns a random Zorn value for quick.Check testing.
+func (z *Zorn) Generate(rand *rand.Rand, size int) reflect.Value {
+	randomZorn := &Zorn{
+		*NewHamilton(
+			big.NewRat(rand.Int63(), rand.Int63()),
+			big.NewRat(rand.Int63(), rand.Int63()),
+			big.NewRat(rand.Int63(), rand.Int63()),
+			big.NewRat(rand.Int63(), rand.Int63()),
+		),
+		*NewHamilton(
+			big.NewRat(rand.Int63(), rand.Int63()),
+			big.NewRat(rand.Int63(), rand.Int63()),
+			big.NewRat(rand.Int63(), rand.Int63()),
+			big.NewRat(rand.Int63(), rand.Int63()),
+		),
+	}
+	return reflect.ValueOf(randomZorn)
 }

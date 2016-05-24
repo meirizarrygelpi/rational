@@ -11,11 +11,11 @@ import (
 
 // Commutativity
 
-func TestPerplexAddCommutative(t *testing.T) {
-	f := func(x, y *Perplex) bool {
+func TestZornAddCommutative(t *testing.T) {
+	f := func(x, y *Zorn) bool {
 		// t.Logf("x = %v, y = %v", x, y)
-		l := new(Perplex).Add(x, y)
-		r := new(Perplex).Add(y, x)
+		l := new(Zorn).Add(x, y)
+		r := new(Zorn).Add(y, x)
 		return l.Equals(r)
 	}
 	if err := quick.Check(f, nil); err != nil {
@@ -23,22 +23,10 @@ func TestPerplexAddCommutative(t *testing.T) {
 	}
 }
 
-func TestPerplexMulCommutative(t *testing.T) {
-	f := func(x, y *Perplex) bool {
-		// t.Logf("x = %v, y = %v", x, y)
-		l := new(Perplex).Mul(x, y)
-		r := new(Perplex).Mul(y, x)
-		return l.Equals(r)
-	}
-	if err := quick.Check(f, nil); err != nil {
-		t.Error(err)
-	}
-}
-
-func TestPerplexNegConjCommutative(t *testing.T) {
-	f := func(x *Perplex) bool {
+func TestZornNegConjCommutative(t *testing.T) {
+	f := func(x *Zorn) bool {
 		// t.Logf("x = %v", x)
-		l, r := new(Perplex), new(Perplex)
+		l, r := new(Zorn), new(Zorn)
 		l.Neg(l.Conj(x))
 		r.Conj(r.Neg(x))
 		return l.Equals(r)
@@ -48,12 +36,26 @@ func TestPerplexNegConjCommutative(t *testing.T) {
 	}
 }
 
+// Non-commutativity
+
+func TestZornMulNonCommutative(t *testing.T) {
+	f := func(x, y *Zorn) bool {
+		// t.Logf("x = %v, y = %v", x, y)
+		l := new(Zorn).Commutator(x, y)
+		zero := new(Zorn)
+		return !l.Equals(zero)
+	}
+	if err := quick.Check(f, nil); err != nil {
+		t.Error(err)
+	}
+}
+
 // Anti-commutativity
 
-func TestPerplexSubAntiCommutative(t *testing.T) {
-	f := func(x, y *Perplex) bool {
+func TestZornSubAntiCommutative(t *testing.T) {
+	f := func(x, y *Zorn) bool {
 		// t.Logf("x = %v, y = %v", x, y)
-		l, r := new(Perplex), new(Perplex)
+		l, r := new(Zorn), new(Zorn)
 		l.Sub(x, y)
 		r.Sub(y, x)
 		r.Neg(r)
@@ -66,10 +68,10 @@ func TestPerplexSubAntiCommutative(t *testing.T) {
 
 // Associativity
 
-func TestPerplexAddAssociative(t *testing.T) {
-	f := func(x, y, z *Perplex) bool {
+func TestZornAddAssociative(t *testing.T) {
+	f := func(x, y, z *Zorn) bool {
 		// t.Logf("x = %v, y = %v, z = %v", x, y, z)
-		l, r := new(Perplex), new(Perplex)
+		l, r := new(Zorn), new(Zorn)
 		l.Add(l.Add(x, y), z)
 		r.Add(x, r.Add(y, z))
 		return l.Equals(r)
@@ -79,13 +81,14 @@ func TestPerplexAddAssociative(t *testing.T) {
 	}
 }
 
-func TestPerplexMulAssociative(t *testing.T) {
-	f := func(x, y, z *Perplex) bool {
+// Non-associativity
+
+func TestZornMulNonAssociative(t *testing.T) {
+	f := func(x, y, z *Zorn) bool {
 		// t.Logf("x = %v, y = %v, z = %v", x, y, z)
-		l, r := new(Perplex), new(Perplex)
-		l.Mul(l.Mul(x, y), z)
-		r.Mul(x, r.Mul(y, z))
-		return l.Equals(r)
+		l := new(Zorn).Associator(x, y, z)
+		zero := new(Zorn)
+		return !l.Equals(zero)
 	}
 	if err := quick.Check(f, nil); err != nil {
 		t.Error(err)
@@ -94,11 +97,11 @@ func TestPerplexMulAssociative(t *testing.T) {
 
 // Identity
 
-func TestPerplexAddZero(t *testing.T) {
-	zero := new(Perplex)
-	f := func(x *Perplex) bool {
+func TestZornAddZero(t *testing.T) {
+	zero := new(Zorn)
+	f := func(x *Zorn) bool {
 		// t.Logf("x = %v", x)
-		l := new(Perplex).Add(x, zero)
+		l := new(Zorn).Add(x, zero)
 		return l.Equals(x)
 	}
 	if err := quick.Check(f, nil); err != nil {
@@ -106,12 +109,16 @@ func TestPerplexAddZero(t *testing.T) {
 	}
 }
 
-func TestPerplexMulOne(t *testing.T) {
-	one := new(Perplex)
-	one.SetL(big.NewRat(1, 1))
-	f := func(x *Perplex) bool {
+func TestZornMulOne(t *testing.T) {
+	one := new(Hamilton)
+	one.SetL(NewComplex(
+		big.NewRat(1, 1),
+		big.NewRat(0, 1),
+	))
+	zero := new(Hamilton)
+	f := func(x *Zorn) bool {
 		// t.Logf("x = %v", x)
-		l := new(Perplex).Mul(x, one)
+		l := new(Zorn).Mul(x, &Zorn{*one, *zero})
 		return l.Equals(x)
 	}
 	if err := quick.Check(f, nil); err != nil {
@@ -119,24 +126,28 @@ func TestPerplexMulOne(t *testing.T) {
 	}
 }
 
-func TestPerplexMulInvOne(t *testing.T) {
-	one := new(Perplex)
-	one.SetL(big.NewRat(1, 1))
-	f := func(x *Perplex) bool {
+func TestZornMulInvOne(t *testing.T) {
+	one := new(Hamilton)
+	one.SetL(NewComplex(
+		big.NewRat(1, 1),
+		big.NewRat(0, 1),
+	))
+	zero := new(Hamilton)
+	f := func(x *Zorn) bool {
 		// t.Logf("x = %v", x)
-		l := new(Perplex)
+		l := new(Zorn)
 		l.Mul(x, l.Inv(x))
-		return l.Equals(one)
+		return l.Equals(&Zorn{*one, *zero})
 	}
 	if err := quick.Check(f, nil); err != nil {
 		t.Error(err)
 	}
 }
 
-func TestPerplexAddNegSub(t *testing.T) {
-	f := func(x, y *Perplex) bool {
+func TestZornAddNegSub(t *testing.T) {
+	f := func(x, y *Zorn) bool {
 		// t.Logf("x = %v, y = %v", x, y)
-		l, r := new(Perplex), new(Perplex)
+		l, r := new(Zorn), new(Zorn)
 		l.Sub(x, y)
 		r.Add(x, r.Neg(y))
 		return l.Equals(r)
@@ -146,10 +157,10 @@ func TestPerplexAddNegSub(t *testing.T) {
 	}
 }
 
-func TestPerplexAddScalDouble(t *testing.T) {
-	f := func(x *Perplex) bool {
+func TestZornAddScalDouble(t *testing.T) {
+	f := func(x *Zorn) bool {
 		// t.Logf("x = %v", x)
-		l, r := new(Perplex), new(Perplex)
+		l, r := new(Zorn), new(Zorn)
 		l.Add(x, x)
 		r.Scal(x, big.NewRat(2, 1))
 		return l.Equals(r)
@@ -161,10 +172,10 @@ func TestPerplexAddScalDouble(t *testing.T) {
 
 // Involutivity
 
-func TestPerplexInvInvolutive(t *testing.T) {
-	f := func(x *Perplex) bool {
+func TestZornInvInvolutive(t *testing.T) {
+	f := func(x *Zorn) bool {
 		// t.Logf("x = %v", x)
-		l := new(Perplex)
+		l := new(Zorn)
 		l.Inv(l.Inv(x))
 		return l.Equals(x)
 	}
@@ -173,10 +184,10 @@ func TestPerplexInvInvolutive(t *testing.T) {
 	}
 }
 
-func TestPerplexNegInvolutive(t *testing.T) {
-	f := func(x *Perplex) bool {
+func TestZornNegInvolutive(t *testing.T) {
+	f := func(x *Zorn) bool {
 		// t.Logf("x = %v", x)
-		l := new(Perplex)
+		l := new(Zorn)
 		l.Neg(l.Neg(x))
 		return l.Equals(x)
 	}
@@ -185,10 +196,10 @@ func TestPerplexNegInvolutive(t *testing.T) {
 	}
 }
 
-func TestPerplexConjInvolutive(t *testing.T) {
-	f := func(x *Perplex) bool {
+func TestZornConjInvolutive(t *testing.T) {
+	f := func(x *Zorn) bool {
 		// t.Logf("x = %v", x)
-		l := new(Perplex)
+		l := new(Zorn)
 		l.Conj(l.Conj(x))
 		return l.Equals(x)
 	}
@@ -199,12 +210,12 @@ func TestPerplexConjInvolutive(t *testing.T) {
 
 // Anti-distributivity
 
-func TestPerplexMulConjAntiDistributive(t *testing.T) {
-	f := func(x, y *Perplex) bool {
+func TestZornMulConjAntiDistributive(t *testing.T) {
+	f := func(x, y *Zorn) bool {
 		// t.Logf("x = %v, y = %v", x, y)
-		l, r := new(Perplex), new(Perplex)
+		l, r := new(Zorn), new(Zorn)
 		l.Conj(l.Mul(x, y))
-		r.Mul(r.Conj(y), new(Perplex).Conj(x))
+		r.Mul(r.Conj(y), new(Zorn).Conj(x))
 		return l.Equals(r)
 	}
 	if err := quick.Check(f, nil); err != nil {
@@ -212,12 +223,12 @@ func TestPerplexMulConjAntiDistributive(t *testing.T) {
 	}
 }
 
-func TestPerplexMulInvAntiDistributive(t *testing.T) {
-	f := func(x, y *Perplex) bool {
+func TestZornMulInvAntiDistributive(t *testing.T) {
+	f := func(x, y *Zorn) bool {
 		// t.Logf("x = %v, y = %v", x, y)
-		l, r := new(Perplex), new(Perplex)
+		l, r := new(Zorn), new(Zorn)
 		l.Inv(l.Mul(x, y))
-		r.Mul(r.Inv(y), new(Perplex).Inv(x))
+		r.Mul(r.Inv(y), new(Zorn).Inv(x))
 		return l.Equals(r)
 	}
 	if err := quick.Check(f, nil); err != nil {
@@ -227,13 +238,13 @@ func TestPerplexMulInvAntiDistributive(t *testing.T) {
 
 // Distributivity
 
-func TestPerplexAddConjDistributive(t *testing.T) {
-	f := func(x, y *Perplex) bool {
+func TestZornAddConjDistributive(t *testing.T) {
+	f := func(x, y *Zorn) bool {
 		// t.Logf("x = %v, y = %v", x, y)
-		l, r := new(Perplex), new(Perplex)
+		l, r := new(Zorn), new(Zorn)
 		l.Add(x, y)
 		l.Conj(l)
-		r.Add(r.Conj(x), new(Perplex).Conj(y))
+		r.Add(r.Conj(x), new(Zorn).Conj(y))
 		return l.Equals(r)
 	}
 	if err := quick.Check(f, nil); err != nil {
@@ -241,13 +252,13 @@ func TestPerplexAddConjDistributive(t *testing.T) {
 	}
 }
 
-func TestPerplexSubConjDistributive(t *testing.T) {
-	f := func(x, y *Perplex) bool {
+func TestZornSubConjDistributive(t *testing.T) {
+	f := func(x, y *Zorn) bool {
 		// t.Logf("x = %v, y = %v", x, y)
-		l, r := new(Perplex), new(Perplex)
+		l, r := new(Zorn), new(Zorn)
 		l.Sub(x, y)
 		l.Conj(l)
-		r.Sub(r.Conj(x), new(Perplex).Conj(y))
+		r.Sub(r.Conj(x), new(Zorn).Conj(y))
 		return l.Equals(r)
 	}
 	if err := quick.Check(f, nil); err != nil {
@@ -255,13 +266,13 @@ func TestPerplexSubConjDistributive(t *testing.T) {
 	}
 }
 
-func TestPerplexAddScalDistributive(t *testing.T) {
-	f := func(x, y *Perplex) bool {
+func TestZornAddScalDistributive(t *testing.T) {
+	f := func(x, y *Zorn) bool {
 		// t.Logf("x = %v, y = %v", x, y)
 		a := big.NewRat(2, 1)
-		l, r := new(Perplex), new(Perplex)
+		l, r := new(Zorn), new(Zorn)
 		l.Scal(l.Add(x, y), a)
-		r.Add(r.Scal(x, a), new(Perplex).Scal(y, a))
+		r.Add(r.Scal(x, a), new(Zorn).Scal(y, a))
 		return l.Equals(r)
 	}
 	if err := quick.Check(f, nil); err != nil {
@@ -269,13 +280,13 @@ func TestPerplexAddScalDistributive(t *testing.T) {
 	}
 }
 
-func TestPerplexSubScalDistributive(t *testing.T) {
-	f := func(x, y *Perplex) bool {
+func TestZornSubScalDistributive(t *testing.T) {
+	f := func(x, y *Zorn) bool {
 		// t.Logf("x = %v, y = %v", x, y)
 		a := big.NewRat(2, 1)
-		l, r := new(Perplex), new(Perplex)
+		l, r := new(Zorn), new(Zorn)
 		l.Scal(l.Sub(x, y), a)
-		r.Sub(r.Scal(x, a), new(Perplex).Scal(y, a))
+		r.Sub(r.Scal(x, a), new(Zorn).Scal(y, a))
 		return l.Equals(r)
 	}
 	if err := quick.Check(f, nil); err != nil {
@@ -283,12 +294,12 @@ func TestPerplexSubScalDistributive(t *testing.T) {
 	}
 }
 
-func TestPerplexAddMulDistributive(t *testing.T) {
-	f := func(x, y, z *Perplex) bool {
+func TestZornAddMulDistributive(t *testing.T) {
+	f := func(x, y, z *Zorn) bool {
 		// t.Logf("x = %v, y = %v, z = %v", x, y, z)
-		l, r := new(Perplex), new(Perplex)
+		l, r := new(Zorn), new(Zorn)
 		l.Mul(l.Add(x, y), z)
-		r.Add(r.Mul(x, z), new(Perplex).Mul(y, z))
+		r.Add(r.Mul(x, z), new(Zorn).Mul(y, z))
 		return l.Equals(r)
 	}
 	if err := quick.Check(f, nil); err != nil {
@@ -296,12 +307,12 @@ func TestPerplexAddMulDistributive(t *testing.T) {
 	}
 }
 
-func TestPerplexSubMulDistributive(t *testing.T) {
-	f := func(x, y, z *Perplex) bool {
+func TestZornSubMulDistributive(t *testing.T) {
+	f := func(x, y, z *Zorn) bool {
 		// t.Logf("x = %v, y = %v, z = %v", x, y, z)
-		l, r := new(Perplex), new(Perplex)
+		l, r := new(Zorn), new(Zorn)
 		l.Mul(l.Sub(x, y), z)
-		r.Sub(r.Mul(x, z), new(Perplex).Mul(y, z))
+		r.Sub(r.Mul(x, z), new(Zorn).Mul(y, z))
 		return l.Equals(r)
 	}
 	if err := quick.Check(f, nil); err != nil {

@@ -1,3 +1,6 @@
+// Copyright (c) 2016 Melvin Eloy Irizarry-Gelpí
+// Licenced under the MIT License.
+
 package rational
 
 import (
@@ -39,8 +42,8 @@ func TestInfraPerplexMulNonCommutative(t *testing.T) {
 	f := func(x, y *InfraPerplex) bool {
 		// t.Logf("x = %v, y = %v", x, y)
 		l := new(InfraPerplex).Commutator(x, y)
-		zero := new(Perplex)
-		return !l.Equals(&InfraPerplex{*zero, *zero})
+		zero := new(InfraPerplex)
+		return !l.Equals(zero)
 	}
 	if err := quick.Check(f, nil); err != nil {
 		t.Error(err)
@@ -108,7 +111,6 @@ func TestInfraPerplexAddZero(t *testing.T) {
 func TestInfraPerplexMulOne(t *testing.T) {
 	one := new(Perplex)
 	one.SetL(big.NewRat(1, 1))
-	one.SetR(big.NewRat(0, 1))
 	zero := new(Perplex)
 	f := func(x *InfraPerplex) bool {
 		// t.Logf("x = %v", x)

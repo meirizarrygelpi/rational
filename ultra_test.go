@@ -11,11 +11,11 @@ import (
 
 // Commutativity
 
-func TestHamiltonAddCommutative(t *testing.T) {
-	f := func(x, y *Hamilton) bool {
+func TestUltraAddCommutative(t *testing.T) {
+	f := func(x, y *Ultra) bool {
 		// t.Logf("x = %v, y = %v", x, y)
-		l := new(Hamilton).Add(x, y)
-		r := new(Hamilton).Add(y, x)
+		l := new(Ultra).Add(x, y)
+		r := new(Ultra).Add(y, x)
 		return l.Equals(r)
 	}
 	if err := quick.Check(f, nil); err != nil {
@@ -23,10 +23,10 @@ func TestHamiltonAddCommutative(t *testing.T) {
 	}
 }
 
-func TestHamiltonNegConjCommutative(t *testing.T) {
-	f := func(x *Hamilton) bool {
+func TestUltraNegConjCommutative(t *testing.T) {
+	f := func(x *Ultra) bool {
 		// t.Logf("x = %v", x)
-		l, r := new(Hamilton), new(Hamilton)
+		l, r := new(Ultra), new(Ultra)
 		l.Neg(l.Conj(x))
 		r.Conj(r.Neg(x))
 		return l.Equals(r)
@@ -38,11 +38,11 @@ func TestHamiltonNegConjCommutative(t *testing.T) {
 
 // Non-commutativity
 
-func TestHamiltonMulNonCommutative(t *testing.T) {
-	f := func(x, y *Hamilton) bool {
+func TestUltraMulNonCommutative(t *testing.T) {
+	f := func(x, y *Ultra) bool {
 		// t.Logf("x = %v, y = %v", x, y)
-		l := new(Hamilton).Commutator(x, y)
-		zero := new(Hamilton)
+		l := new(Ultra).Commutator(x, y)
+		zero := new(Ultra)
 		return !l.Equals(zero)
 	}
 	if err := quick.Check(f, nil); err != nil {
@@ -52,10 +52,10 @@ func TestHamiltonMulNonCommutative(t *testing.T) {
 
 // Anti-commutativity
 
-func TestHamiltonSubAntiCommutative(t *testing.T) {
-	f := func(x, y *Hamilton) bool {
+func TestUltraSubAntiCommutative(t *testing.T) {
+	f := func(x, y *Ultra) bool {
 		// t.Logf("x = %v, y = %v", x, y)
-		l, r := new(Hamilton), new(Hamilton)
+		l, r := new(Ultra), new(Ultra)
 		l.Sub(x, y)
 		r.Sub(y, x)
 		r.Neg(r)
@@ -68,10 +68,10 @@ func TestHamiltonSubAntiCommutative(t *testing.T) {
 
 // Associativity
 
-func TestHamiltonAddAssociative(t *testing.T) {
-	f := func(x, y, z *Hamilton) bool {
+func TestUltraAddAssociative(t *testing.T) {
+	f := func(x, y, z *Ultra) bool {
 		// t.Logf("x = %v, y = %v, z = %v", x, y, z)
-		l, r := new(Hamilton), new(Hamilton)
+		l, r := new(Ultra), new(Ultra)
 		l.Add(l.Add(x, y), z)
 		r.Add(x, r.Add(y, z))
 		return l.Equals(r)
@@ -81,13 +81,14 @@ func TestHamiltonAddAssociative(t *testing.T) {
 	}
 }
 
-func TestHamiltonMulAssociative(t *testing.T) {
-	f := func(x, y, z *Hamilton) bool {
+// Non-associativity
+
+func TestUltraMulNonAssociative(t *testing.T) {
+	f := func(x, y, z *Ultra) bool {
 		// t.Logf("x = %v, y = %v, z = %v", x, y, z)
-		l, r := new(Hamilton), new(Hamilton)
-		l.Mul(l.Mul(x, y), z)
-		r.Mul(x, r.Mul(y, z))
-		return l.Equals(r)
+		l := new(Ultra).Associator(x, y, z)
+		zero := new(Ultra)
+		return !l.Equals(zero)
 	}
 	if err := quick.Check(f, nil); err != nil {
 		t.Error(err)
@@ -96,11 +97,11 @@ func TestHamiltonMulAssociative(t *testing.T) {
 
 // Identity
 
-func TestHamiltonAddZero(t *testing.T) {
-	zero := new(Hamilton)
-	f := func(x *Hamilton) bool {
+func TestUltraAddZero(t *testing.T) {
+	zero := new(Ultra)
+	f := func(x *Ultra) bool {
 		// t.Logf("x = %v", x)
-		l := new(Hamilton).Add(x, zero)
+		l := new(Ultra).Add(x, zero)
 		return l.Equals(x)
 	}
 	if err := quick.Check(f, nil); err != nil {
@@ -108,13 +109,16 @@ func TestHamiltonAddZero(t *testing.T) {
 	}
 }
 
-func TestHamiltonMulOne(t *testing.T) {
-	one := new(Complex)
-	one.SetL(big.NewRat(1, 1))
-	zero := new(Complex)
-	f := func(x *Hamilton) bool {
+func TestUltraMulOne(t *testing.T) {
+	one := new(Supra)
+	one.SetL(NewInfra(
+		big.NewRat(1, 1),
+		big.NewRat(0, 1),
+	))
+	zero := new(Supra)
+	f := func(x *Ultra) bool {
 		// t.Logf("x = %v", x)
-		l := new(Hamilton).Mul(x, &Hamilton{*one, *zero})
+		l := new(Ultra).Mul(x, &Ultra{*one, *zero})
 		return l.Equals(x)
 	}
 	if err := quick.Check(f, nil); err != nil {
@@ -122,25 +126,28 @@ func TestHamiltonMulOne(t *testing.T) {
 	}
 }
 
-func TestHamiltonMulInvOne(t *testing.T) {
-	one := new(Complex)
-	one.SetL(big.NewRat(1, 1))
-	zero := new(Complex)
-	f := func(x *Hamilton) bool {
+func TestUltraMulInvOne(t *testing.T) {
+	one := new(Supra)
+	one.SetL(NewInfra(
+		big.NewRat(1, 1),
+		big.NewRat(0, 1),
+	))
+	zero := new(Supra)
+	f := func(x *Ultra) bool {
 		// t.Logf("x = %v", x)
-		l := new(Hamilton)
+		l := new(Ultra)
 		l.Mul(x, l.Inv(x))
-		return l.Equals(&Hamilton{*one, *zero})
+		return l.Equals(&Ultra{*one, *zero})
 	}
 	if err := quick.Check(f, nil); err != nil {
 		t.Error(err)
 	}
 }
 
-func TestHamiltonAddNegSub(t *testing.T) {
-	f := func(x, y *Hamilton) bool {
+func TestUltraAddNegSub(t *testing.T) {
+	f := func(x, y *Ultra) bool {
 		// t.Logf("x = %v, y = %v", x, y)
-		l, r := new(Hamilton), new(Hamilton)
+		l, r := new(Ultra), new(Ultra)
 		l.Sub(x, y)
 		r.Add(x, r.Neg(y))
 		return l.Equals(r)
@@ -150,10 +157,10 @@ func TestHamiltonAddNegSub(t *testing.T) {
 	}
 }
 
-func TestHamiltonAddScalDouble(t *testing.T) {
-	f := func(x *Hamilton) bool {
+func TestUltraAddScalDouble(t *testing.T) {
+	f := func(x *Ultra) bool {
 		// t.Logf("x = %v", x)
-		l, r := new(Hamilton), new(Hamilton)
+		l, r := new(Ultra), new(Ultra)
 		l.Add(x, x)
 		r.Scal(x, big.NewRat(2, 1))
 		return l.Equals(r)
@@ -165,10 +172,10 @@ func TestHamiltonAddScalDouble(t *testing.T) {
 
 // Involutivity
 
-func TestHamiltonInvInvolutive(t *testing.T) {
-	f := func(x *Hamilton) bool {
+func TestUltraInvInvolutive(t *testing.T) {
+	f := func(x *Ultra) bool {
 		// t.Logf("x = %v", x)
-		l := new(Hamilton)
+		l := new(Ultra)
 		l.Inv(l.Inv(x))
 		return l.Equals(x)
 	}
@@ -177,10 +184,10 @@ func TestHamiltonInvInvolutive(t *testing.T) {
 	}
 }
 
-func TestHamiltonNegInvolutive(t *testing.T) {
-	f := func(x *Hamilton) bool {
+func TestUltraNegInvolutive(t *testing.T) {
+	f := func(x *Ultra) bool {
 		// t.Logf("x = %v", x)
-		l := new(Hamilton)
+		l := new(Ultra)
 		l.Neg(l.Neg(x))
 		return l.Equals(x)
 	}
@@ -189,10 +196,10 @@ func TestHamiltonNegInvolutive(t *testing.T) {
 	}
 }
 
-func TestHamiltonConjInvolutive(t *testing.T) {
-	f := func(x *Hamilton) bool {
+func TestUltraConjInvolutive(t *testing.T) {
+	f := func(x *Ultra) bool {
 		// t.Logf("x = %v", x)
-		l := new(Hamilton)
+		l := new(Ultra)
 		l.Conj(l.Conj(x))
 		return l.Equals(x)
 	}
@@ -203,12 +210,12 @@ func TestHamiltonConjInvolutive(t *testing.T) {
 
 // Anti-distributivity
 
-func TestHamiltonMulConjAntiDistributive(t *testing.T) {
-	f := func(x, y *Hamilton) bool {
+func TestUltraMulConjAntiDistributive(t *testing.T) {
+	f := func(x, y *Ultra) bool {
 		// t.Logf("x = %v, y = %v", x, y)
-		l, r := new(Hamilton), new(Hamilton)
+		l, r := new(Ultra), new(Ultra)
 		l.Conj(l.Mul(x, y))
-		r.Mul(r.Conj(y), new(Hamilton).Conj(x))
+		r.Mul(r.Conj(y), new(Ultra).Conj(x))
 		return l.Equals(r)
 	}
 	if err := quick.Check(f, nil); err != nil {
@@ -216,12 +223,12 @@ func TestHamiltonMulConjAntiDistributive(t *testing.T) {
 	}
 }
 
-func TestHamiltonMulInvAntiDistributive(t *testing.T) {
-	f := func(x, y *Hamilton) bool {
+func TestUltraMulInvAntiDistributive(t *testing.T) {
+	f := func(x, y *Ultra) bool {
 		// t.Logf("x = %v, y = %v", x, y)
-		l, r := new(Hamilton), new(Hamilton)
+		l, r := new(Ultra), new(Ultra)
 		l.Inv(l.Mul(x, y))
-		r.Mul(r.Inv(y), new(Hamilton).Inv(x))
+		r.Mul(r.Inv(y), new(Ultra).Inv(x))
 		return l.Equals(r)
 	}
 	if err := quick.Check(f, nil); err != nil {
@@ -231,13 +238,13 @@ func TestHamiltonMulInvAntiDistributive(t *testing.T) {
 
 // Distributivity
 
-func TestHamiltonAddConjDistributive(t *testing.T) {
-	f := func(x, y *Hamilton) bool {
+func TestUltraAddConjDistributive(t *testing.T) {
+	f := func(x, y *Ultra) bool {
 		// t.Logf("x = %v, y = %v", x, y)
-		l, r := new(Hamilton), new(Hamilton)
+		l, r := new(Ultra), new(Ultra)
 		l.Add(x, y)
 		l.Conj(l)
-		r.Add(r.Conj(x), new(Hamilton).Conj(y))
+		r.Add(r.Conj(x), new(Ultra).Conj(y))
 		return l.Equals(r)
 	}
 	if err := quick.Check(f, nil); err != nil {
@@ -245,13 +252,13 @@ func TestHamiltonAddConjDistributive(t *testing.T) {
 	}
 }
 
-func TestHamiltonSubConjDistributive(t *testing.T) {
-	f := func(x, y *Hamilton) bool {
+func TestUltraSubConjDistributive(t *testing.T) {
+	f := func(x, y *Ultra) bool {
 		// t.Logf("x = %v, y = %v", x, y)
-		l, r := new(Hamilton), new(Hamilton)
+		l, r := new(Ultra), new(Ultra)
 		l.Sub(x, y)
 		l.Conj(l)
-		r.Sub(r.Conj(x), new(Hamilton).Conj(y))
+		r.Sub(r.Conj(x), new(Ultra).Conj(y))
 		return l.Equals(r)
 	}
 	if err := quick.Check(f, nil); err != nil {
@@ -259,13 +266,13 @@ func TestHamiltonSubConjDistributive(t *testing.T) {
 	}
 }
 
-func TestHamiltonAddScalDistributive(t *testing.T) {
-	f := func(x, y *Hamilton) bool {
+func TestUltraAddScalDistributive(t *testing.T) {
+	f := func(x, y *Ultra) bool {
 		// t.Logf("x = %v, y = %v", x, y)
 		a := big.NewRat(2, 1)
-		l, r := new(Hamilton), new(Hamilton)
+		l, r := new(Ultra), new(Ultra)
 		l.Scal(l.Add(x, y), a)
-		r.Add(r.Scal(x, a), new(Hamilton).Scal(y, a))
+		r.Add(r.Scal(x, a), new(Ultra).Scal(y, a))
 		return l.Equals(r)
 	}
 	if err := quick.Check(f, nil); err != nil {
@@ -273,13 +280,13 @@ func TestHamiltonAddScalDistributive(t *testing.T) {
 	}
 }
 
-func TestHamiltonSubScalDistributive(t *testing.T) {
-	f := func(x, y *Hamilton) bool {
+func TestUltraSubScalDistributive(t *testing.T) {
+	f := func(x, y *Ultra) bool {
 		// t.Logf("x = %v, y = %v", x, y)
 		a := big.NewRat(2, 1)
-		l, r := new(Hamilton), new(Hamilton)
+		l, r := new(Ultra), new(Ultra)
 		l.Scal(l.Sub(x, y), a)
-		r.Sub(r.Scal(x, a), new(Hamilton).Scal(y, a))
+		r.Sub(r.Scal(x, a), new(Ultra).Scal(y, a))
 		return l.Equals(r)
 	}
 	if err := quick.Check(f, nil); err != nil {
@@ -287,12 +294,12 @@ func TestHamiltonSubScalDistributive(t *testing.T) {
 	}
 }
 
-func TestHamiltonAddMulDistributive(t *testing.T) {
-	f := func(x, y, z *Hamilton) bool {
+func TestUltraAddMulDistributive(t *testing.T) {
+	f := func(x, y, z *Ultra) bool {
 		// t.Logf("x = %v, y = %v, z = %v", x, y, z)
-		l, r := new(Hamilton), new(Hamilton)
+		l, r := new(Ultra), new(Ultra)
 		l.Mul(l.Add(x, y), z)
-		r.Add(r.Mul(x, z), new(Hamilton).Mul(y, z))
+		r.Add(r.Mul(x, z), new(Ultra).Mul(y, z))
 		return l.Equals(r)
 	}
 	if err := quick.Check(f, nil); err != nil {
@@ -300,12 +307,12 @@ func TestHamiltonAddMulDistributive(t *testing.T) {
 	}
 }
 
-func TestHamiltonSubMulDistributive(t *testing.T) {
-	f := func(x, y, z *Hamilton) bool {
+func TestUltraSubMulDistributive(t *testing.T) {
+	f := func(x, y, z *Ultra) bool {
 		// t.Logf("x = %v, y = %v, z = %v", x, y, z)
-		l, r := new(Hamilton), new(Hamilton)
+		l, r := new(Ultra), new(Ultra)
 		l.Mul(l.Sub(x, y), z)
-		r.Sub(r.Mul(x, z), new(Hamilton).Mul(y, z))
+		r.Sub(r.Mul(x, z), new(Ultra).Mul(y, z))
 		return l.Equals(r)
 	}
 	if err := quick.Check(f, nil); err != nil {
@@ -315,8 +322,8 @@ func TestHamiltonSubMulDistributive(t *testing.T) {
 
 // Positivity
 
-func TestHamiltonQuadPositive(t *testing.T) {
-	f := func(x *Hamilton) bool {
+func TestUltraQuadPositive(t *testing.T) {
+	f := func(x *Ultra) bool {
 		// t.Logf("x = %v", x)
 		return x.Quad().Sign() > 0
 	}

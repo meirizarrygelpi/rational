@@ -1,3 +1,6 @@
+// Copyright (c) 2016 Melvin Eloy Irizarry-Gelpí
+// Licenced under the MIT License.
+
 package rational
 
 import (
@@ -39,8 +42,8 @@ func TestCockleMulNonCommutative(t *testing.T) {
 	f := func(x, y *Cockle) bool {
 		// t.Logf("x = %v, y = %v", x, y)
 		l := new(Cockle).Commutator(x, y)
-		zero := new(Complex)
-		return !l.Equals(&Cockle{*zero, *zero})
+		zero := new(Cockle)
+		return !l.Equals(zero)
 	}
 	if err := quick.Check(f, nil); err != nil {
 		t.Error(err)
@@ -108,7 +111,6 @@ func TestCockleAddZero(t *testing.T) {
 func TestCockleMulOne(t *testing.T) {
 	one := new(Complex)
 	one.SetL(big.NewRat(1, 1))
-	one.SetR(big.NewRat(0, 1))
 	zero := new(Complex)
 	f := func(x *Cockle) bool {
 		// t.Logf("x = %v", x)
@@ -123,7 +125,6 @@ func TestCockleMulOne(t *testing.T) {
 func TestCockleMulInvOne(t *testing.T) {
 	one := new(Complex)
 	one.SetL(big.NewRat(1, 1))
-	one.SetR(big.NewRat(0, 1))
 	zero := new(Complex)
 	f := func(x *Cockle) bool {
 		// t.Logf("x = %v", x)

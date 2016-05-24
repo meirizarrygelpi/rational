@@ -1,3 +1,6 @@
+// Copyright (c) 2016 Melvin Eloy Irizarry-Gelpí
+// Licenced under the MIT License.
+
 package rational
 
 import (
@@ -106,7 +109,6 @@ func TestComplexAddZero(t *testing.T) {
 func TestComplexMulOne(t *testing.T) {
 	one := new(Complex)
 	one.SetL(big.NewRat(1, 1))
-	one.SetR(big.NewRat(0, 1))
 	f := func(x *Complex) bool {
 		// t.Logf("x = %v", x)
 		l := new(Complex).Mul(x, one)
@@ -120,7 +122,6 @@ func TestComplexMulOne(t *testing.T) {
 func TestComplexMulInvOne(t *testing.T) {
 	one := new(Complex)
 	one.SetL(big.NewRat(1, 1))
-	one.SetR(big.NewRat(0, 1))
 	f := func(x *Complex) bool {
 		// t.Logf("x = %v", x)
 		l := new(Complex)

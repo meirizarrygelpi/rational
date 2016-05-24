@@ -1,3 +1,6 @@
+// Copyright (c) 2016 Melvin Eloy Irizarry-Gelpí
+// Licenced under the MIT License.
+
 package rational
 
 import (
@@ -106,7 +109,6 @@ func TestInfraAddZero(t *testing.T) {
 func TestInfraMulOne(t *testing.T) {
 	one := new(Infra)
 	one.SetL(big.NewRat(1, 1))
-	one.SetR(big.NewRat(0, 1))
 	f := func(x *Infra) bool {
 		// t.Logf("x = %v", x)
 		l := new(Infra).Mul(x, one)
@@ -120,7 +122,6 @@ func TestInfraMulOne(t *testing.T) {
 func TestInfraMulInvOne(t *testing.T) {
 	one := new(Infra)
 	one.SetL(big.NewRat(1, 1))
-	one.SetR(big.NewRat(0, 1))
 	f := func(x *Infra) bool {
 		// t.Logf("x = %v", x)
 		l := new(Infra)

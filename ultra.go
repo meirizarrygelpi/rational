@@ -6,6 +6,8 @@ package rational
 import (
 	"fmt"
 	"math/big"
+	"math/rand"
+	"reflect"
 	"strings"
 )
 
@@ -13,27 +15,27 @@ var symbUltra = [8]string{"", "α", "β", "γ", "δ", "ε", "ζ", "η"}
 
 // An Ultra represents a rational ultra number.
 type Ultra struct {
-	l, r *Supra
+	l, r Supra
 }
 
 // L returns the left Cayley-Dickson part of z, a pointer to a Supra value.
 func (z *Ultra) L() *Supra {
-	return z.l
+	return &z.l
 }
 
 // R returns the right Cayley-Dickson part of z, a pointer to a Supra value.
 func (z *Ultra) R() *Supra {
-	return z.r
+	return &z.r
 }
 
 // SetL sets the left Cayley-Dickson part of z equal to a.
 func (z *Ultra) SetL(a *Supra) {
-	z.l = a
+	z.l = *a
 }
 
 // SetR sets the right Cayley-Dickson part of z equal to b.
 func (z *Ultra) SetR(b *Supra) {
-	z.r = b
+	z.r = *b
 }
 
 // Cartesian returns the eight Cartesian components of z.
@@ -155,8 +157,10 @@ func (z *Ultra) Sub(x, y *Ultra) *Ultra {
 // 		Mul(ζ, η) = Mul(η, ζ) = 0
 // This binary operation is noncommutative and nonassociative.
 func (z *Ultra) Mul(x, y *Ultra) *Ultra {
-	a, b := x.L(), x.R()
-	c, d := y.L(), y.R()
+	a := new(Supra).Copy(x.L())
+	b := new(Supra).Copy(x.R())
+	c := new(Supra).Copy(y.L())
+	d := new(Supra).Copy(y.R())
 	s, t, u := new(Supra), new(Supra), new(Supra)
 	z.SetL(
 		s.Mul(a, c),
@@ -203,4 +207,23 @@ func (z *Ultra) Inv(y *Ultra) *Ultra {
 // Quo sets z equal to the quotient of x and y, and returns z.
 func (z *Ultra) Quo(x, y *Ultra) *Ultra {
 	return z.Mul(x, z.Inv(y))
+}
+
+// Generate returns a random Ultra value for quick.Check testing.
+func (z *Ultra) Generate(rand *rand.Rand, size int) reflect.Value {
+	randomUltra := &Ultra{
+		*NewSupra(
+			big.NewRat(rand.Int63(), rand.Int63()),
+			big.NewRat(rand.Int63(), rand.Int63()),
+			big.NewRat(rand.Int63(), rand.Int63()),
+			big.NewRat(rand.Int63(), rand.Int63()),
+		),
+		*NewSupra(
+			big.NewRat(rand.Int63(), rand.Int63()),
+			big.NewRat(rand.Int63(), rand.Int63()),
+			big.NewRat(rand.Int63(), rand.Int63()),
+			big.NewRat(rand.Int63(), rand.Int63()),
+		),
+	}
+	return reflect.ValueOf(randomUltra)
 }
