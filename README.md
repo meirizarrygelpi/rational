@@ -82,7 +82,7 @@ The `rational.InfraComplex` type represents a rational infra complex number. It 
 	Mul(i, β) = -Mul(β, i) = γ
 	Mul(γ, i) = -Mul(i, γ) = β
 ```
-Note that `i` does not commute with either `β` or `γ`.
+Note that `i` does not commute with either `β` or `γ`. The infra complex numbers are more commonly known as dual complex numbers.
 
 ### rational.InfraPerplex
 
@@ -94,7 +94,7 @@ The `rational.InfraPerplex` type represents a rational infra perplex number. It 
 	Mul(s, τ) = -Mul(τ, s) = υ
 	Mul(s, υ) = -Mul(υ, s) = τ
 ```
-Like `i` in the infra complex numbers, `s` does not commute with either `τ` or `υ`.
+Like `i` in the infra complex numbers, `s` does not commute with either `τ` or `υ`. The infra perplex numbers are more commonly known as the dual split-complex numbers.
 
 ## Eight-Dimensional Types
 
@@ -218,12 +218,38 @@ The `rational.InfraHamilton` type represents a rational infra Hamilton quaternio
 	Mul(β, δ) = Mul(δ, β) = 0
 	Mul(γ, δ) = Mul(δ, γ) = 0
 ```
+The infra Hamilton quaternions are more commonly known as dual quaternions.
 
 ### rational.InfraCockle
 
 The `rational.InfraCockle` type represents a rational infra Cockle quaternion. It corresponds to a null Cayley-Dickson construct with `rational.Cockle` values. The imaginary unit element is denoted `i`, the split unit elements are denoted `t` and `u`, and the dual unit elements are denoted `ρ`, `σ`, `τ`, and `υ`. The multiplication rules are:
 ```go
+	Mul(i, i) = -1
+	Mul(t, t) = Mul(u, u) = +1
+	Mul(ρ, ρ) = Mul(σ, σ) = Mul(τ, τ) = Mul(υ, υ) = 0
+	Mul(i, t) = -Mul(t, i) = +u
+	Mul(i, u) = -Mul(u, i) = -t
+	Mul(i, ρ) = -Mul(ρ, i) = +σ
+	Mul(i, σ) = -Mul(σ, i) = -ρ
+	Mul(i, τ) = -Mul(τ, i) = -υ
+	Mul(i, υ) = -Mul(υ, i) = +τ
+	Mul(t, u) = -Mul(u, t) = -i
+	Mul(t, ρ) = -Mul(ρ, t) = +τ
+	Mul(t, σ) = -Mul(σ, t) = +υ
+	Mul(t, τ) = -Mul(τ, t) = +ρ
+	Mul(t, υ) = -Mul(υ, t) = +σ
+	Mul(u, ρ) = -Mul(ρ, u) = +υ
+	Mul(u, σ) = -Mul(σ, u) = -τ
+	Mul(u, τ) = -Mul(τ, u) = -σ
+	Mul(u, υ) = -Mul(υ, u) = +ρ
+	Mul(ρ, σ) = Mul(σ, ρ) = 0
+	Mul(ρ, τ) = Mul(τ, ρ) = 0
+	Mul(ρ, υ) = Mul(υ, ρ) = 0
+	Mul(σ, τ) = Mul(τ, σ) = 0
+	Mul(σ, υ) = Mul(υ, σ) = 0
+	Mul(τ, υ) = Mul(υ, τ) = 0
 ```
+The infra Cockle quaternions are more commonly known as dual split-quaternions.
 
 ### rational.SupraComplex
 
@@ -243,8 +269,5 @@ The `rational.SupraPerplex` type represents a rational supra perplex number. It 
 1. Tests
 1. Improve README
 1. Improve memory management
-1. Add InfraHamilton type
-1. Add InfraCockle type
 1. Add SupraComplex type
 1. Add SupraPerplex type
-1. Change struct attributes to values; change getter and setter methods; change Mul methods
