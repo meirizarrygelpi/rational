@@ -109,8 +109,9 @@ func TestCockleAddZero(t *testing.T) {
 }
 
 func TestCockleMulOne(t *testing.T) {
-	one := new(Complex)
-	one.SetL(big.NewRat(1, 1))
+	one := &Complex{
+		l: *big.NewRat(1, 1),
+	}
 	zero := new(Complex)
 	f := func(x *Cockle) bool {
 		// t.Logf("x = %v", x)
@@ -123,8 +124,9 @@ func TestCockleMulOne(t *testing.T) {
 }
 
 func TestCockleMulInvOne(t *testing.T) {
-	one := new(Complex)
-	one.SetL(big.NewRat(1, 1))
+	one := &Complex{
+		l: *big.NewRat(1, 1),
+	}
 	zero := new(Complex)
 	f := func(x *Cockle) bool {
 		// t.Logf("x = %v", x)

@@ -109,8 +109,9 @@ func TestHamiltonAddZero(t *testing.T) {
 }
 
 func TestHamiltonMulOne(t *testing.T) {
-	one := new(Complex)
-	one.SetL(big.NewRat(1, 1))
+	one := &Complex{
+		l: *big.NewRat(1, 1),
+	}
 	zero := new(Complex)
 	f := func(x *Hamilton) bool {
 		// t.Logf("x = %v", x)
@@ -123,8 +124,9 @@ func TestHamiltonMulOne(t *testing.T) {
 }
 
 func TestHamiltonMulInvOne(t *testing.T) {
-	one := new(Complex)
-	one.SetL(big.NewRat(1, 1))
+	one := &Complex{
+		l: *big.NewRat(1, 1),
+	}
 	zero := new(Complex)
 	f := func(x *Hamilton) bool {
 		// t.Logf("x = %v", x)

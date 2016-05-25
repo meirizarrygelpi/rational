@@ -16,6 +16,11 @@ type Perplex struct {
 	l, r big.Rat
 }
 
+// Rational returns the rational part of z.
+func (z *Perplex) Rational() *big.Rat {
+	return &z.l
+}
+
 // L returns the left Cayley-Dickson part of z, a pointer to a big.Rat value.
 // This is equivalent to the real part of z.
 func (z *Perplex) L() *big.Rat {
@@ -39,10 +44,8 @@ func (z *Perplex) SetR(b *big.Rat) {
 }
 
 // Cartesian returns the two Cartesian components of z.
-func (z *Perplex) Cartesian() (a, b *big.Rat) {
-	a = z.L()
-	b = z.R()
-	return
+func (z *Perplex) Cartesian() (*big.Rat, *big.Rat) {
+	return &z.l, &z.r
 }
 
 // String returns the string version of a Perplex value.
@@ -52,11 +55,11 @@ func (z *Perplex) Cartesian() (a, b *big.Rat) {
 func (z *Perplex) String() string {
 	a := make([]string, 5)
 	a[0] = "("
-	a[1] = fmt.Sprintf("%v", z.L().RatString())
-	if z.R().Sign() == -1 {
-		a[2] = fmt.Sprintf("%v", z.R().RatString())
+	a[1] = fmt.Sprintf("%v", z.l.RatString())
+	if z.r.Sign() == -1 {
+		a[2] = fmt.Sprintf("%v", z.r.RatString())
 	} else {
-		a[2] = fmt.Sprintf("+%v", z.R().RatString())
+		a[2] = fmt.Sprintf("+%v", z.r.RatString())
 	}
 	a[3] = "s"
 	a[4] = ")"
@@ -65,7 +68,7 @@ func (z *Perplex) String() string {
 
 // Equals returns true if y and z are equal.
 func (z *Perplex) Equals(y *Perplex) bool {
-	if z.L().Cmp(y.L()) != 0 || z.R().Cmp(y.R()) != 0 {
+	if z.l.Cmp(&y.l) != 0 || z.r.Cmp(&y.r) != 0 {
 		return false
 	}
 	return true
@@ -73,8 +76,8 @@ func (z *Perplex) Equals(y *Perplex) bool {
 
 // Copy copies y onto z, and returns z.
 func (z *Perplex) Copy(y *Perplex) *Perplex {
-	z.SetL(y.L())
-	z.SetR(y.R())
+	z.l.Set(&y.l)
+	z.r.Set(&y.r)
 	return z
 }
 
@@ -82,43 +85,43 @@ func (z *Perplex) Copy(y *Perplex) *Perplex {
 // to big.Rat values.
 func NewPerplex(a, b *big.Rat) *Perplex {
 	z := new(Perplex)
-	z.SetL(a)
-	z.SetR(b)
+	z.l.Set(a)
+	z.r.Set(b)
 	return z
 }
 
 // Scal sets z equal to y scaled by a, and returns z.
 func (z *Perplex) Scal(y *Perplex, a *big.Rat) *Perplex {
-	z.SetL(new(big.Rat).Mul(y.L(), a))
-	z.SetR(new(big.Rat).Mul(y.R(), a))
+	z.l.Mul(&y.l, a)
+	z.r.Mul(&y.r, a)
 	return z
 }
 
 // Neg sets z equal to the negative of y, and returns z.
 func (z *Perplex) Neg(y *Perplex) *Perplex {
-	z.SetL(new(big.Rat).Neg(y.L()))
-	z.SetR(new(big.Rat).Neg(y.R()))
+	z.l.Neg(&y.l)
+	z.r.Neg(&y.r)
 	return z
 }
 
 // Conj sets z equal to the conjugate of y, and returns z.
 func (z *Perplex) Conj(y *Perplex) *Perplex {
-	z.SetL(y.L())
-	z.SetR(new(big.Rat).Neg(y.R()))
+	z.l.Set(&y.l)
+	z.r.Neg(&y.r)
 	return z
 }
 
 // Add sets z equal to the sum of x and y, and returns z.
 func (z *Perplex) Add(x, y *Perplex) *Perplex {
-	z.SetL(new(big.Rat).Add(x.L(), y.L()))
-	z.SetR(new(big.Rat).Add(x.R(), y.R()))
+	z.l.Add(&x.l, &y.l)
+	z.r.Add(&x.r, &y.r)
 	return z
 }
 
 // Sub sets z equal to the difference of x and y, and returns z.
 func (z *Perplex) Sub(x, y *Perplex) *Perplex {
-	z.SetL(new(big.Rat).Sub(x.L(), y.L()))
-	z.SetR(new(big.Rat).Sub(x.R(), y.R()))
+	z.l.Sub(&x.l, &y.l)
+	z.r.Sub(&x.r, &y.r)
 	return z
 }
 
@@ -128,37 +131,39 @@ func (z *Perplex) Sub(x, y *Perplex) *Perplex {
 // 		Mul(s, s) = +1
 // This binary operation is commutative and associative.
 func (z *Perplex) Mul(x, y *Perplex) *Perplex {
-	a := new(big.Rat).Set(x.L())
-	b := new(big.Rat).Set(x.R())
-	c := new(big.Rat).Set(y.L())
-	d := new(big.Rat).Set(y.R())
-	s, t, u := new(big.Rat), new(big.Rat), new(big.Rat)
-	z.SetL(s.Add(
-		s.Mul(a, c),
-		u.Mul(d, b),
-	))
-	z.SetR(t.Add(
-		t.Mul(d, a),
-		u.Mul(b, c),
-	))
+	a := new(big.Rat).Set(&x.l)
+	b := new(big.Rat).Set(&x.r)
+	c := new(big.Rat).Set(&y.l)
+	d := new(big.Rat).Set(&y.r)
+	temp := new(big.Rat)
+	z.l.Add(
+		z.l.Mul(a, c),
+		temp.Mul(d, b),
+	)
+	z.r.Add(
+		z.r.Mul(d, a),
+		temp.Mul(b, c),
+	)
 	return z
 }
 
-// Quad returns the quadrance of z, a pointer to a big.Rat value.
+// Quad returns the quadrance of z. If z = a+bs, then the quadrance is
+// 		Mul(a, a) - Mul(b, b)
+// This can be positive, negative, or zero.
 func (z *Perplex) Quad() *big.Rat {
-	t := new(big.Rat)
-	return t.Sub(
-		t.Mul(z.L(), z.L()),
-		new(big.Rat).Mul(z.R(), z.R()),
+	quad := new(big.Rat)
+	return quad.Sub(
+		quad.Mul(&z.l, &z.l),
+		new(big.Rat).Mul(&z.r, &z.r),
 	)
 }
 
 // IsZeroDiv returns true if z is a zero divisor.
 func (z *Perplex) IsZeroDiv() bool {
-	if z.L().Cmp(z.R()) == 0 {
+	if z.l.Cmp(&z.r) == 0 {
 		return true
 	}
-	if z.L().Cmp(new(big.Rat).Neg(z.R())) == 0 {
+	if z.l.Cmp(new(big.Rat).Neg(&z.r)) == 0 {
 		return true
 	}
 	return false
@@ -182,12 +187,12 @@ func (z *Perplex) Quo(x, y *Perplex) *Perplex {
 
 // Idempotent sets z equal to a pointer to an idempotent Perplex.
 func (z *Perplex) Idempotent(sign int) *Perplex {
-	z.SetL(big.NewRat(1, 2))
+	z.l.SetFrac64(1, 2)
 	if sign < 0 {
-		z.SetR(big.NewRat(-1, 2))
+		z.r.SetFrac64(-1, 2)
 		return z
 	}
-	z.SetR(big.NewRat(1, 2))
+	z.r.SetFrac64(1, 2)
 	return z
 }
 

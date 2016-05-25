@@ -109,8 +109,9 @@ func TestInfraComplexAddZero(t *testing.T) {
 }
 
 func TestInfraComplexMulOne(t *testing.T) {
-	one := new(Complex)
-	one.SetL(big.NewRat(1, 1))
+	one := &Complex{
+		l: *big.NewRat(1, 1),
+	}
 	zero := new(Complex)
 	f := func(x *InfraComplex) bool {
 		// t.Logf("x = %v", x)
@@ -123,9 +124,9 @@ func TestInfraComplexMulOne(t *testing.T) {
 }
 
 func TestInfraComplexMulInvOne(t *testing.T) {
-	one := new(Complex)
-	one.SetL(big.NewRat(1, 1))
-	one.SetR(big.NewRat(0, 1))
+	one := &Complex{
+		l: *big.NewRat(1, 1),
+	}
 	zero := new(Complex)
 	f := func(x *InfraComplex) bool {
 		// t.Logf("x = %v", x)

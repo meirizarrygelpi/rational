@@ -16,6 +16,11 @@ type Infra struct {
 	l, r big.Rat
 }
 
+// Rational returns the rational part of z.
+func (z *Infra) Rational() *big.Rat {
+	return &z.l
+}
+
 // L returns the left Cayley-Dickson part of z, a pointer to a big.Rat value.
 // This coincides with the real part of z.
 func (z *Infra) L() *big.Rat {
@@ -39,10 +44,8 @@ func (z *Infra) SetR(b *big.Rat) {
 }
 
 // Cartesian returns the two Cartesian components of z.
-func (z *Infra) Cartesian() (a, b *big.Rat) {
-	a = z.L()
-	b = z.R()
-	return
+func (z *Infra) Cartesian() (*big.Rat, *big.Rat) {
+	return &z.l, &z.r
 }
 
 // String returns the string version of a Infra value.
@@ -52,11 +55,11 @@ func (z *Infra) Cartesian() (a, b *big.Rat) {
 func (z *Infra) String() string {
 	a := make([]string, 5)
 	a[0] = "("
-	a[1] = fmt.Sprintf("%v", z.L().RatString())
-	if z.R().Sign() == -1 {
-		a[2] = fmt.Sprintf("%v", z.R().RatString())
+	a[1] = fmt.Sprintf("%v", z.l.RatString())
+	if z.r.Sign() == -1 {
+		a[2] = fmt.Sprintf("%v", z.r.RatString())
 	} else {
-		a[2] = fmt.Sprintf("+%v", z.R().RatString())
+		a[2] = fmt.Sprintf("+%v", z.r.RatString())
 	}
 	a[3] = "α"
 	a[4] = ")"
@@ -65,7 +68,7 @@ func (z *Infra) String() string {
 
 // Equals returns true if y and z are equal.
 func (z *Infra) Equals(y *Infra) bool {
-	if z.L().Cmp(y.L()) != 0 || z.R().Cmp(y.R()) != 0 {
+	if z.l.Cmp(&y.l) != 0 || z.r.Cmp(&y.r) != 0 {
 		return false
 	}
 	return true
@@ -73,52 +76,51 @@ func (z *Infra) Equals(y *Infra) bool {
 
 // Copy copies y onto z, and returns z.
 func (z *Infra) Copy(y *Infra) *Infra {
-	z.SetL(y.L())
-	z.SetR(y.R())
+	z.l.Set(&y.l)
+	z.r.Set(&y.r)
 	return z
 }
 
-// NewInfra returns a pointer to a Infra value made from two given pointers to
-// big.Rat values.
+// NewInfra returns a pointer to the Infra value a+bα.
 func NewInfra(a, b *big.Rat) *Infra {
 	z := new(Infra)
-	z.SetL(a)
-	z.SetR(b)
+	z.l.Set(a)
+	z.r.Set(b)
 	return z
 }
 
 // Scal sets z equal to y scaled by a, and returns z.
 func (z *Infra) Scal(y *Infra, a *big.Rat) *Infra {
-	z.SetL(new(big.Rat).Mul(y.L(), a))
-	z.SetR(new(big.Rat).Mul(y.R(), a))
+	z.l.Mul(&y.l, a)
+	z.r.Mul(&y.r, a)
 	return z
 }
 
 // Neg sets z equal to the negative of y, and returns z.
 func (z *Infra) Neg(y *Infra) *Infra {
-	z.SetL(new(big.Rat).Neg(y.L()))
-	z.SetR(new(big.Rat).Neg(y.R()))
+	z.l.Neg(&y.l)
+	z.r.Neg(&y.r)
 	return z
 }
 
 // Conj sets z equal to the conjugate of y, and returns z.
 func (z *Infra) Conj(y *Infra) *Infra {
-	z.SetL(y.L())
-	z.SetR(new(big.Rat).Neg(y.R()))
+	z.l.Set(&y.l)
+	z.r.Neg(&y.r)
 	return z
 }
 
 // Add sets z to the sum of x and y, and returns z.
 func (z *Infra) Add(x, y *Infra) *Infra {
-	z.SetL(new(big.Rat).Add(x.L(), y.L()))
-	z.SetR(new(big.Rat).Add(x.R(), y.R()))
+	z.l.Add(&x.l, &y.l)
+	z.r.Add(&x.r, &y.r)
 	return z
 }
 
 // Sub sets z to the difference of x and y, and returns z.
 func (z *Infra) Sub(x, y *Infra) *Infra {
-	z.SetL(new(big.Rat).Sub(x.L(), y.L()))
-	z.SetR(new(big.Rat).Sub(x.R(), y.R()))
+	z.l.Sub(&x.l, &y.l)
+	z.r.Sub(&x.r, &y.r)
 	return z
 }
 
@@ -128,31 +130,31 @@ func (z *Infra) Sub(x, y *Infra) *Infra {
 // 		Mul(α, α) = 0
 // This binary operation is commutative and associative.
 func (z *Infra) Mul(x, y *Infra) *Infra {
-	a := new(big.Rat).Set(x.L())
-	b := new(big.Rat).Set(x.R())
-	c := new(big.Rat).Set(y.L())
-	d := new(big.Rat).Set(y.R())
-	s, t, u := new(big.Rat), new(big.Rat), new(big.Rat)
-	z.SetL(
-		s.Mul(a, c),
+	a := new(big.Rat).Set(&x.l)
+	b := new(big.Rat).Set(&x.r)
+	c := new(big.Rat).Set(&y.l)
+	d := new(big.Rat).Set(&y.r)
+	temp := new(big.Rat)
+	z.l.Mul(a, c)
+	z.r.Add(
+		z.r.Mul(d, a),
+		temp.Mul(b, c),
 	)
-	z.SetR(t.Add(
-		t.Mul(d, a),
-		u.Mul(b, c),
-	))
 	return z
 }
 
-// Quad returns the quadrance of z, a pointer to a big.Rat value.
+// Quad returns the quadrance of z. If z = a+bα, then the quadrance is
+// 		Mul(a, a)
+// This is always non-negative.
 func (z *Infra) Quad() *big.Rat {
-	return new(big.Rat).Mul(z.L(), z.L())
+	return new(big.Rat).Mul(&z.l, &z.l)
 }
 
 // IsZeroDiv returns true if z is a zero divisor. This is equivalent to z being
 // nilpotent.
 func (z *Infra) IsZeroDiv() bool {
-	a := z.L()
-	return a.Num().Cmp(big.NewInt(0)) == 0
+	zero := new(big.Int)
+	return z.l.Num().Cmp(zero) == 0
 }
 
 // Inv sets z equal to the inverse of y, and returns z.
