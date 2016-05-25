@@ -194,6 +194,29 @@ In some ways, ultra numbers are the dual analog of octonions.
 
 The `rational.InfraHamilton` type represents a rational infra Hamilton quaternion. It corresponds to a null Cayley-Dickson construct with `rational.Hamilton` values. The imaginary unit elements are denoted `i`, `j` and `k`, and the dual unit elements are denoted `α`, `β`, `γ`, and `δ`. The multiplication rules are:
 ```go
+	Mul(i, i) = Mul(j, j) = Mul(k, k) = -1
+	Mul(α, α) = Mul(β, β) = Mul(γ, γ) = Mul(δ, δ) = 0
+	Mul(i, j) = -Mul(j, i) = +k
+	Mul(i, k) = -Mul(k, i) = -j
+	Mul(i, α) = -Mul(α, i) = +β
+	Mul(i, β) = -Mul(β, i) = -α
+	Mul(i, γ) = -Mul(γ, i) = -δ
+	Mul(i, δ) = -Mul(δ, i) = +γ
+	Mul(j, k) = -Mul(k, j) = +i
+	Mul(j, α) = -Mul(α, j) = +γ
+	Mul(j, β) = -Mul(β, j) = +δ
+	Mul(j, γ) = -Mul(γ, j) = -α
+	Mul(j, δ) = -Mul(δ, j) = -β
+	Mul(k, α) = -Mul(α, k) = +δ
+	Mul(k, β) = -Mul(β, k) = -γ
+	Mul(k, γ) = -Mul(γ, k) = +β
+	Mul(k, δ) = -Mul(δ, k) = -α
+	Mul(α, β) = Mul(β, α) = 0
+	Mul(α, γ) = Mul(γ, α) = 0
+	Mul(α, δ) = Mul(δ, α) = 0
+	Mul(β, γ) = Mul(γ, β) = 0
+	Mul(β, δ) = Mul(δ, β) = 0
+	Mul(γ, δ) = Mul(δ, γ) = 0
 ```
 
 ### rational.InfraCockle

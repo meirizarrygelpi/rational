@@ -170,9 +170,8 @@ func (z *InfraComplex) Quad() *big.Rat {
 // IsZeroDiv returns true if z is a zero divisor. This is equivalent to z being
 // nilpotent.
 func (z *InfraComplex) IsZeroDiv() bool {
-	a, b := z.L().Cartesian()
-	return a.Num().Cmp(big.NewInt(0)) == 0 &&
-		b.Num().Cmp(big.NewInt(0)) == 0
+	zero := new(Complex)
+	return z.L().Equals(zero)
 }
 
 // Inv sets z equal to the inverse of y, and returns z.
