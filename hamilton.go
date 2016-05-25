@@ -18,30 +18,15 @@ type Hamilton struct {
 	l, r Complex
 }
 
-// L returns the left Cayley-Dickson part of z, a pointer to a Complex value.
-func (z *Hamilton) L() *Complex {
-	return &z.l
-}
-
-// R returns the right Cayley-Dickson part of z, a pointer to a Complex value.
-func (z *Hamilton) R() *Complex {
-	return &z.r
-}
-
-// SetL sets the left Cayley-Dickson part of z equal to a.
-func (z *Hamilton) SetL(a *Complex) {
-	z.l = *a
-}
-
-// SetR sets the right Cayley-Dickson part of z equal to b.
-func (z *Hamilton) SetR(b *Complex) {
-	z.r = *b
+// Rational returns the rational part of z.
+func (z *Hamilton) Rational() *big.Rat {
+	return &z.l.l
 }
 
 // Cartesian returns the four Cartesian components of z.
 func (z *Hamilton) Cartesian() (a, b, c, d *big.Rat) {
-	a, b = z.L().Cartesian()
-	c, d = z.R().Cartesian()
+	a, b = z.l.Cartesian()
+	c, d = z.r.Cartesian()
 	return
 }
 
@@ -51,8 +36,8 @@ func (z *Hamilton) Cartesian() (a, b, c, d *big.Rat) {
 // similar to complex128 values.
 func (z *Hamilton) String() string {
 	v := make([]*big.Rat, 4)
-	v[0], v[1] = z.L().Cartesian()
-	v[2], v[3] = z.R().Cartesian()
+	v[0], v[1] = z.l.Cartesian()
+	v[2], v[3] = z.r.Cartesian()
 	a := make([]string, 9)
 	a[0] = "("
 	a[1] = fmt.Sprintf("%v", v[0].RatString())
@@ -72,7 +57,7 @@ func (z *Hamilton) String() string {
 
 // Equals returns true if y and z are equal.
 func (z *Hamilton) Equals(y *Hamilton) bool {
-	if !z.L().Equals(y.L()) || !z.R().Equals(y.R()) {
+	if !z.l.Equals(&y.l) || !z.r.Equals(&y.r) {
 		return false
 	}
 	return true
@@ -80,8 +65,8 @@ func (z *Hamilton) Equals(y *Hamilton) bool {
 
 // Copy copies y onto z, and returns z.
 func (z *Hamilton) Copy(y *Hamilton) *Hamilton {
-	z.SetL(y.L())
-	z.SetR(y.R())
+	z.l.Copy(&y.l)
+	z.r.Copy(&y.r)
 	return z
 }
 
@@ -89,43 +74,43 @@ func (z *Hamilton) Copy(y *Hamilton) *Hamilton {
 // pointers to big.Rat values.
 func NewHamilton(a, b, c, d *big.Rat) *Hamilton {
 	z := new(Hamilton)
-	z.SetL(NewComplex(a, b))
-	z.SetR(NewComplex(c, d))
+	z.l.Copy(NewComplex(a, b))
+	z.r.Copy(NewComplex(c, d))
 	return z
 }
 
 // Scal sets z equal to y scaled by a, and returns z.
 func (z *Hamilton) Scal(y *Hamilton, a *big.Rat) *Hamilton {
-	z.SetL(new(Complex).Scal(y.L(), a))
-	z.SetR(new(Complex).Scal(y.R(), a))
+	z.l.Scal(&y.l, a)
+	z.r.Scal(&y.r, a)
 	return z
 }
 
 // Neg sets z equal to the negative of y, and returns z.
 func (z *Hamilton) Neg(y *Hamilton) *Hamilton {
-	z.SetL(new(Complex).Neg(y.L()))
-	z.SetR(new(Complex).Neg(y.R()))
+	z.l.Neg(&y.l)
+	z.r.Neg(&y.r)
 	return z
 }
 
 // Conj sets z equal to the conjugate of y, and returns z.
 func (z *Hamilton) Conj(y *Hamilton) *Hamilton {
-	z.SetL(new(Complex).Conj(y.L()))
-	z.SetR(new(Complex).Neg(y.R()))
+	z.l.Conj(&y.l)
+	z.r.Neg(&y.r)
 	return z
 }
 
 // Add sets z equal to the sum of x and y, and returns z.
 func (z *Hamilton) Add(x, y *Hamilton) *Hamilton {
-	z.SetL(new(Complex).Add(x.L(), y.L()))
-	z.SetR(new(Complex).Add(x.R(), y.R()))
+	z.l.Add(&x.l, &y.l)
+	z.r.Add(&x.r, &y.r)
 	return z
 }
 
 // Sub sets z equal to the difference of x and y, and returns z.
 func (z *Hamilton) Sub(x, y *Hamilton) *Hamilton {
-	z.SetL(new(Complex).Sub(x.L(), y.L()))
-	z.SetR(new(Complex).Sub(x.R(), y.R()))
+	z.l.Sub(&x.l, &y.l)
+	z.r.Sub(&x.r, &y.r)
 	return z
 }
 
@@ -138,19 +123,19 @@ func (z *Hamilton) Sub(x, y *Hamilton) *Hamilton {
 // 		Mul(k, i) = -Mul(i, k) = j
 // This binary operation is noncommutative but associative.
 func (z *Hamilton) Mul(x, y *Hamilton) *Hamilton {
-	a := new(Complex).Copy(x.L())
-	b := new(Complex).Copy(x.R())
-	c := new(Complex).Copy(y.L())
-	d := new(Complex).Copy(y.R())
-	s, t, u := new(Complex), new(Complex), new(Complex)
-	z.SetL(s.Sub(
-		s.Mul(a, c),
-		u.Mul(u.Conj(d), b),
-	))
-	z.SetR(t.Add(
-		t.Mul(d, a),
-		u.Mul(b, u.Conj(c)),
-	))
+	a := new(Complex).Copy(&x.l)
+	b := new(Complex).Copy(&x.r)
+	c := new(Complex).Copy(&y.l)
+	d := new(Complex).Copy(&y.r)
+	temp := new(Complex)
+	z.l.Sub(
+		z.l.Mul(a, c),
+		temp.Mul(temp.Conj(d), b),
+	)
+	z.r.Add(
+		z.r.Mul(d, a),
+		temp.Mul(b, temp.Conj(c)),
+	)
 	return z
 }
 
@@ -162,11 +147,13 @@ func (z *Hamilton) Commutator(x, y *Hamilton) *Hamilton {
 	)
 }
 
-// Quad returns the non-negative quadrance of z, a pointer to a big.Rat value.
+// Quad returns the quadrance of z. If z = a+bi+cj+dk, then the quadrance is
+// 		Mul(a, a) + Mul(b, b) + Mul(c, c) + Mul(d, d)
+// This is always non-negative.
 func (z *Hamilton) Quad() *big.Rat {
 	return new(big.Rat).Add(
-		z.L().Quad(),
-		z.R().Quad(),
+		z.l.Quad(),
+		z.r.Quad(),
 	)
 }
 
@@ -183,8 +170,8 @@ func (z *Hamilton) Quo(x, y *Hamilton) *Hamilton {
 // Lipschitz sets z equal to a Lipschitz integer made from four given pointers
 // to big.Int values, and returns z.
 func (z *Hamilton) Lipschitz(a, b, c, d *big.Int) *Hamilton {
-	z.SetL(new(Complex).Gauss(a, b))
-	z.SetR(new(Complex).Gauss(c, d))
+	z.l.Gauss(a, b)
+	z.r.Gauss(c, d)
 	return z
 }
 

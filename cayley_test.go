@@ -110,11 +110,11 @@ func TestCayleyAddZero(t *testing.T) {
 }
 
 func TestCayleyMulOne(t *testing.T) {
-	one := new(Hamilton)
-	one.SetL(NewComplex(
-		big.NewRat(1, 1),
-		big.NewRat(0, 1),
-	))
+	one := &Hamilton{
+		l: Complex{
+			l: *big.NewRat(1, 1),
+		},
+	}
 	zero := new(Hamilton)
 	f := func(x *Cayley) bool {
 		// t.Logf("x = %v", x)
@@ -127,11 +127,11 @@ func TestCayleyMulOne(t *testing.T) {
 }
 
 func TestCayleyMulInvOne(t *testing.T) {
-	one := new(Hamilton)
-	one.SetL(NewComplex(
-		big.NewRat(1, 1),
-		big.NewRat(0, 1),
-	))
+	one := &Hamilton{
+		l: Complex{
+			l: *big.NewRat(1, 1),
+		},
+	}
 	zero := new(Hamilton)
 	f := func(x *Cayley) bool {
 		// t.Logf("x = %v", x)

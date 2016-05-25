@@ -110,11 +110,11 @@ func TestZornAddZero(t *testing.T) {
 }
 
 func TestZornMulOne(t *testing.T) {
-	one := new(Hamilton)
-	one.SetL(NewComplex(
-		big.NewRat(1, 1),
-		big.NewRat(0, 1),
-	))
+	one := &Hamilton{
+		l: Complex{
+			l: *big.NewRat(1, 1),
+		},
+	}
 	zero := new(Hamilton)
 	f := func(x *Zorn) bool {
 		// t.Logf("x = %v", x)
@@ -127,11 +127,11 @@ func TestZornMulOne(t *testing.T) {
 }
 
 func TestZornMulInvOne(t *testing.T) {
-	one := new(Hamilton)
-	one.SetL(NewComplex(
-		big.NewRat(1, 1),
-		big.NewRat(0, 1),
-	))
+	one := &Hamilton{
+		l: Complex{
+			l: *big.NewRat(1, 1),
+		},
+	}
 	zero := new(Hamilton)
 	f := func(x *Zorn) bool {
 		// t.Logf("x = %v", x)
