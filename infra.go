@@ -21,28 +21,6 @@ func (z *Infra) Rational() *big.Rat {
 	return &z.l
 }
 
-// L returns the left Cayley-Dickson part of z, a pointer to a big.Rat value.
-// This coincides with the real part of z.
-func (z *Infra) L() *big.Rat {
-	return &z.l
-}
-
-// R returns the right Cayley-Dickson part of z, a pointer to a big.Rat value.
-// This coincides with the dual part of z.
-func (z *Infra) R() *big.Rat {
-	return &z.r
-}
-
-// SetL sets the left Cayley-Dickson part of z equal to a.
-func (z *Infra) SetL(a *big.Rat) {
-	z.l = *a
-}
-
-// SetR sets the right Cayley-Dickson part of z equal to b.
-func (z *Infra) SetR(b *big.Rat) {
-	z.r = *b
-}
-
 // Cartesian returns the two Cartesian components of z.
 func (z *Infra) Cartesian() (*big.Rat, *big.Rat) {
 	return &z.l, &z.r

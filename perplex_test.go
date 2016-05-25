@@ -107,8 +107,9 @@ func TestPerplexAddZero(t *testing.T) {
 }
 
 func TestPerplexMulOne(t *testing.T) {
-	one := new(Perplex)
-	one.SetL(big.NewRat(1, 1))
+	one := &Perplex{
+		l: *big.NewRat(1, 1),
+	}
 	f := func(x *Perplex) bool {
 		// t.Logf("x = %v", x)
 		l := new(Perplex).Mul(x, one)
@@ -120,8 +121,9 @@ func TestPerplexMulOne(t *testing.T) {
 }
 
 func TestPerplexMulInvOne(t *testing.T) {
-	one := new(Perplex)
-	one.SetL(big.NewRat(1, 1))
+	one := &Perplex{
+		l: *big.NewRat(1, 1),
+	}
 	f := func(x *Perplex) bool {
 		// t.Logf("x = %v", x)
 		l := new(Perplex)

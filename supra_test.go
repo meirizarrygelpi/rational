@@ -109,8 +109,9 @@ func TestSupraAddZero(t *testing.T) {
 }
 
 func TestSupraMulOne(t *testing.T) {
-	one := new(Infra)
-	one.SetL(big.NewRat(1, 1))
+	one := &Infra{
+		l: *big.NewRat(1, 1),
+	}
 	zero := new(Infra)
 	f := func(x *Supra) bool {
 		// t.Logf("x = %v", x)
@@ -123,8 +124,9 @@ func TestSupraMulOne(t *testing.T) {
 }
 
 func TestSupraMulInvOne(t *testing.T) {
-	one := new(Infra)
-	one.SetL(big.NewRat(1, 1))
+	one := &Infra{
+		l: *big.NewRat(1, 1),
+	}
 	zero := new(Infra)
 	f := func(x *Supra) bool {
 		// t.Logf("x = %v", x)

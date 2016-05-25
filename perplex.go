@@ -21,28 +21,6 @@ func (z *Perplex) Rational() *big.Rat {
 	return &z.l
 }
 
-// L returns the left Cayley-Dickson part of z, a pointer to a big.Rat value.
-// This is equivalent to the real part of z.
-func (z *Perplex) L() *big.Rat {
-	return &z.l
-}
-
-// R returns the right Cayley-Dickson part of z, a pointer to a big.Rat value.
-// This is equivalent to the split part of z.
-func (z *Perplex) R() *big.Rat {
-	return &z.r
-}
-
-// SetL sets the left Cayley-Dickson part of z equal to a.
-func (z *Perplex) SetL(a *big.Rat) {
-	z.l = *a
-}
-
-// SetR sets the right Cayley-Dickson part of z equal to b.
-func (z *Perplex) SetR(b *big.Rat) {
-	z.r = *b
-}
-
 // Cartesian returns the two Cartesian components of z.
 func (z *Perplex) Cartesian() (*big.Rat, *big.Rat) {
 	return &z.l, &z.r

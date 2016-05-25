@@ -109,8 +109,9 @@ func TestInfraPerplexAddZero(t *testing.T) {
 }
 
 func TestInfraPerplexMulOne(t *testing.T) {
-	one := new(Perplex)
-	one.SetL(big.NewRat(1, 1))
+	one := &Perplex{
+		l: *big.NewRat(1, 1),
+	}
 	zero := new(Perplex)
 	f := func(x *InfraPerplex) bool {
 		// t.Logf("x = %v", x)
@@ -123,9 +124,9 @@ func TestInfraPerplexMulOne(t *testing.T) {
 }
 
 func TestInfraPerplexMulInvOne(t *testing.T) {
-	one := new(Perplex)
-	one.SetL(big.NewRat(1, 1))
-	one.SetR(big.NewRat(0, 1))
+	one := &Perplex{
+		l: *big.NewRat(1, 1),
+	}
 	zero := new(Perplex)
 	f := func(x *InfraPerplex) bool {
 		// t.Logf("x = %v", x)
