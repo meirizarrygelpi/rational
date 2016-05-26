@@ -141,7 +141,9 @@ func (z *Cockle) Commutator(x, y *Cockle) *Cockle {
 	)
 }
 
-// Quad returns the quadrance of z, a pointer to a big.Rat value.
+// Quad returns the quadrance of z. If z = a+bi+ct+du, then the quadrance is
+// 		Mul(a, a) + Mul(b, b) - Mul(c, c) - Mul(d, d)
+// This can be positive, negative, or zero.
 func (z *Cockle) Quad() *big.Rat {
 	return new(big.Rat).Sub(
 		z.l.Quad(),

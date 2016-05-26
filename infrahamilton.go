@@ -189,7 +189,10 @@ func (z *InfraHamilton) Associator(w, x, y *InfraHamilton) *InfraHamilton {
 	)
 }
 
-// Quad returns the quadrance of z, a pointer to a big.Rat value.
+// Quad returns the quadrance of z. If z = a+bi+cj+dk+eα+fβ+gγ+hδ, then the
+// quadrance is
+//		Mul(a, a) + Mul(b, b) + Mul(c, c) + Mul(d, d)
+// This is always non-negative.
 func (z *InfraHamilton) Quad() *big.Rat {
 	return z.L().Quad()
 }

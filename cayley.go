@@ -190,7 +190,10 @@ func (z *Cayley) Associator(w, x, y *Cayley) *Cayley {
 	)
 }
 
-// Quad returns the quadrance of z, a pointer to a big.Rat value.
+// Quad returns the quadrance of z. If z = a+bi+cj+dk+em+fn+gp+hq, then the
+// quadrance is
+//		Mul(a, a) + Mul(b, b) + Mul(c, c) + Mul(d, d) + Mul(e, e) + Mul(f, f) + Mul(g, g) + Mul(h, h)
+// This is always non-negative.
 func (z *Cayley) Quad() *big.Rat {
 	return new(big.Rat).Add(
 		z.L().Quad(),

@@ -190,7 +190,10 @@ func (z *InfraCockle) Associator(w, x, y *InfraCockle) *InfraCockle {
 	)
 }
 
-// Quad returns the quadrance of z, a pointer to a big.Rat value.
+// Quad returns the quadrance of z. If z = a+bi+ct+du+eρ+fσ+gτ+hυ, then the
+// quadrance is
+// 		Mul(a, a) + Mul(b, b) - Mul(c, c) - Mul(d, d)
+// This can be positive, negative, or zero.
 func (z *InfraCockle) Quad() *big.Rat {
 	return z.L().Quad()
 }

@@ -140,7 +140,9 @@ func (z *InfraPerplex) Commutator(x, y *InfraPerplex) *InfraPerplex {
 	)
 }
 
-// Quad returns the quadrance of z, a pointer to a big.Rat value.
+// Quad returns the quadrance of z. If z = a+bs+cτ+dυ, then the quadrance is
+//		Mul(a, a) - Mul(b, b)
+// This can be positive, negative, or zero.
 func (z *InfraPerplex) Quad() *big.Rat {
 	return z.l.Quad()
 }
