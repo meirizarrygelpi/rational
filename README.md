@@ -61,6 +61,8 @@ The `rational.Cockle` type represents a rational Cockle quaternion. It correspon
 ```
 Cockle quaternions are more commonly known as [split-quaternions](https://en.wikipedia.org/wiki/Split-quaternion). The type is named after J. Cockle, who discovered them.
 
+Alternatively, you can obtain the Cockle quaternions from a complex Cayley-Dickson construct with `rational.Perplex` values; or from a perplex Cayley-Dickson construct with `rational.Perplex` values.
+
 ### rational.Supra
 
 The `rational.Supra` type represents a rational supra number. It corresponds to a null Cayley-Dickson construct with `rational.Infra` values. The dual unit elements are denoted `α`, `β`, and `γ`. The multiplication rules are:
@@ -84,6 +86,8 @@ The `rational.InfraComplex` type represents a rational infra complex number. It 
 ```
 Note that `i` does not commute with either `β` or `γ`. The infra complex numbers are more commonly known as dual complex numbers.
 
+Alternatively, you can obtain the infra complex numbers from a complex Cayley-Dickson construct with `rational.Infra` values.
+
 ### rational.InfraPerplex
 
 The `rational.InfraPerplex` type represents a rational infra perplex number. It corresponds to a null Cayley-Dickson construct with `rational.Perplex` values. The split unit element is denoted `s`, and the dual unit elements are denoted `τ` and `υ`. The multiplication rules are:
@@ -95,6 +99,8 @@ The `rational.InfraPerplex` type represents a rational infra perplex number. It 
 	Mul(s, υ) = -Mul(υ, s) = τ
 ```
 Like `i` in the infra complex numbers, `s` does not commute with either `τ` or `υ`. The infra perplex numbers are more commonly known as the dual split-complex numbers.
+
+Alternatively, you can obtain the infra perplex numbers from a perplex Cayley-Dickson construct with `rational.Infra` values.
 
 ## Eight-Dimensional Types
 
@@ -130,6 +136,8 @@ The `rational.Cayley` type represents a rational Cayley octonion. It corresponds
 ```
 Cayley octonions are [traditional octonions](https://en.wikipedia.org/wiki/Octonion). The type is named after A. Cayley, who was **not** the first person to discover octonions. The first person to discover octonions was J.T. Graves.
 
+This type can be used to study [Gravesian and Kleinian integers](https://en.wikipedia.org/wiki/Octonion#Integral_octonions), as well as other integral octonions.
+
 ### rational.Zorn
 
 The `rational.Zorn` type represents a rational Zorn octonion. It corresponds to a perplex Cayley-Dickson construct with `rational.Hamilton` values. The imaginary unit elements are denoted `i`, `j`, and `k`, and the split unit elements are `r`, `s`, `t`, and `u`. The multiplication rules are:
@@ -159,6 +167,8 @@ The `rational.Zorn` type represents a rational Zorn octonion. It corresponds to 
 	Mul(t, u) = -Mul(u, t) = +i
 ```
 Zorn octonions are commonly known as [split-octonions](https://en.wikipedia.org/wiki/Split-octonion). The type is named after M.A. Zorn, who developed a vector-matrix algebra for working with split-octonions.
+
+Alternatively, you can obtain the Zorn octonions from a complex Cayley-Dickson construct with `rational.Cockle` values; or from a perplex Cayley-Dickson construct with `rational.Cockle` values.
 
 ### rational.Ultra
 
@@ -220,6 +230,8 @@ The `rational.InfraHamilton` type represents a rational infra Hamilton quaternio
 ```
 The infra Hamilton quaternions are more commonly known as dual quaternions.
 
+Alternatively, you can obtain the infra Hamilton quaternions from a complex Cayley-Dickson construct with `rational.InfraComplex` values.
+
 ### rational.InfraCockle
 
 The `rational.InfraCockle` type represents a rational infra Cockle quaternion. It corresponds to a null Cayley-Dickson construct with `rational.Cockle` values. The imaginary unit element is denoted `i`, the split unit elements are denoted `t` and `u`, and the dual unit elements are denoted `ρ`, `σ`, `τ`, and `υ`. The multiplication rules are:
@@ -251,23 +263,25 @@ The `rational.InfraCockle` type represents a rational infra Cockle quaternion. I
 ```
 The infra Cockle quaternions are more commonly known as dual split-quaternions.
 
+Alternatively, you can obtain the infra Cockle quaternions from a perplex Cayley-Dickson construct with `rational.InfraComplex` values; a complex Cayley-Dickson construct with `rational.InfraPerplex` values; or a perplex Cayley-Dickson construct with `rational.InfraPerplex` values.
+
 ### rational.SupraComplex
 
 The `rational.SupraComplex` type represents a rational supra complex number. It corresponds to a null Cayley-Dickson construct with `rational.InfraComplex` values. The imaginary unit element is denoted `i`, and the dual unit elements are denoted `α`, `β`, `γ`, `δ`, `ε`, and `ζ`. The multiplication rules are:
 ```go
 ```
+Alternatively, you can obtain the supra complex numbers from a complex Cayley-Dickson construct with `rational.Supra` values.
 
 ### rational.SupraPerplex
 
 The `rational.SupraPerplex` type represents a rational supra perplex number. It corresponds to a null Cayley-Dickson construct with `rational.InfraPerplex` values. The split unit element is denoted `s`, and the dual unit elements are denoted `ρ`, `σ`, `τ`, `υ`, `φ`, and `ψ`. The multiplication rules are:
 ```go
 ```
+Alternatively, you can obtain the supra perplex numbers from a perplex Cayley-Dickson construct with `rational.Supra` values.
 
 ## To Do
 
 1. Improve documentation
 1. Tests
-1. Improve README
-1. Improve memory management
 1. Add SupraComplex type
 1. Add SupraPerplex type
