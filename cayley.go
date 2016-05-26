@@ -18,31 +18,11 @@ type Cayley struct {
 	l, r Hamilton
 }
 
-// L returns the left Cayley-Dickson part of z, a pointer to a Hamilton value.
-func (z *Cayley) L() *Hamilton {
-	return &z.l
-}
-
-// R returns the right Cayley-Dickson part of z, a pointer to a Hamilton value.
-func (z *Cayley) R() *Hamilton {
-	return &z.r
-}
-
-// SetL sets the left Cayley-Dickson part of z equal to a.
-func (z *Cayley) SetL(a *Hamilton) {
-	z.l = *a
-}
-
-// SetR sets the right Cayley-Dickson part of z equal to b.
-func (z *Cayley) SetR(b *Hamilton) {
-	z.r = *b
-}
-
 // Cartesian returns the eight Cartesian components of z.
-func (z *Cayley) Cartesian() (a, b, c, d, e, f, g, h *big.Rat) {
-	a, b, c, d = z.L().Cartesian()
-	e, f, g, h = z.R().Cartesian()
-	return
+func (z *Cayley) Cartesian() (*big.Rat, *big.Rat, *big.Rat, *big.Rat,
+	*big.Rat, *big.Rat, *big.Rat, *big.Rat) {
+	return &z.l.l.l, &z.l.l.r, &z.l.r.l, &z.l.r.r,
+		&z.r.l.l, &z.r.l.r, &z.r.r.l, &z.r.r.r
 }
 
 // String returns the string representation of a Cayley value.
@@ -51,8 +31,8 @@ func (z *Cayley) Cartesian() (a, b, c, d, e, f, g, h *big.Rat) {
 // string is"(a+bi+cj+dk+em+fn+gp+hq)", similar to complex128 values.
 func (z *Cayley) String() string {
 	v := make([]*big.Rat, 8)
-	v[0], v[1], v[2], v[3] = z.L().Cartesian()
-	v[4], v[5], v[6], v[7] = z.R().Cartesian()
+	v[0], v[1], v[2], v[3] = z.l.Cartesian()
+	v[4], v[5], v[6], v[7] = z.r.Cartesian()
 	a := make([]string, 17)
 	a[0] = "("
 	a[1] = fmt.Sprintf("%v", v[0].RatString())
@@ -72,7 +52,7 @@ func (z *Cayley) String() string {
 
 // Equals returns true if y and z are equal.
 func (z *Cayley) Equals(y *Cayley) bool {
-	if !z.L().Equals(y.L()) || !z.R().Equals(y.R()) {
+	if !z.l.Equals(&y.l) || !z.r.Equals(&y.r) {
 		return false
 	}
 	return true
@@ -80,8 +60,8 @@ func (z *Cayley) Equals(y *Cayley) bool {
 
 // Copy copies y onto z, and returns z.
 func (z *Cayley) Copy(y *Cayley) *Cayley {
-	z.SetL(y.L())
-	z.SetR(y.R())
+	z.l.Copy(&y.l)
+	z.r.Copy(&y.r)
 	return z
 }
 
@@ -89,43 +69,49 @@ func (z *Cayley) Copy(y *Cayley) *Cayley {
 // to big.Rat values.
 func NewCayley(a, b, c, d, e, f, g, h *big.Rat) *Cayley {
 	z := new(Cayley)
-	z.SetL(NewHamilton(a, b, c, d))
-	z.SetR(NewHamilton(e, f, g, h))
+	z.l.l.l.Set(a)
+	z.l.l.r.Set(b)
+	z.l.r.l.Set(c)
+	z.l.r.r.Set(d)
+	z.r.l.l.Set(e)
+	z.r.l.r.Set(f)
+	z.r.r.l.Set(g)
+	z.r.r.r.Set(h)
 	return z
 }
 
 // Scal sets z equal to y scaled by a, and returns z.
 func (z *Cayley) Scal(y *Cayley, a *big.Rat) *Cayley {
-	z.SetL(new(Hamilton).Scal(y.L(), a))
-	z.SetR(new(Hamilton).Scal(y.R(), a))
+	z.l.Scal(&y.l, a)
+	z.r.Scal(&y.r, a)
 	return z
 }
 
 // Neg sets z equal to the negative of y, and returns z.
 func (z *Cayley) Neg(y *Cayley) *Cayley {
-	z.SetL(new(Hamilton).Neg(y.L()))
-	z.SetR(new(Hamilton).Neg(y.R()))
+	z.l.Neg(&y.l)
+	z.r.Neg(&y.r)
 	return z
 }
 
 // Conj sets z equal to the conjugate of y, and returns z.
 func (z *Cayley) Conj(y *Cayley) *Cayley {
-	z.SetL(new(Hamilton).Conj(y.L()))
-	z.SetR(new(Hamilton).Neg(y.R()))
+	z.l.Conj(&y.l)
+	z.r.Neg(&y.r)
 	return z
 }
 
 // Add sets z equal to the sum of x and y, and returns z.
 func (z *Cayley) Add(x, y *Cayley) *Cayley {
-	z.SetL(new(Hamilton).Add(x.L(), y.L()))
-	z.SetR(new(Hamilton).Add(x.R(), y.R()))
+	z.l.Add(&x.l, &y.l)
+	z.r.Add(&x.r, &y.r)
 	return z
 }
 
 // Sub sets z equal to the difference of x and y, and returns z.
 func (z *Cayley) Sub(x, y *Cayley) *Cayley {
-	z.SetL(new(Hamilton).Sub(x.L(), y.L()))
-	z.SetR(new(Hamilton).Sub(x.R(), y.R()))
+	z.l.Sub(&x.l, &y.l)
+	z.r.Sub(&x.r, &y.r)
 	return z
 }
 
@@ -157,19 +143,19 @@ func (z *Cayley) Sub(x, y *Cayley) *Cayley {
 // 		Mul(p, q) = -Mul(q, p) = -i
 // This binary operation is noncommutative and nonassociative.
 func (z *Cayley) Mul(x, y *Cayley) *Cayley {
-	a := new(Hamilton).Copy(x.L())
-	b := new(Hamilton).Copy(x.R())
-	c := new(Hamilton).Copy(y.L())
-	d := new(Hamilton).Copy(y.R())
-	s, t, u := new(Hamilton), new(Hamilton), new(Hamilton)
-	z.SetL(s.Sub(
-		s.Mul(a, c),
-		u.Mul(u.Conj(d), b),
-	))
-	z.SetR(t.Add(
-		t.Mul(d, a),
-		u.Mul(b, u.Conj(c)),
-	))
+	a := new(Hamilton).Copy(&x.l)
+	b := new(Hamilton).Copy(&x.r)
+	c := new(Hamilton).Copy(&y.l)
+	d := new(Hamilton).Copy(&y.r)
+	temp := new(Hamilton)
+	z.l.Sub(
+		z.l.Mul(a, c),
+		temp.Mul(temp.Conj(d), b),
+	)
+	z.r.Add(
+		z.r.Mul(d, a),
+		temp.Mul(b, temp.Conj(c)),
+	)
 	return z
 }
 
@@ -183,27 +169,30 @@ func (z *Cayley) Commutator(x, y *Cayley) *Cayley {
 
 // Associator sets z equal to the associator of w, x, and y, and returns z.
 func (z *Cayley) Associator(w, x, y *Cayley) *Cayley {
-	t := new(Cayley)
+	temp := new(Cayley)
 	return z.Sub(
 		z.Mul(z.Mul(w, x), y),
-		t.Mul(w, t.Mul(x, y)),
+		temp.Mul(w, temp.Mul(x, y)),
 	)
 }
 
 // Quad returns the quadrance of z. If z = a+bi+cj+dk+em+fn+gp+hq, then the
 // quadrance is
-//		Mul(a, a) + Mul(b, b) + Mul(c, c) + Mul(d, d) + Mul(e, e) + Mul(f, f) + Mul(g, g) + Mul(h, h)
+//		Mul(a, a) + Mul(b, b) + Mul(c, c) + Mul(d, d) +
+// 		Mul(e, e) + Mul(f, f) + Mul(g, g) + Mul(h, h)
 // This is always non-negative.
 func (z *Cayley) Quad() *big.Rat {
 	return new(big.Rat).Add(
-		z.L().Quad(),
-		z.R().Quad(),
+		z.l.Quad(),
+		z.r.Quad(),
 	)
 }
 
 // Inv sets z equal to the inverse of y, and returns z.
 func (z *Cayley) Inv(y *Cayley) *Cayley {
-	return z.Scal(z.Conj(y), new(big.Rat).Inv(y.Quad()))
+	a := y.Quad()
+	a.Inv(a)
+	return z.Scal(z.Conj(y), a)
 }
 
 // Quo sets z equal to the quotient of x and y, and returns z.
@@ -211,20 +200,34 @@ func (z *Cayley) Quo(x, y *Cayley) *Cayley {
 	return z.Mul(x, z.Inv(y))
 }
 
-// Graves sets z equal to a Graves integer made from eight given pointers to
-// big.Int values, and returns z.
+// Graves sets z equal to the Graves integer a+bi+cj+dk+em+fn+gp+hq, and
+// returns z.
 func (z *Cayley) Graves(a, b, c, d, e, f, g, h *big.Int) *Cayley {
-	z.SetL(new(Hamilton).Lipschitz(a, b, c, d))
-	z.SetR(new(Hamilton).Lipschitz(e, f, g, h))
+	z.l.l.l.SetInt(a)
+	z.l.l.r.SetInt(b)
+	z.l.r.l.SetInt(c)
+	z.l.r.r.SetInt(d)
+	z.r.l.l.SetInt(e)
+	z.r.l.r.SetInt(f)
+	z.r.r.l.SetInt(g)
+	z.r.r.r.SetInt(h)
 	return z
 }
 
-// Klein sets z equal to a Klein integer made by adding 1/2 to each of the
-// eight given pointers to big.Int values, and returns z.
+// Klein sets z equal to the Klein integer
+// (a+1/2)+(b+1/2)i+(c+1/2)j+(d+1/2)k+(e+1/2)m+(f+1/2)n+(g+1/2)p+(h+1/2)q,
+// and returns z.
 func (z *Cayley) Klein(a, b, c, d, e, f, g, h *big.Int) *Cayley {
 	z.Graves(a, b, c, d, e, f, g, h)
 	half := big.NewRat(1, 2)
-	z.Add(z, NewCayley(half, half, half, half, half, half, half, half))
+	z.l.l.l.Add(&z.l.l.l, half)
+	z.l.l.r.Add(&z.l.l.r, half)
+	z.l.r.l.Add(&z.l.r.l, half)
+	z.l.r.r.Add(&z.l.r.r, half)
+	z.r.l.l.Add(&z.r.l.l, half)
+	z.r.l.r.Add(&z.r.l.r, half)
+	z.r.r.l.Add(&z.r.r.l, half)
+	z.r.r.r.Add(&z.r.r.r, half)
 	return z
 }
 

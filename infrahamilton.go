@@ -18,31 +18,11 @@ type InfraHamilton struct {
 	l, r Hamilton
 }
 
-// L returns the left Cayley-Dickson part of z, a pointer to a Hamilton value.
-func (z *InfraHamilton) L() *Hamilton {
-	return &z.l
-}
-
-// R returns the right Cayley-Dickson part of z, a pointer to a Hamilton value.
-func (z *InfraHamilton) R() *Hamilton {
-	return &z.r
-}
-
-// SetL sets the left Cayley-Dickson part of z equal to a.
-func (z *InfraHamilton) SetL(a *Hamilton) {
-	z.l = *a
-}
-
-// SetR sets the right Cayley-Dickson part of z equal to b.
-func (z *InfraHamilton) SetR(b *Hamilton) {
-	z.r = *b
-}
-
 // Cartesian returns the eight Cartesian components of z.
-func (z *InfraHamilton) Cartesian() (a, b, c, d, e, f, g, h *big.Rat) {
-	a, b, c, d = z.L().Cartesian()
-	e, f, g, h = z.R().Cartesian()
-	return
+func (z *InfraHamilton) Cartesian() (*big.Rat, *big.Rat, *big.Rat, *big.Rat,
+	*big.Rat, *big.Rat, *big.Rat, *big.Rat) {
+	return &z.l.l.l, &z.l.l.r, &z.l.r.l, &z.l.r.r,
+		&z.r.l.l, &z.r.l.r, &z.r.r.l, &z.r.r.r
 }
 
 // String returns the string representation of an InfraHamilton value.
@@ -51,8 +31,8 @@ func (z *InfraHamilton) Cartesian() (a, b, c, d, e, f, g, h *big.Rat) {
 // is"(a+bi+cj+dk+eα+fβ+gγ+hδ)", similar to complex128 values.
 func (z *InfraHamilton) String() string {
 	v := make([]*big.Rat, 8)
-	v[0], v[1], v[2], v[3] = z.L().Cartesian()
-	v[4], v[5], v[6], v[7] = z.R().Cartesian()
+	v[0], v[1], v[2], v[3] = z.l.Cartesian()
+	v[4], v[5], v[6], v[7] = z.r.Cartesian()
 	a := make([]string, 17)
 	a[0] = "("
 	a[1] = fmt.Sprintf("%v", v[0].RatString())
@@ -72,7 +52,7 @@ func (z *InfraHamilton) String() string {
 
 // Equals returns true if y and z are equal.
 func (z *InfraHamilton) Equals(y *InfraHamilton) bool {
-	if !z.L().Equals(y.L()) || !z.R().Equals(y.R()) {
+	if !z.l.Equals(&y.l) || !z.r.Equals(&y.r) {
 		return false
 	}
 	return true
@@ -80,8 +60,8 @@ func (z *InfraHamilton) Equals(y *InfraHamilton) bool {
 
 // Copy copies y onto z, and returns z.
 func (z *InfraHamilton) Copy(y *InfraHamilton) *InfraHamilton {
-	z.SetL(y.L())
-	z.SetR(y.R())
+	z.l.Copy(&y.l)
+	z.r.Copy(&y.r)
 	return z
 }
 
@@ -89,43 +69,49 @@ func (z *InfraHamilton) Copy(y *InfraHamilton) *InfraHamilton {
 // given pointers to big.Rat values.
 func NewInfraHamilton(a, b, c, d, e, f, g, h *big.Rat) *InfraHamilton {
 	z := new(InfraHamilton)
-	z.SetL(NewHamilton(a, b, c, d))
-	z.SetR(NewHamilton(e, f, g, h))
+	z.l.l.l.Set(a)
+	z.l.l.r.Set(b)
+	z.l.r.l.Set(c)
+	z.l.r.r.Set(d)
+	z.r.l.l.Set(e)
+	z.r.l.r.Set(f)
+	z.r.r.l.Set(g)
+	z.r.r.r.Set(h)
 	return z
 }
 
 // Scal sets z equal to y scaled by a, and returns z.
 func (z *InfraHamilton) Scal(y *InfraHamilton, a *big.Rat) *InfraHamilton {
-	z.SetL(new(Hamilton).Scal(y.L(), a))
-	z.SetR(new(Hamilton).Scal(y.R(), a))
+	z.l.Scal(&y.l, a)
+	z.r.Scal(&y.r, a)
 	return z
 }
 
 // Neg sets z equal to the negative of y, and returns z.
 func (z *InfraHamilton) Neg(y *InfraHamilton) *InfraHamilton {
-	z.SetL(new(Hamilton).Neg(y.L()))
-	z.SetR(new(Hamilton).Neg(y.R()))
+	z.l.Neg(&y.l)
+	z.r.Neg(&y.r)
 	return z
 }
 
 // Conj sets z equal to the conjugate of y, and returns z.
 func (z *InfraHamilton) Conj(y *InfraHamilton) *InfraHamilton {
-	z.SetL(new(Hamilton).Conj(y.L()))
-	z.SetR(new(Hamilton).Neg(y.R()))
+	z.l.Conj(&y.l)
+	z.r.Neg(&y.r)
 	return z
 }
 
 // Add sets z equal to the sum of x and y, and returns z.
 func (z *InfraHamilton) Add(x, y *InfraHamilton) *InfraHamilton {
-	z.SetL(new(Hamilton).Add(x.L(), y.L()))
-	z.SetR(new(Hamilton).Add(x.R(), y.R()))
+	z.l.Add(&x.l, &y.l)
+	z.r.Add(&x.r, &y.r)
 	return z
 }
 
 // Sub sets z equal to the difference of x and y, and returns z.
 func (z *InfraHamilton) Sub(x, y *InfraHamilton) *InfraHamilton {
-	z.SetL(new(Hamilton).Sub(x.L(), y.L()))
-	z.SetR(new(Hamilton).Sub(x.R(), y.R()))
+	z.l.Sub(&x.l, &y.l)
+	z.r.Sub(&x.r, &y.r)
 	return z
 }
 
@@ -157,18 +143,16 @@ func (z *InfraHamilton) Sub(x, y *InfraHamilton) *InfraHamilton {
 // 		Mul(γ, δ) = Mul(δ, γ) = 0
 // This binary operation is noncommutative but associative.
 func (z *InfraHamilton) Mul(x, y *InfraHamilton) *InfraHamilton {
-	a := new(Hamilton).Copy(x.L())
-	b := new(Hamilton).Copy(x.R())
-	c := new(Hamilton).Copy(y.L())
-	d := new(Hamilton).Copy(y.R())
-	s, t, u := new(Hamilton), new(Hamilton), new(Hamilton)
-	z.SetL(
-		s.Mul(a, c),
+	a := new(Hamilton).Copy(&x.l)
+	b := new(Hamilton).Copy(&x.r)
+	c := new(Hamilton).Copy(&y.l)
+	d := new(Hamilton).Copy(&y.r)
+	temp := new(Hamilton)
+	z.l.Mul(a, c)
+	z.r.Add(
+		z.r.Mul(d, a),
+		temp.Mul(b, temp.Conj(c)),
 	)
-	z.SetR(t.Add(
-		t.Mul(d, a),
-		u.Mul(b, u.Conj(c)),
-	))
 	return z
 }
 
@@ -182,10 +166,10 @@ func (z *InfraHamilton) Commutator(x, y *InfraHamilton) *InfraHamilton {
 
 // Associator sets z equal to the associator of w, x, and y, and returns z.
 func (z *InfraHamilton) Associator(w, x, y *InfraHamilton) *InfraHamilton {
-	t := new(InfraHamilton)
+	temp := new(InfraHamilton)
 	return z.Sub(
 		z.Mul(z.Mul(w, x), y),
-		t.Mul(w, t.Mul(x, y)),
+		temp.Mul(w, temp.Mul(x, y)),
 	)
 }
 
@@ -194,14 +178,14 @@ func (z *InfraHamilton) Associator(w, x, y *InfraHamilton) *InfraHamilton {
 //		Mul(a, a) + Mul(b, b) + Mul(c, c) + Mul(d, d)
 // This is always non-negative.
 func (z *InfraHamilton) Quad() *big.Rat {
-	return z.L().Quad()
+	return z.l.Quad()
 }
 
 // IsZeroDiv returns true if z is a zero divisor. This is equivalent to z being
 // nilpotent.
 func (z *InfraHamilton) IsZeroDiv() bool {
 	zero := new(Hamilton)
-	return z.L().Equals(zero)
+	return z.l.Equals(zero)
 }
 
 // Inv sets z equal to the inverse of y, and returns z.
@@ -209,7 +193,9 @@ func (z *InfraHamilton) Inv(y *InfraHamilton) *InfraHamilton {
 	if y.IsZeroDiv() {
 		panic("inverse of zero divisor")
 	}
-	return z.Scal(z.Conj(y), new(big.Rat).Inv(y.Quad()))
+	a := y.Quad()
+	a.Inv(a)
+	return z.Scal(z.Conj(y), a)
 }
 
 // Quo sets z equal to the quotient of x and y, and returns z.
