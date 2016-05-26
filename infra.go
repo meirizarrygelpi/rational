@@ -16,12 +16,7 @@ type Infra struct {
 	l, r big.Rat
 }
 
-// Rational returns the rational part of z.
-func (z *Infra) Rational() *big.Rat {
-	return &z.l
-}
-
-// Cartesian returns the two Cartesian components of z.
+// Cartesian returns the two rational Cartesian components of z.
 func (z *Infra) Cartesian() (*big.Rat, *big.Rat) {
 	return &z.l, &z.r
 }

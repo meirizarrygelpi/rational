@@ -110,11 +110,11 @@ func TestUltraAddZero(t *testing.T) {
 }
 
 func TestUltraMulOne(t *testing.T) {
-	one := new(Supra)
-	one.SetL(NewInfra(
-		big.NewRat(1, 1),
-		big.NewRat(0, 1),
-	))
+	one := &Supra{
+		l: Infra{
+			l: *big.NewRat(1, 1),
+		},
+	}
 	zero := new(Supra)
 	f := func(x *Ultra) bool {
 		// t.Logf("x = %v", x)
@@ -127,11 +127,11 @@ func TestUltraMulOne(t *testing.T) {
 }
 
 func TestUltraMulInvOne(t *testing.T) {
-	one := new(Supra)
-	one.SetL(NewInfra(
-		big.NewRat(1, 1),
-		big.NewRat(0, 1),
-	))
+	one := &Supra{
+		l: Infra{
+			l: *big.NewRat(1, 1),
+		},
+	}
 	zero := new(Supra)
 	f := func(x *Ultra) bool {
 		// t.Logf("x = %v", x)

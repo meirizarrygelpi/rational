@@ -18,31 +18,9 @@ type Supra struct {
 	l, r Infra
 }
 
-// L returns the left Cayley-Dickson part of z, a pointer to a Infra value.
-func (z *Supra) L() *Infra {
-	return &z.l
-}
-
-// R returns the right Cayley-Dickson part of z, a pointer to a Infra value.
-func (z *Supra) R() *Infra {
-	return &z.r
-}
-
-// SetL sets the left Cayley-Dickson part of z equal to a.
-func (z *Supra) SetL(a *Infra) {
-	z.l = *a
-}
-
-// SetR sets the right Cayley-Dickson part of z equal to b.
-func (z *Supra) SetR(b *Infra) {
-	z.r = *b
-}
-
-// Cartesian returns the four Cartesian components of z.
-func (z *Supra) Cartesian() (a, b, c, d *big.Rat) {
-	a, b = z.L().Cartesian()
-	c, d = z.R().Cartesian()
-	return
+// Cartesian returns the four rational Cartesian components of z.
+func (z *Supra) Cartesian() (*big.Rat, *big.Rat, *big.Rat, *big.Rat) {
+	return &z.l.l, &z.l.r, &z.r.l, &z.r.r
 }
 
 // String returns the string representation of a Supra value.
@@ -51,8 +29,8 @@ func (z *Supra) Cartesian() (a, b, c, d *big.Rat) {
 // similar to complex128 values.
 func (z *Supra) String() string {
 	v := make([]*big.Rat, 4)
-	v[0], v[1] = z.L().Cartesian()
-	v[2], v[3] = z.R().Cartesian()
+	v[0], v[1] = z.l.Cartesian()
+	v[2], v[3] = z.r.Cartesian()
 	a := make([]string, 9)
 	a[0] = "("
 	a[1] = fmt.Sprintf("%v", v[0].RatString())
@@ -72,7 +50,7 @@ func (z *Supra) String() string {
 
 // Equals returns true if y and z are equal.
 func (z *Supra) Equals(y *Supra) bool {
-	if !z.L().Equals(y.L()) || !z.R().Equals(y.R()) {
+	if !z.l.Equals(&y.l) || !z.r.Equals(&y.r) {
 		return false
 	}
 	return true
@@ -80,52 +58,53 @@ func (z *Supra) Equals(y *Supra) bool {
 
 // Copy copies y onto z, and returns z.
 func (z *Supra) Copy(y *Supra) *Supra {
-	z.SetL(y.L())
-	z.SetR(y.R())
+	z.l.Copy(&y.l)
+	z.r.Copy(&y.r)
 	return z
 }
 
-// NewSupra returns a pointer to a Supra value made from four given pointers to
-// big.Rat values.
+// NewSupra returns a pointer to the Supra value a+bα+cβ+dγ.
 func NewSupra(a, b, c, d *big.Rat) *Supra {
 	z := new(Supra)
-	z.SetL(NewInfra(a, b))
-	z.SetR(NewInfra(c, d))
+	z.l.l.Set(a)
+	z.l.r.Set(b)
+	z.r.l.Set(c)
+	z.r.r.Set(d)
 	return z
 }
 
 // Scal sets z equal to y scaled by a, and returns z.
 func (z *Supra) Scal(y *Supra, a *big.Rat) *Supra {
-	z.SetL(new(Infra).Scal(y.L(), a))
-	z.SetR(new(Infra).Scal(y.R(), a))
+	z.l.Scal(&y.l, a)
+	z.r.Scal(&y.r, a)
 	return z
 }
 
 // Neg sets z equal to the negative of y, and returns z.
 func (z *Supra) Neg(y *Supra) *Supra {
-	z.SetL(new(Infra).Neg(y.L()))
-	z.SetR(new(Infra).Neg(y.R()))
+	z.l.Neg(&y.l)
+	z.r.Neg(&y.r)
 	return z
 }
 
 // Conj sets z equal to the conjugate of y, and returns z.
 func (z *Supra) Conj(y *Supra) *Supra {
-	z.SetL(new(Infra).Conj(y.L()))
-	z.SetR(new(Infra).Neg(y.R()))
+	z.l.Conj(&y.l)
+	z.r.Neg(&y.r)
 	return z
 }
 
 // Add sets z equal to the sum of x and y, and returns z.
 func (z *Supra) Add(x, y *Supra) *Supra {
-	z.SetL(new(Infra).Add(x.L(), y.L()))
-	z.SetR(new(Infra).Add(x.R(), y.R()))
+	z.l.Add(&x.l, &y.l)
+	z.r.Add(&x.r, &y.r)
 	return z
 }
 
 // Sub sets z equal to the difference of x and y, and returns z.
 func (z *Supra) Sub(x, y *Supra) *Supra {
-	z.SetL(new(Infra).Sub(x.L(), y.L()))
-	z.SetR(new(Infra).Sub(x.R(), y.R()))
+	z.l.Sub(&x.l, &y.l)
+	z.r.Sub(&x.r, &y.r)
 	return z
 }
 
@@ -138,18 +117,16 @@ func (z *Supra) Sub(x, y *Supra) *Supra {
 // 		Mul(γ, α) = Mul(α, γ) = 0
 // This binary operation is noncommutative but associative.
 func (z *Supra) Mul(x, y *Supra) *Supra {
-	a := new(Infra).Copy(x.L())
-	b := new(Infra).Copy(x.R())
-	c := new(Infra).Copy(y.L())
-	d := new(Infra).Copy(y.R())
-	s, t, u := new(Infra), new(Infra), new(Infra)
-	z.SetL(
-		s.Mul(a, c),
+	a := new(Infra).Copy(&x.l)
+	b := new(Infra).Copy(&x.r)
+	c := new(Infra).Copy(&y.l)
+	d := new(Infra).Copy(&y.r)
+	temp := new(Infra)
+	z.l.Mul(a, c)
+	z.r.Add(
+		z.r.Mul(d, a),
+		temp.Mul(b, temp.Conj(c)),
 	)
-	z.SetR(t.Add(
-		t.Mul(d, a),
-		u.Mul(b, u.Conj(c)),
-	))
 	return z
 }
 
@@ -161,14 +138,16 @@ func (z *Supra) Commutator(x, y *Supra) *Supra {
 	)
 }
 
-// Quad returns the quadrance of z, a pointer to a big.Rat value.
+// Quad returns the quadrance of z. If z = a+bα+cβ+dγ, the quadrance is
+// 		Mul(a, a)
+// This is always non-negative.
 func (z *Supra) Quad() *big.Rat {
-	return z.L().Quad()
+	return z.l.Quad()
 }
 
 // IsZeroDiv returns true if z is a zero divisor.
 func (z *Supra) IsZeroDiv() bool {
-	return z.L().IsZeroDiv()
+	return z.l.IsZeroDiv()
 }
 
 // Inv sets z equal to the inverse of y, and returns z.

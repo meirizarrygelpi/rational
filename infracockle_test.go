@@ -110,11 +110,11 @@ func TestInfraCockleAddZero(t *testing.T) {
 }
 
 func TestInfraCockleMulOne(t *testing.T) {
-	one := new(Cockle)
-	one.SetL(NewComplex(
-		big.NewRat(1, 1),
-		big.NewRat(0, 1),
-	))
+	one := &Cockle{
+		l: Complex{
+			l: *big.NewRat(1, 1),
+		},
+	}
 	zero := new(Cockle)
 	f := func(x *InfraCockle) bool {
 		// t.Logf("x = %v", x)
@@ -127,11 +127,11 @@ func TestInfraCockleMulOne(t *testing.T) {
 }
 
 func TestInfraCockleMulInvOne(t *testing.T) {
-	one := new(Cockle)
-	one.SetL(NewComplex(
-		big.NewRat(1, 1),
-		big.NewRat(0, 1),
-	))
+	one := &Cockle{
+		l: Complex{
+			l: *big.NewRat(1, 1),
+		},
+	}
 	zero := new(Cockle)
 	f := func(x *InfraCockle) bool {
 		// t.Logf("x = %v", x)

@@ -18,31 +18,9 @@ type InfraComplex struct {
 	l, r Complex
 }
 
-// L returns the left Cayley-Dickson part of z, a pointer to a Complex value.
-func (z *InfraComplex) L() *Complex {
-	return &z.l
-}
-
-// R returns the right Cayley-Dickson part of z, a pointer to a Complex value.
-func (z *InfraComplex) R() *Complex {
-	return &z.r
-}
-
-// SetL sets the left Cayley-Dickson part of z equal to a.
-func (z *InfraComplex) SetL(a *Complex) {
-	z.l = *a
-}
-
-// SetR sets the right Cayley-Dickson part of z equal to b.
-func (z *InfraComplex) SetR(b *Complex) {
-	z.r = *b
-}
-
-// Cartesian returns the four Cartesian components of z.
-func (z *InfraComplex) Cartesian() (a, b, c, d *big.Rat) {
-	a, b = z.L().Cartesian()
-	c, d = z.R().Cartesian()
-	return
+// Cartesian returns the four rational Cartesian components of z.
+func (z *InfraComplex) Cartesian() (*big.Rat, *big.Rat, *big.Rat, *big.Rat) {
+	return &z.l.l, &z.l.r, &z.r.l, &z.r.r
 }
 
 // String returns the string representation of an InfraComplex value.
@@ -51,8 +29,8 @@ func (z *InfraComplex) Cartesian() (a, b, c, d *big.Rat) {
 // similar to complex128 values.
 func (z *InfraComplex) String() string {
 	v := make([]*big.Rat, 4)
-	v[0], v[1] = z.L().Cartesian()
-	v[2], v[3] = z.R().Cartesian()
+	v[0], v[1] = z.l.Cartesian()
+	v[2], v[3] = z.r.Cartesian()
 	a := make([]string, 9)
 	a[0] = "("
 	a[1] = fmt.Sprintf("%v", v[0].RatString())
@@ -72,7 +50,7 @@ func (z *InfraComplex) String() string {
 
 // Equals returns true if y and z are equal.
 func (z *InfraComplex) Equals(y *InfraComplex) bool {
-	if !z.L().Equals(y.L()) || !z.R().Equals(y.R()) {
+	if !z.l.Equals(&y.l) || !z.r.Equals(&y.r) {
 		return false
 	}
 	return true
@@ -80,8 +58,8 @@ func (z *InfraComplex) Equals(y *InfraComplex) bool {
 
 // Copy copies y onto z, and returns z.
 func (z *InfraComplex) Copy(y *InfraComplex) *InfraComplex {
-	z.SetL(y.L())
-	z.SetR(y.R())
+	z.l.Copy(&y.l)
+	z.r.Copy(&y.r)
 	return z
 }
 
@@ -89,43 +67,45 @@ func (z *InfraComplex) Copy(y *InfraComplex) *InfraComplex {
 // given pointers to big.Rat values.
 func NewInfraComplex(a, b, c, d *big.Rat) *InfraComplex {
 	z := new(InfraComplex)
-	z.SetL(NewComplex(a, b))
-	z.SetR(NewComplex(c, d))
+	z.l.l.Set(a)
+	z.l.r.Set(b)
+	z.r.l.Set(c)
+	z.r.r.Set(d)
 	return z
 }
 
 // Scal sets z equal to y scaled by a, and returns z.
 func (z *InfraComplex) Scal(y *InfraComplex, a *big.Rat) *InfraComplex {
-	z.SetL(new(Complex).Scal(y.L(), a))
-	z.SetR(new(Complex).Scal(y.R(), a))
+	z.l.Scal(&y.l, a)
+	z.r.Scal(&y.r, a)
 	return z
 }
 
 // Neg sets z equal to the negative of y, and returns z.
 func (z *InfraComplex) Neg(y *InfraComplex) *InfraComplex {
-	z.SetL(new(Complex).Neg(y.L()))
-	z.SetR(new(Complex).Neg(y.R()))
+	z.l.Neg(&y.l)
+	z.r.Neg(&y.r)
 	return z
 }
 
 // Conj sets z equal to the conjugate of y, and returns z.
 func (z *InfraComplex) Conj(y *InfraComplex) *InfraComplex {
-	z.SetL(new(Complex).Conj(y.L()))
-	z.SetR(new(Complex).Neg(y.R()))
+	z.l.Conj(&y.l)
+	z.r.Neg(&y.r)
 	return z
 }
 
 // Add sets z equal to the sum of x and y, and returns z.
 func (z *InfraComplex) Add(x, y *InfraComplex) *InfraComplex {
-	z.SetL(new(Complex).Add(x.L(), y.L()))
-	z.SetR(new(Complex).Add(x.R(), y.R()))
+	z.l.Add(&x.l, &y.l)
+	z.r.Add(&x.r, &y.r)
 	return z
 }
 
 // Sub sets z equal to the difference of x and y, and returns z.
 func (z *InfraComplex) Sub(x, y *InfraComplex) *InfraComplex {
-	z.SetL(new(Complex).Sub(x.L(), y.L()))
-	z.SetR(new(Complex).Sub(x.R(), y.R()))
+	z.l.Sub(&x.l, &y.l)
+	z.r.Sub(&x.r, &y.r)
 	return z
 }
 
@@ -139,18 +119,16 @@ func (z *InfraComplex) Sub(x, y *InfraComplex) *InfraComplex {
 // 		Mul(γ, i) = -Mul(i, γ) = β
 // This binary operation is noncommutative but associative.
 func (z *InfraComplex) Mul(x, y *InfraComplex) *InfraComplex {
-	a := new(Complex).Copy(x.L())
-	b := new(Complex).Copy(x.R())
-	c := new(Complex).Copy(y.L())
-	d := new(Complex).Copy(y.R())
-	s, t, u := new(Complex), new(Complex), new(Complex)
-	z.SetL(
-		s.Mul(a, c),
+	a := new(Complex).Copy(&x.l)
+	b := new(Complex).Copy(&x.r)
+	c := new(Complex).Copy(&y.l)
+	d := new(Complex).Copy(&y.r)
+	temp := new(Complex)
+	z.l.Mul(a, c)
+	z.r.Add(
+		z.r.Mul(d, a),
+		temp.Mul(b, temp.Conj(c)),
 	)
-	z.SetR(t.Add(
-		t.Mul(d, a),
-		u.Mul(b, u.Conj(c)),
-	))
 	return z
 }
 
@@ -164,14 +142,14 @@ func (z *InfraComplex) Commutator(x, y *InfraComplex) *InfraComplex {
 
 // Quad returns the quadrance of z, a pointer to a big.Rat value.
 func (z *InfraComplex) Quad() *big.Rat {
-	return z.L().Quad()
+	return z.l.Quad()
 }
 
 // IsZeroDiv returns true if z is a zero divisor. This is equivalent to z being
 // nilpotent.
 func (z *InfraComplex) IsZeroDiv() bool {
 	zero := new(Complex)
-	return z.L().Equals(zero)
+	return z.l.Equals(zero)
 }
 
 // Inv sets z equal to the inverse of y, and returns z.

@@ -18,16 +18,9 @@ type Hamilton struct {
 	l, r Complex
 }
 
-// Rational returns the rational part of z.
-func (z *Hamilton) Rational() *big.Rat {
-	return &z.l.l
-}
-
-// Cartesian returns the four Cartesian components of z.
-func (z *Hamilton) Cartesian() (a, b, c, d *big.Rat) {
-	a, b = z.l.Cartesian()
-	c, d = z.r.Cartesian()
-	return
+// Cartesian returns the four rational Cartesian components of z.
+func (z *Hamilton) Cartesian() (*big.Rat, *big.Rat, *big.Rat, *big.Rat) {
+	return &z.l.l, &z.l.r, &z.r.l, &z.r.r
 }
 
 // String returns the string representation of a Hamilton value.
@@ -70,12 +63,13 @@ func (z *Hamilton) Copy(y *Hamilton) *Hamilton {
 	return z
 }
 
-// NewHamilton returns a pointer to a Hamilton value made from four given
-// pointers to big.Rat values.
+// NewHamilton returns a pointer to the Hamilton value a+bi+cj+dk.
 func NewHamilton(a, b, c, d *big.Rat) *Hamilton {
 	z := new(Hamilton)
-	z.l.Copy(NewComplex(a, b))
-	z.r.Copy(NewComplex(c, d))
+	z.l.l.Set(a)
+	z.l.r.Set(b)
+	z.r.l.Set(c)
+	z.r.r.Set(d)
 	return z
 }
 
@@ -167,16 +161,15 @@ func (z *Hamilton) Quo(x, y *Hamilton) *Hamilton {
 	return z.Mul(x, z.Inv(y))
 }
 
-// Lipschitz sets z equal to a Lipschitz integer made from four given pointers
-// to big.Int values, and returns z.
+// Lipschitz sets z equal to the Lipschitz integer a+bi+cj+dk, and returns z.
 func (z *Hamilton) Lipschitz(a, b, c, d *big.Int) *Hamilton {
 	z.l.Gauss(a, b)
 	z.r.Gauss(c, d)
 	return z
 }
 
-// Hurwitz sets z equal to a Hurwitz integer made by adding 1/2 to each of the
-// four given pointers to big.Int values, and returns z.
+// Hurwitz sets z equal to the Hurwitz integer
+// (a+1/2)+(b+1/2)i+(c+1/2)j+(d+1/2)k, and returns z.
 func (z *Hamilton) Hurwitz(a, b, c, d *big.Int) *Hamilton {
 	z.Lipschitz(a, b, c, d)
 	half := big.NewRat(1, 2)
