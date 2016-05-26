@@ -159,7 +159,9 @@ func (z *InfraComplex) Inv(y *InfraComplex) *InfraComplex {
 	if y.IsZeroDiv() {
 		panic("inverse of zero divisor")
 	}
-	return z.Scal(z.Conj(y), new(big.Rat).Inv(y.Quad()))
+	a := y.Quad()
+	a.Inv(a)
+	return z.Scal(z.Conj(y), a)
 }
 
 // Quo sets z equal to the quotient of x and y, and returns z.

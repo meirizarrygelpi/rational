@@ -132,7 +132,9 @@ func (z *Complex) Quad() *big.Rat {
 
 // Inv sets z equal to the inverse of y, and returns z.
 func (z *Complex) Inv(y *Complex) *Complex {
-	return z.Scal(z.Conj(y), new(big.Rat).Inv(y.Quad()))
+	a := y.Quad()
+	a.Inv(a)
+	return z.Scal(z.Conj(y), a)
 }
 
 // Quo sets z equal to the quotient of x and y, and returns z.
