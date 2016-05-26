@@ -283,5 +283,3 @@ Alternatively, you can obtain the supra perplex numbers from a perplex Cayley-Di
 
 1. Improve documentation
 1. Tests
-1. Add SupraComplex type
-1. Add SupraPerplex type
