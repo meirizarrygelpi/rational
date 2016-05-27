@@ -167,6 +167,18 @@ func TestSupraAddScalDouble(t *testing.T) {
 
 // Involutivity
 
+func TestSupraInvInvolutive(t *testing.T) {
+	f := func(x *Supra) bool {
+		// t.Logf("x = %v", x)
+		l := new(Supra)
+		l.Inv(l.Inv(x))
+		return l.Equals(x)
+	}
+	if err := quick.Check(f, nil); err != nil {
+		t.Error(err)
+	}
+}
+
 func TestSupraNegInvolutive(t *testing.T) {
 	f := func(x *Supra) bool {
 		// t.Logf("x = %v", x)

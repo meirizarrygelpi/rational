@@ -172,6 +172,18 @@ func TestSupraPerplexAddScalDouble(t *testing.T) {
 
 // Involutivity
 
+func TestSupraPerplexInvInvolutive(t *testing.T) {
+	f := func(x *SupraPerplex) bool {
+		// t.Logf("x = %v", x)
+		l := new(SupraPerplex)
+		l.Inv(l.Inv(x))
+		return l.Equals(x)
+	}
+	if err := quick.Check(f, nil); err != nil {
+		t.Error(err)
+	}
+}
+
 func TestSupraPerplexNegInvolutive(t *testing.T) {
 	f := func(x *SupraPerplex) bool {
 		// t.Logf("x = %v", x)

@@ -172,6 +172,18 @@ func TestZornAddScalDouble(t *testing.T) {
 
 // Involutivity
 
+func TestZornInvInvolutive(t *testing.T) {
+	f := func(x *Zorn) bool {
+		// t.Logf("x = %v", x)
+		l := new(Zorn)
+		l.Inv(l.Inv(x))
+		return l.Equals(x)
+	}
+	if err := quick.Check(f, nil); err != nil {
+		t.Error(err)
+	}
+}
+
 func TestZornNegInvolutive(t *testing.T) {
 	f := func(x *Zorn) bool {
 		// t.Logf("x = %v", x)
