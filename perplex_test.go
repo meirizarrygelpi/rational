@@ -310,3 +310,20 @@ func TestPerplexSubMulDistributive(t *testing.T) {
 		t.Error(err)
 	}
 }
+
+// Composition
+
+func TestPerplexComposition(t *testing.T) {
+	f := func(x, y *Perplex) bool {
+		// t.Logf("x = %v, y = %v", x, y)
+		p := new(Perplex)
+		a, b := new(big.Rat), new(big.Rat)
+		p.Mul(x, y)
+		a.Set(p.Quad())
+		b.Mul(x.Quad(), y.Quad())
+		return a.Cmp(b) == 0
+	}
+	if err := quick.Check(f, nil); err != nil {
+		t.Error(err)
+	}
+}

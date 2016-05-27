@@ -326,3 +326,20 @@ func TestSupraQuadPositive(t *testing.T) {
 		t.Error(err)
 	}
 }
+
+// Composition
+
+func TestSupraComposition(t *testing.T) {
+	f := func(x, y *Supra) bool {
+		// t.Logf("x = %v, y = %v", x, y)
+		p := new(Supra)
+		a, b := new(big.Rat), new(big.Rat)
+		p.Mul(x, y)
+		a.Set(p.Quad())
+		b.Mul(x.Quad(), y.Quad())
+		return a.Cmp(b) == 0
+	}
+	if err := quick.Check(f, nil); err != nil {
+		t.Error(err)
+	}
+}

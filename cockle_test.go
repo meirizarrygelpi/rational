@@ -314,3 +314,20 @@ func TestCockleSubMulDistributive(t *testing.T) {
 		t.Error(err)
 	}
 }
+
+// Composition
+
+func TestCockleComposition(t *testing.T) {
+	f := func(x, y *Cockle) bool {
+		// t.Logf("x = %v, y = %v", x, y)
+		p := new(Cockle)
+		a, b := new(big.Rat), new(big.Rat)
+		p.Mul(x, y)
+		a.Set(p.Quad())
+		b.Mul(x.Quad(), y.Quad())
+		return a.Cmp(b) == 0
+	}
+	if err := quick.Check(f, nil); err != nil {
+		t.Error(err)
+	}
+}
