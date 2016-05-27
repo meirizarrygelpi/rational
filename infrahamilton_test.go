@@ -172,18 +172,6 @@ func TestInfraHamiltonAddScalDouble(t *testing.T) {
 
 // Involutivity
 
-func TestInfraHamiltonInvInvolutive(t *testing.T) {
-	f := func(x *InfraHamilton) bool {
-		// t.Logf("x = %v", x)
-		l := new(InfraHamilton)
-		l.Inv(l.Inv(x))
-		return l.Equals(x)
-	}
-	if err := quick.Check(f, nil); err != nil {
-		t.Error(err)
-	}
-}
-
 func TestInfraHamiltonNegInvolutive(t *testing.T) {
 	f := func(x *InfraHamilton) bool {
 		// t.Logf("x = %v", x)

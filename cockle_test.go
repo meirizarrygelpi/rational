@@ -167,18 +167,6 @@ func TestCockleAddScalDouble(t *testing.T) {
 
 // Involutivity
 
-func TestCockleInvInvolutive(t *testing.T) {
-	f := func(x *Cockle) bool {
-		// t.Logf("x = %v", x)
-		l := new(Cockle)
-		l.Inv(l.Inv(x))
-		return l.Equals(x)
-	}
-	if err := quick.Check(f, nil); err != nil {
-		t.Error(err)
-	}
-}
-
 func TestCockleNegInvolutive(t *testing.T) {
 	f := func(x *Cockle) bool {
 		// t.Logf("x = %v", x)

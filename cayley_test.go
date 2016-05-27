@@ -172,18 +172,6 @@ func TestCayleyAddScalDouble(t *testing.T) {
 
 // Involutivity
 
-func TestCayleyInvInvolutive(t *testing.T) {
-	f := func(x *Cayley) bool {
-		// t.Logf("x = %v", x)
-		l := new(Cayley)
-		l.Inv(l.Inv(x))
-		return l.Equals(x)
-	}
-	if err := quick.Check(f, nil); err != nil {
-		t.Error(err)
-	}
-}
-
 func TestCayleyNegInvolutive(t *testing.T) {
 	f := func(x *Cayley) bool {
 		// t.Logf("x = %v", x)

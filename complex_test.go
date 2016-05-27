@@ -163,18 +163,6 @@ func TestComplexAddScalDouble(t *testing.T) {
 
 // Involutivity
 
-func TestComplexInvInvolutive(t *testing.T) {
-	f := func(x *Complex) bool {
-		// t.Logf("x = %v", x)
-		l := new(Complex)
-		l.Inv(l.Inv(x))
-		return l.Equals(x)
-	}
-	if err := quick.Check(f, nil); err != nil {
-		t.Error(err)
-	}
-}
-
 func TestComplexNegInvolutive(t *testing.T) {
 	f := func(x *Complex) bool {
 		// t.Logf("x = %v", x)

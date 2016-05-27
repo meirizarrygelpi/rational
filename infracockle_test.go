@@ -172,18 +172,6 @@ func TestInfraCockleAddScalDouble(t *testing.T) {
 
 // Involutivity
 
-func TestInfraCockleInvInvolutive(t *testing.T) {
-	f := func(x *InfraCockle) bool {
-		// t.Logf("x = %v", x)
-		l := new(InfraCockle)
-		l.Inv(l.Inv(x))
-		return l.Equals(x)
-	}
-	if err := quick.Check(f, nil); err != nil {
-		t.Error(err)
-	}
-}
-
 func TestInfraCockleNegInvolutive(t *testing.T) {
 	f := func(x *InfraCockle) bool {
 		// t.Logf("x = %v", x)

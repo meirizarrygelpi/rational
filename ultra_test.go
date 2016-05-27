@@ -172,18 +172,6 @@ func TestUltraAddScalDouble(t *testing.T) {
 
 // Involutivity
 
-func TestUltraInvInvolutive(t *testing.T) {
-	f := func(x *Ultra) bool {
-		// t.Logf("x = %v", x)
-		l := new(Ultra)
-		l.Inv(l.Inv(x))
-		return l.Equals(x)
-	}
-	if err := quick.Check(f, nil); err != nil {
-		t.Error(err)
-	}
-}
-
 func TestUltraNegInvolutive(t *testing.T) {
 	f := func(x *Ultra) bool {
 		// t.Logf("x = %v", x)

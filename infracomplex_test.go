@@ -167,18 +167,6 @@ func TestInfraComplexAddScalDouble(t *testing.T) {
 
 // Involutivity
 
-func TestInfraComplexInvInvolutive(t *testing.T) {
-	f := func(x *InfraComplex) bool {
-		// t.Logf("x = %v", x)
-		l := new(InfraComplex)
-		l.Inv(l.Inv(x))
-		return l.Equals(x)
-	}
-	if err := quick.Check(f, nil); err != nil {
-		t.Error(err)
-	}
-}
-
 func TestInfraComplexNegInvolutive(t *testing.T) {
 	f := func(x *InfraComplex) bool {
 		// t.Logf("x = %v", x)

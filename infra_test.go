@@ -163,18 +163,6 @@ func TestInfraAddScalDouble(t *testing.T) {
 
 // Involutivity
 
-func TestInfraInvInvolutive(t *testing.T) {
-	f := func(x *Infra) bool {
-		// t.Logf("x = %v", x)
-		l := new(Infra)
-		l.Inv(l.Inv(x))
-		return l.Equals(x)
-	}
-	if err := quick.Check(f, nil); err != nil {
-		t.Error(err)
-	}
-}
-
 func TestInfraNegInvolutive(t *testing.T) {
 	f := func(x *Infra) bool {
 		// t.Logf("x = %v", x)
