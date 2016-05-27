@@ -331,3 +331,33 @@ func TestCayleyQuadPositive(t *testing.T) {
 		t.Error(err)
 	}
 }
+
+// Left-alternativity
+
+func TestCayleyLeftAlternative(t *testing.T) {
+	f := func(x, y *Cayley) bool {
+		// t.Logf("x = %v, y = %v", x, y)
+		l := new(Cayley)
+		l.Associator(x, x, y)
+		zero := new(Cayley)
+		return l.Equals(zero)
+	}
+	if err := quick.Check(f, nil); err != nil {
+		t.Error(err)
+	}
+}
+
+// Right-alternativity
+
+func TestCayleyRightAlternative(t *testing.T) {
+	f := func(x, y *Cayley) bool {
+		// t.Logf("x = %v, y = %v", x, y)
+		l := new(Cayley)
+		l.Associator(x, y, y)
+		zero := new(Cayley)
+		return l.Equals(zero)
+	}
+	if err := quick.Check(f, nil); err != nil {
+		t.Error(err)
+	}
+}

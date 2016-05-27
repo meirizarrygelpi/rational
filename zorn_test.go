@@ -319,3 +319,33 @@ func TestZornSubMulDistributive(t *testing.T) {
 		t.Error(err)
 	}
 }
+
+// Left-alternativity
+
+func TestZornLeftAlternative(t *testing.T) {
+	f := func(x, y *Zorn) bool {
+		// t.Logf("x = %v, y = %v", x, y)
+		l := new(Zorn)
+		l.Associator(x, x, y)
+		zero := new(Zorn)
+		return l.Equals(zero)
+	}
+	if err := quick.Check(f, nil); err != nil {
+		t.Error(err)
+	}
+}
+
+// Right-alternativity
+
+func TestZornRightAlternative(t *testing.T) {
+	f := func(x, y *Zorn) bool {
+		// t.Logf("x = %v, y = %v", x, y)
+		l := new(Zorn)
+		l.Associator(x, y, y)
+		zero := new(Zorn)
+		return l.Equals(zero)
+	}
+	if err := quick.Check(f, nil); err != nil {
+		t.Error(err)
+	}
+}

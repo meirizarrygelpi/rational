@@ -269,6 +269,30 @@ Alternatively, you can obtain the infra Cockle quaternions from a perplex Cayley
 
 The `rational.SupraComplex` type represents a rational supra complex number. It corresponds to a null Cayley-Dickson construct with `rational.InfraComplex` values. The imaginary unit element is denoted `i`, and the dual unit elements are denoted `α`, `β`, `γ`, `δ`, `ε`, and `ζ`. The multiplication rules are:
 ```go
+	Mul(i, i) = -1
+	Mul(α, α) = Mul(β, β) = Mul(γ, γ) = 0
+	Mul(δ, δ) = Mul(ε, ε) = Mul(ζ, ζ) = 0
+	Mul(i, α) = -Mul(α, i) = +β
+	Mul(i, β) = -Mul(β, i) = -α
+	Mul(i, γ) = -Mul(γ, i) = +δ
+	Mul(i, δ) = -Mul(δ, i) = -γ
+	Mul(i, ε) = -Mul(ε, i) = -ζ
+	Mul(i, ζ) = -Mul(ζ, i) = +ε
+	Mul(α, β) = Mul(β, α) = 0
+	Mul(α, γ) = -Mul(γ, α) = +ε
+	Mul(α, δ) = -Mul(δ, α) = +ζ
+	Mul(α, ε) = Mul(ε, α) = 0
+	Mul(α, ζ) = Mul(ζ, α) = 0
+	Mul(β, γ) = -Mul(γ, β) = +ζ
+	Mul(β, δ) = -Mul(δ, β) = -ε
+	Mul(β, ε) = Mul(ε, β) = 0
+	Mul(β, ζ) = Mul(ζ, β) = 0
+	Mul(γ, δ) = Mul(δ, γ) = 0
+	Mul(γ, ε) = Mul(ε, γ) = 0
+	Mul(γ, ζ) = Mul(ζ, γ) = 0
+	Mul(δ, ε) = Mul(ε, δ) = 0
+	Mul(δ, ζ) = Mul(ζ, δ) = 0
+	Mul(ε, ζ) = Mul(ζ, ε) = 0
 ```
 Alternatively, you can obtain the supra complex numbers from a complex Cayley-Dickson construct with `rational.Supra` values.
 
@@ -276,8 +300,36 @@ Alternatively, you can obtain the supra complex numbers from a complex Cayley-Di
 
 The `rational.SupraPerplex` type represents a rational supra perplex number. It corresponds to a null Cayley-Dickson construct with `rational.InfraPerplex` values. The split unit element is denoted `s`, and the dual unit elements are denoted `ρ`, `σ`, `τ`, `υ`, `φ`, and `ψ`. The multiplication rules are:
 ```go
+	Mul(s, s) = +1
+	Mul(ρ, ρ) = Mul(σ, σ) = Mul(τ, τ) = 0
+	Mul(υ, υ) = Mul(φ, φ) = Mul(ψ, ψ) = 0
+	Mul(s, ρ) = -Mul(ρ, s) = +σ
+	Mul(s, σ) = -Mul(σ, s) = +ρ
+	Mul(s, τ) = -Mul(τ, s) = +υ
+	Mul(s, υ) = -Mul(υ, s) = +τ
+	Mul(s, φ) = -Mul(φ, s) = -ψ
+	Mul(s, ψ) = -Mul(ψ, s) = -φ
+	Mul(ρ, σ) = Mul(σ, ρ) = 0
+	Mul(ρ, τ) = -Mul(τ, ρ) = +φ
+	Mul(ρ, υ) = -Mul(υ, ρ) = +ψ
+	Mul(ρ, φ) = Mul(φ, ρ) = 0
+	Mul(ρ, ψ) = Mul(ψ, ρ) = 0
+	Mul(σ, τ) = -Mul(τ, σ) = +ψ
+	Mul(σ, υ) = -Mul(υ, σ) = +φ
+	Mul(σ, φ) = Mul(φ, σ) = 0
+	Mul(σ, ψ) = Mul(ψ, σ) = 0
+	Mul(τ, υ) = Mul(υ, τ) = 0
+	Mul(τ, φ) = Mul(φ, τ) = 0
+	Mul(τ, ψ) = Mul(ψ, τ) = 0
+	Mul(υ, φ) = Mul(φ, υ) = 0
+	Mul(υ, ψ) = Mul(ψ, υ) = 0
+	Mul(φ, ψ) = Mul(ψ, φ) = 0
 ```
 Alternatively, you can obtain the supra perplex numbers from a perplex Cayley-Dickson construct with `rational.Supra` values.
+
+## And Beyond...
+
+Using any of the Cayley-Dickson constructs on any of the eight-dimensional types would produce one of nine sixteen-dimensional types. These types include the [sedenions](https://en.wikipedia.org/wiki/Sedenion), which are infamous for containing zero-divisors.
 
 ## To Do
 

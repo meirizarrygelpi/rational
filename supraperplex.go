@@ -121,27 +121,27 @@ func (z *SupraPerplex) Sub(x, y *SupraPerplex) *SupraPerplex {
 //		Mul(s, s) = +1
 // 		Mul(ρ, ρ) = Mul(σ, σ) = Mul(τ, τ) = 0
 // 		Mul(υ, υ) = Mul(φ, φ) = Mul(ψ, ψ) = 0
-// 		Mul(s, j) = -Mul(j, s) = +k
-// 		Mul(s, k) = -Mul(k, s) = -j
 // 		Mul(s, ρ) = -Mul(ρ, s) = +σ
-// 		Mul(s, σ) = -Mul(σ, s) = -ρ
-// 		Mul(s, τ) = -Mul(τ, s) = -υ
+// 		Mul(s, σ) = -Mul(σ, s) = +ρ
+// 		Mul(s, τ) = -Mul(τ, s) = +υ
 // 		Mul(s, υ) = -Mul(υ, s) = +τ
-// 		Mul(j, k) = -Mul(k, j) = +s
-// 		Mul(j, ρ) = -Mul(ρ, j) = +τ
-// 		Mul(j, σ) = -Mul(σ, j) = +υ
-// 		Mul(j, τ) = -Mul(τ, j) = -ρ
-// 		Mul(j, υ) = -Mul(υ, j) = -σ
-// 		Mul(k, ρ) = -Mul(ρ, k) = +υ
-// 		Mul(k, σ) = -Mul(σ, k) = -τ
-// 		Mul(k, τ) = -Mul(τ, k) = +σ
-// 		Mul(k, υ) = -Mul(υ, k) = -ρ
+// 		Mul(s, φ) = -Mul(φ, s) = -ψ
+// 		Mul(s, ψ) = -Mul(ψ, s) = -φ
 // 		Mul(ρ, σ) = Mul(σ, ρ) = 0
-// 		Mul(ρ, τ) = Mul(τ, ρ) = 0
-// 		Mul(ρ, υ) = Mul(υ, ρ) = 0
-// 		Mul(σ, τ) = Mul(τ, σ) = 0
-// 		Mul(σ, υ) = Mul(υ, σ) = 0
+// 		Mul(ρ, τ) = -Mul(τ, ρ) = +φ
+// 		Mul(ρ, υ) = -Mul(υ, ρ) = +ψ
+// 		Mul(ρ, φ) = Mul(φ, ρ) = 0
+// 		Mul(ρ, ψ) = Mul(ψ, ρ) = 0
+// 		Mul(σ, τ) = -Mul(τ, σ) = +ψ
+// 		Mul(σ, υ) = -Mul(υ, σ) = +φ
+// 		Mul(σ, φ) = Mul(φ, σ) = 0
+// 		Mul(σ, ψ) = Mul(ψ, σ) = 0
 // 		Mul(τ, υ) = Mul(υ, τ) = 0
+// 		Mul(τ, φ) = Mul(φ, τ) = 0
+// 		Mul(τ, ψ) = Mul(ψ, τ) = 0
+// 		Mul(υ, φ) = Mul(φ, υ) = 0
+// 		Mul(υ, ψ) = Mul(ψ, υ) = 0
+// 		Mul(φ, ψ) = Mul(ψ, φ) = 0
 // This binary operation is noncommutative but associative.
 func (z *SupraPerplex) Mul(x, y *SupraPerplex) *SupraPerplex {
 	a := new(InfraPerplex).Copy(&x.l)

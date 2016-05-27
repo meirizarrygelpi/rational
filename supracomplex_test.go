@@ -331,3 +331,33 @@ func TestSupraComplexQuadPositive(t *testing.T) {
 		t.Error(err)
 	}
 }
+
+// Left-alternativity
+
+func TestSupraComplexLeftAlternative(t *testing.T) {
+	f := func(x, y *SupraComplex) bool {
+		// t.Logf("x = %v, y = %v", x, y)
+		l := new(SupraComplex)
+		l.Associator(x, x, y)
+		zero := new(SupraComplex)
+		return l.Equals(zero)
+	}
+	if err := quick.Check(f, nil); err != nil {
+		t.Error(err)
+	}
+}
+
+// Right-alternativity
+
+func TestSupraComplexRightAlternative(t *testing.T) {
+	f := func(x, y *SupraComplex) bool {
+		// t.Logf("x = %v, y = %v", x, y)
+		l := new(SupraComplex)
+		l.Associator(x, y, y)
+		zero := new(SupraComplex)
+		return l.Equals(zero)
+	}
+	if err := quick.Check(f, nil); err != nil {
+		t.Error(err)
+	}
+}

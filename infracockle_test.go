@@ -319,3 +319,33 @@ func TestInfraCockleSubMulDistributive(t *testing.T) {
 		t.Error(err)
 	}
 }
+
+// Left-alternativity
+
+func TestInfraCockleLeftAlternative(t *testing.T) {
+	f := func(x, y *InfraCockle) bool {
+		// t.Logf("x = %v, y = %v", x, y)
+		l := new(InfraCockle)
+		l.Associator(x, x, y)
+		zero := new(InfraCockle)
+		return l.Equals(zero)
+	}
+	if err := quick.Check(f, nil); err != nil {
+		t.Error(err)
+	}
+}
+
+// Right-alternativity
+
+func TestInfraCockleRightAlternative(t *testing.T) {
+	f := func(x, y *InfraCockle) bool {
+		// t.Logf("x = %v, y = %v", x, y)
+		l := new(InfraCockle)
+		l.Associator(x, y, y)
+		zero := new(InfraCockle)
+		return l.Equals(zero)
+	}
+	if err := quick.Check(f, nil); err != nil {
+		t.Error(err)
+	}
+}

@@ -319,3 +319,33 @@ func TestSupraPerplexSubMulDistributive(t *testing.T) {
 		t.Error(err)
 	}
 }
+
+// Left-alternativity
+
+func TestSupraPerplexLeftAlternative(t *testing.T) {
+	f := func(x, y *SupraPerplex) bool {
+		// t.Logf("x = %v, y = %v", x, y)
+		l := new(SupraPerplex)
+		l.Associator(x, x, y)
+		zero := new(SupraPerplex)
+		return l.Equals(zero)
+	}
+	if err := quick.Check(f, nil); err != nil {
+		t.Error(err)
+	}
+}
+
+// Right-alternativity
+
+func TestSupraPerplexRightAlternative(t *testing.T) {
+	f := func(x, y *SupraPerplex) bool {
+		// t.Logf("x = %v, y = %v", x, y)
+		l := new(SupraPerplex)
+		l.Associator(x, y, y)
+		zero := new(SupraPerplex)
+		return l.Equals(zero)
+	}
+	if err := quick.Check(f, nil); err != nil {
+		t.Error(err)
+	}
+}

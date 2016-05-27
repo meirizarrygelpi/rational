@@ -65,8 +65,8 @@ func (z *SupraComplex) Copy(y *SupraComplex) *SupraComplex {
 	return z
 }
 
-// NewSupraComplex returns a pointer to an SupraComplex value made from eight
-// given pointers to big.Rat values.
+// NewSupraComplex returns a pointer to the SupraComplex value
+// a+bi+cα+dβ+eγ+fδ+gε+hζ.
 func NewSupraComplex(a, b, c, d, e, f, g, h *big.Rat) *SupraComplex {
 	z := new(SupraComplex)
 	z.l.l.l.Set(a)
@@ -121,27 +121,27 @@ func (z *SupraComplex) Sub(x, y *SupraComplex) *SupraComplex {
 //		Mul(i, i) = -1
 // 		Mul(α, α) = Mul(β, β) = Mul(γ, γ) = 0
 // 		Mul(δ, δ) = Mul(ε, ε) = Mul(ζ, ζ) = 0
-// 		Mul(i, j) = -Mul(j, i) = +k
-// 		Mul(i, k) = -Mul(k, i) = -j
 // 		Mul(i, α) = -Mul(α, i) = +β
 // 		Mul(i, β) = -Mul(β, i) = -α
-// 		Mul(i, γ) = -Mul(γ, i) = -δ
-// 		Mul(i, δ) = -Mul(δ, i) = +γ
-// 		Mul(j, k) = -Mul(k, j) = +i
-// 		Mul(j, α) = -Mul(α, j) = +γ
-// 		Mul(j, β) = -Mul(β, j) = +δ
-// 		Mul(j, γ) = -Mul(γ, j) = -α
-// 		Mul(j, δ) = -Mul(δ, j) = -β
-// 		Mul(k, α) = -Mul(α, k) = +δ
-// 		Mul(k, β) = -Mul(β, k) = -γ
-// 		Mul(k, γ) = -Mul(γ, k) = +β
-// 		Mul(k, δ) = -Mul(δ, k) = -α
+// 		Mul(i, γ) = -Mul(γ, i) = +δ
+// 		Mul(i, δ) = -Mul(δ, i) = -γ
+// 		Mul(i, ε) = -Mul(ε, i) = -ζ
+// 		Mul(i, ζ) = -Mul(ζ, i) = +ε
 // 		Mul(α, β) = Mul(β, α) = 0
-// 		Mul(α, γ) = Mul(γ, α) = 0
-// 		Mul(α, δ) = Mul(δ, α) = 0
-// 		Mul(β, γ) = Mul(γ, β) = 0
-// 		Mul(β, δ) = Mul(δ, β) = 0
+// 		Mul(α, γ) = -Mul(γ, α) = +ε
+// 		Mul(α, δ) = -Mul(δ, α) = +ζ
+// 		Mul(α, ε) = Mul(ε, α) = 0
+// 		Mul(α, ζ) = Mul(ζ, α) = 0
+// 		Mul(β, γ) = -Mul(γ, β) = +ζ
+// 		Mul(β, δ) = -Mul(δ, β) = -ε
+// 		Mul(β, ε) = Mul(ε, β) = 0
+// 		Mul(β, ζ) = Mul(ζ, β) = 0
 // 		Mul(γ, δ) = Mul(δ, γ) = 0
+// 		Mul(γ, ε) = Mul(ε, γ) = 0
+// 		Mul(γ, ζ) = Mul(ζ, γ) = 0
+// 		Mul(δ, ε) = Mul(ε, δ) = 0
+// 		Mul(δ, ζ) = Mul(ζ, δ) = 0
+// 		Mul(ε, ζ) = Mul(ζ, ε) = 0
 // This binary operation is noncommutative but associative.
 func (z *SupraComplex) Mul(x, y *SupraComplex) *SupraComplex {
 	a := new(InfraComplex).Copy(&x.l)

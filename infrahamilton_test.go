@@ -331,3 +331,33 @@ func TestInfraHamiltonQuadPositive(t *testing.T) {
 		t.Error(err)
 	}
 }
+
+// Left-alternativity
+
+func TestInfraHamiltonLeftAlternative(t *testing.T) {
+	f := func(x, y *InfraHamilton) bool {
+		// t.Logf("x = %v, y = %v", x, y)
+		l := new(InfraHamilton)
+		l.Associator(x, x, y)
+		zero := new(InfraHamilton)
+		return l.Equals(zero)
+	}
+	if err := quick.Check(f, nil); err != nil {
+		t.Error(err)
+	}
+}
+
+// Right-alternativity
+
+func TestInfraHamiltonRightAlternative(t *testing.T) {
+	f := func(x, y *InfraHamilton) bool {
+		// t.Logf("x = %v, y = %v", x, y)
+		l := new(InfraHamilton)
+		l.Associator(x, y, y)
+		zero := new(InfraHamilton)
+		return l.Equals(zero)
+	}
+	if err := quick.Check(f, nil); err != nil {
+		t.Error(err)
+	}
+}

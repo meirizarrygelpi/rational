@@ -331,3 +331,33 @@ func TestUltraQuadPositive(t *testing.T) {
 		t.Error(err)
 	}
 }
+
+// Left-alternativity
+
+func TestUltraLeftAlternative(t *testing.T) {
+	f := func(x, y *Ultra) bool {
+		// t.Logf("x = %v, y = %v", x, y)
+		l := new(Ultra)
+		l.Associator(x, x, y)
+		zero := new(Ultra)
+		return l.Equals(zero)
+	}
+	if err := quick.Check(f, nil); err != nil {
+		t.Error(err)
+	}
+}
+
+// Right-alternativity
+
+func TestUltraRightAlternative(t *testing.T) {
+	f := func(x, y *Ultra) bool {
+		// t.Logf("x = %v, y = %v", x, y)
+		l := new(Ultra)
+		l.Associator(x, y, y)
+		zero := new(Ultra)
+		return l.Equals(zero)
+	}
+	if err := quick.Check(f, nil); err != nil {
+		t.Error(err)
+	}
+}
