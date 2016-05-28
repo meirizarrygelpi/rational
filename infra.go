@@ -148,6 +148,23 @@ func (z *Infra) Quo(x, y *Infra) *Infra {
 	return z.Mul(x, z.Inv(y))
 }
 
+// CrossRatio sets z equal to the cross ratio
+// 		Inv(w - x) * (v - x) * Inv(v - y) * (w - y)
+// Then it returns z.
+func (z *Infra) CrossRatio(v, w, x, y *Infra) *Infra {
+	temp := new(Infra)
+	z.Sub(w, x)
+	z.Inv(z)
+	temp.Sub(v, x)
+	z.Mul(z, temp)
+	temp.Sub(v, y)
+	temp.Inv(temp)
+	z.Mul(z, temp)
+	temp.Sub(w, y)
+	z.Mul(z, temp)
+	return z
+}
+
 // Generate returns a random Infra value for quick.Check testing.
 func (z *Infra) Generate(rand *rand.Rand, size int) reflect.Value {
 	randomInfra := &Infra{

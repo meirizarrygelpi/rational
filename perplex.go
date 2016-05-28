@@ -171,6 +171,23 @@ func (z *Perplex) Idempotent(sign int) *Perplex {
 	return z
 }
 
+// CrossRatio sets z equal to the cross ratio
+// 		Inv(w - x) * (v - x) * Inv(v - y) * (w - y)
+// Then it returns z.
+func (z *Perplex) CrossRatio(v, w, x, y *Perplex) *Perplex {
+	temp := new(Perplex)
+	z.Sub(w, x)
+	z.Inv(z)
+	temp.Sub(v, x)
+	z.Mul(z, temp)
+	temp.Sub(v, y)
+	temp.Inv(temp)
+	z.Mul(z, temp)
+	temp.Sub(w, y)
+	z.Mul(z, temp)
+	return z
+}
+
 // Generate returns a random Perplex value for quick.Check testing.
 func (z *Perplex) Generate(rand *rand.Rand, size int) reflect.Value {
 	randomPerplex := &Perplex{

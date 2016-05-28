@@ -150,6 +150,23 @@ func (z *Complex) Gauss(a, b *big.Int) *Complex {
 	return z
 }
 
+// CrossRatio sets z equal to the cross ratio
+// 		Inv(w - x) * (v - x) * Inv(v - y) * (w - y)
+// Then it returns z.
+func (z *Complex) CrossRatio(v, w, x, y *Complex) *Complex {
+	temp := new(Complex)
+	z.Sub(w, x)
+	z.Inv(z)
+	temp.Sub(v, x)
+	z.Mul(z, temp)
+	temp.Sub(v, y)
+	temp.Inv(temp)
+	z.Mul(z, temp)
+	temp.Sub(w, y)
+	z.Mul(z, temp)
+	return z
+}
+
 // Generate returns a random Complex value for quick.Check testing.
 func (z *Complex) Generate(rand *rand.Rand, size int) reflect.Value {
 	randomComplex := &Complex{
