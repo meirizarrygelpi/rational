@@ -167,6 +167,20 @@ func (z *Complex) CrossRatio(v, w, x, y *Complex) *Complex {
 	return z
 }
 
+// Möbius sets z equal to the Möbius (fractional linear) transform
+// 		(a*y + b) * Inv(c*y + d)
+// Then it returns z.
+func (z *Complex) Möbius(y, a, b, c, d *Complex) *Complex {
+	z.Mul(a, y)
+	z.Add(z, b)
+	temp := new(Complex)
+	temp.Mul(c, y)
+	temp.Add(temp, d)
+	temp.Inv(temp)
+	z.Mul(z, temp)
+	return z
+}
+
 // Generate returns a random Complex value for quick.Check testing.
 func (z *Complex) Generate(rand *rand.Rand, size int) reflect.Value {
 	randomComplex := &Complex{

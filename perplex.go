@@ -188,6 +188,20 @@ func (z *Perplex) CrossRatio(v, w, x, y *Perplex) *Perplex {
 	return z
 }
 
+// Möbius sets z equal to the Möbius (fractional linear) transform
+// 		(a*y + b) * Inv(c*y + d)
+// Then it returns z.
+func (z *Perplex) Möbius(y, a, b, c, d *Perplex) *Perplex {
+	z.Mul(a, y)
+	z.Add(z, b)
+	temp := new(Perplex)
+	temp.Mul(c, y)
+	temp.Add(temp, d)
+	temp.Inv(temp)
+	z.Mul(z, temp)
+	return z
+}
+
 // Generate returns a random Perplex value for quick.Check testing.
 func (z *Perplex) Generate(rand *rand.Rand, size int) reflect.Value {
 	randomPerplex := &Perplex{
