@@ -58,10 +58,10 @@ func (z *Cayley) Equals(y *Cayley) bool {
 	return true
 }
 
-// Copy copies y onto z, and returns z.
-func (z *Cayley) Copy(y *Cayley) *Cayley {
-	z.l.Copy(&y.l)
-	z.r.Copy(&y.r)
+// Set sets z equal to y, and returns z.
+func (z *Cayley) Set(y *Cayley) *Cayley {
+	z.l.Set(&y.l)
+	z.r.Set(&y.r)
 	return z
 }
 
@@ -143,10 +143,10 @@ func (z *Cayley) Sub(x, y *Cayley) *Cayley {
 // 		Mul(p, q) = -Mul(q, p) = -i
 // This binary operation is noncommutative and nonassociative.
 func (z *Cayley) Mul(x, y *Cayley) *Cayley {
-	a := new(Hamilton).Copy(&x.l)
-	b := new(Hamilton).Copy(&x.r)
-	c := new(Hamilton).Copy(&y.l)
-	d := new(Hamilton).Copy(&y.r)
+	a := new(Hamilton).Set(&x.l)
+	b := new(Hamilton).Set(&x.r)
+	c := new(Hamilton).Set(&y.l)
+	d := new(Hamilton).Set(&y.r)
 	temp := new(Hamilton)
 	z.l.Sub(
 		z.l.Mul(a, c),

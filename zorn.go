@@ -58,10 +58,10 @@ func (z *Zorn) Equals(y *Zorn) bool {
 	return true
 }
 
-// Copy copies y onto z, and returns z.
-func (z *Zorn) Copy(y *Zorn) *Zorn {
-	z.l.Copy(&y.l)
-	z.r.Copy(&y.r)
+// Set sets z equal to y, and returns z.
+func (z *Zorn) Set(y *Zorn) *Zorn {
+	z.l.Set(&y.l)
+	z.r.Set(&y.r)
 	return z
 }
 
@@ -143,10 +143,10 @@ func (z *Zorn) Sub(x, y *Zorn) *Zorn {
 // 		Mul(t, u) = -Mul(u, t) = +i
 // This binary operation is noncommutative and nonassociative.
 func (z *Zorn) Mul(x, y *Zorn) *Zorn {
-	a := new(Hamilton).Copy(&x.l)
-	b := new(Hamilton).Copy(&x.r)
-	c := new(Hamilton).Copy(&y.l)
-	d := new(Hamilton).Copy(&y.r)
+	a := new(Hamilton).Set(&x.l)
+	b := new(Hamilton).Set(&x.r)
+	c := new(Hamilton).Set(&y.l)
+	d := new(Hamilton).Set(&y.r)
 	temp := new(Hamilton)
 	z.l.Add(
 		z.l.Mul(a, c),

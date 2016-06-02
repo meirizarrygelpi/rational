@@ -47,8 +47,8 @@ func (z *Perplex) Equals(y *Perplex) bool {
 	return true
 }
 
-// Copy copies y onto z, and returns z.
-func (z *Perplex) Copy(y *Perplex) *Perplex {
+// Set sets z equal to y, and returns z.
+func (z *Perplex) Set(y *Perplex) *Perplex {
 	z.l.Set(&y.l)
 	z.r.Set(&y.r)
 	return z

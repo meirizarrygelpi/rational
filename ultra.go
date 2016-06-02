@@ -78,8 +78,8 @@ func (z *Ultra) Equals(y *Ultra) bool {
 	return true
 }
 
-// Copy copies y onto z, and returns z.
-func (z *Ultra) Copy(y *Ultra) *Ultra {
+// Set sets z equal to y, and returns z.
+func (z *Ultra) Set(y *Ultra) *Ultra {
 	z.SetL(y.L())
 	z.SetR(y.R())
 	return z
@@ -157,10 +157,10 @@ func (z *Ultra) Sub(x, y *Ultra) *Ultra {
 // 		Mul(ζ, η) = Mul(η, ζ) = 0
 // This binary operation is noncommutative and nonassociative.
 func (z *Ultra) Mul(x, y *Ultra) *Ultra {
-	a := new(Supra).Copy(x.L())
-	b := new(Supra).Copy(x.R())
-	c := new(Supra).Copy(y.L())
-	d := new(Supra).Copy(y.R())
+	a := new(Supra).Set(x.L())
+	b := new(Supra).Set(x.R())
+	c := new(Supra).Set(y.L())
+	d := new(Supra).Set(y.R())
 	s, t, u := new(Supra), new(Supra), new(Supra)
 	z.SetL(
 		s.Mul(a, c),

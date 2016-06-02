@@ -55,10 +55,10 @@ func (z *Cockle) Equals(y *Cockle) bool {
 	return true
 }
 
-// Copy copies y onto z, and returns z.
-func (z *Cockle) Copy(y *Cockle) *Cockle {
-	z.l.Copy(&y.l)
-	z.r.Copy(&y.r)
+// Set sets z equal to y, and returns z.
+func (z *Cockle) Set(y *Cockle) *Cockle {
+	z.l.Set(&y.l)
+	z.r.Set(&y.r)
 	return z
 }
 
@@ -117,10 +117,10 @@ func (z *Cockle) Sub(x, y *Cockle) *Cockle {
 // 		Mul(u, i) = -Mul(i, u) = t
 // This binary operation is noncommutative but associative.
 func (z *Cockle) Mul(x, y *Cockle) *Cockle {
-	a := new(Complex).Copy(&x.l)
-	b := new(Complex).Copy(&x.r)
-	c := new(Complex).Copy(&y.l)
-	d := new(Complex).Copy(&y.r)
+	a := new(Complex).Set(&x.l)
+	b := new(Complex).Set(&x.r)
+	c := new(Complex).Set(&y.l)
+	d := new(Complex).Set(&y.r)
 	temp := new(Complex)
 	z.l.Add(
 		z.l.Mul(a, c),

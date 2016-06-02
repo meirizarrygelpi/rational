@@ -58,10 +58,10 @@ func (z *SupraComplex) Equals(y *SupraComplex) bool {
 	return true
 }
 
-// Copy copies y onto z, and returns z.
-func (z *SupraComplex) Copy(y *SupraComplex) *SupraComplex {
-	z.l.Copy(&y.l)
-	z.r.Copy(&y.r)
+// Set sets z equal to y, and returns z.
+func (z *SupraComplex) Set(y *SupraComplex) *SupraComplex {
+	z.l.Set(&y.l)
+	z.r.Set(&y.r)
 	return z
 }
 
@@ -144,10 +144,10 @@ func (z *SupraComplex) Sub(x, y *SupraComplex) *SupraComplex {
 // 		Mul(ε, ζ) = Mul(ζ, ε) = 0
 // This binary operation is noncommutative but associative.
 func (z *SupraComplex) Mul(x, y *SupraComplex) *SupraComplex {
-	a := new(InfraComplex).Copy(&x.l)
-	b := new(InfraComplex).Copy(&x.r)
-	c := new(InfraComplex).Copy(&y.l)
-	d := new(InfraComplex).Copy(&y.r)
+	a := new(InfraComplex).Set(&x.l)
+	b := new(InfraComplex).Set(&x.r)
+	c := new(InfraComplex).Set(&y.l)
+	d := new(InfraComplex).Set(&y.r)
 	temp := new(InfraComplex)
 	z.l.Mul(a, c)
 	z.r.Add(

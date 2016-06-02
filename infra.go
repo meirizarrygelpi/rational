@@ -47,8 +47,8 @@ func (z *Infra) Equals(y *Infra) bool {
 	return true
 }
 
-// Copy copies y onto z, and returns z.
-func (z *Infra) Copy(y *Infra) *Infra {
+// Set sets z equal to y, and returns z.
+func (z *Infra) Set(y *Infra) *Infra {
 	z.l.Set(&y.l)
 	z.r.Set(&y.r)
 	return z

@@ -58,10 +58,10 @@ func (z *InfraHamilton) Equals(y *InfraHamilton) bool {
 	return true
 }
 
-// Copy copies y onto z, and returns z.
-func (z *InfraHamilton) Copy(y *InfraHamilton) *InfraHamilton {
-	z.l.Copy(&y.l)
-	z.r.Copy(&y.r)
+// Set sets z equal to y, and returns z.
+func (z *InfraHamilton) Set(y *InfraHamilton) *InfraHamilton {
+	z.l.Set(&y.l)
+	z.r.Set(&y.r)
 	return z
 }
 
@@ -143,10 +143,10 @@ func (z *InfraHamilton) Sub(x, y *InfraHamilton) *InfraHamilton {
 // 		Mul(γ, δ) = Mul(δ, γ) = 0
 // This binary operation is noncommutative but associative.
 func (z *InfraHamilton) Mul(x, y *InfraHamilton) *InfraHamilton {
-	a := new(Hamilton).Copy(&x.l)
-	b := new(Hamilton).Copy(&x.r)
-	c := new(Hamilton).Copy(&y.l)
-	d := new(Hamilton).Copy(&y.r)
+	a := new(Hamilton).Set(&x.l)
+	b := new(Hamilton).Set(&x.r)
+	c := new(Hamilton).Set(&y.l)
+	d := new(Hamilton).Set(&y.r)
 	temp := new(Hamilton)
 	z.l.Mul(a, c)
 	z.r.Add(

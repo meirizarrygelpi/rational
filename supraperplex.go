@@ -58,10 +58,10 @@ func (z *SupraPerplex) Equals(y *SupraPerplex) bool {
 	return true
 }
 
-// Copy copies y onto z, and returns z.
-func (z *SupraPerplex) Copy(y *SupraPerplex) *SupraPerplex {
-	z.l.Copy(&y.l)
-	z.r.Copy(&y.r)
+// Set sets z equal to y, and returns z.
+func (z *SupraPerplex) Set(y *SupraPerplex) *SupraPerplex {
+	z.l.Set(&y.l)
+	z.r.Set(&y.r)
 	return z
 }
 
@@ -144,10 +144,10 @@ func (z *SupraPerplex) Sub(x, y *SupraPerplex) *SupraPerplex {
 // 		Mul(φ, ψ) = Mul(ψ, φ) = 0
 // This binary operation is noncommutative but associative.
 func (z *SupraPerplex) Mul(x, y *SupraPerplex) *SupraPerplex {
-	a := new(InfraPerplex).Copy(&x.l)
-	b := new(InfraPerplex).Copy(&x.r)
-	c := new(InfraPerplex).Copy(&y.l)
-	d := new(InfraPerplex).Copy(&y.r)
+	a := new(InfraPerplex).Set(&x.l)
+	b := new(InfraPerplex).Set(&x.r)
+	c := new(InfraPerplex).Set(&y.l)
+	d := new(InfraPerplex).Set(&y.r)
 	temp := new(InfraPerplex)
 	z.l.Mul(a, c)
 	z.r.Add(

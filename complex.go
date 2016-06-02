@@ -47,8 +47,8 @@ func (z *Complex) Equals(y *Complex) bool {
 	return true
 }
 
-// Copy copies y onto z, and returns z.
-func (z *Complex) Copy(y *Complex) *Complex {
+// Set sets z equal to y, and returns z.
+func (z *Complex) Set(y *Complex) *Complex {
 	z.l.Set(&y.l)
 	z.r.Set(&y.r)
 	return z

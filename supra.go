@@ -56,10 +56,10 @@ func (z *Supra) Equals(y *Supra) bool {
 	return true
 }
 
-// Copy copies y onto z, and returns z.
-func (z *Supra) Copy(y *Supra) *Supra {
-	z.l.Copy(&y.l)
-	z.r.Copy(&y.r)
+// Set sets z equal to y, and returns z.
+func (z *Supra) Set(y *Supra) *Supra {
+	z.l.Set(&y.l)
+	z.r.Set(&y.r)
 	return z
 }
 
@@ -117,10 +117,10 @@ func (z *Supra) Sub(x, y *Supra) *Supra {
 // 		Mul(γ, α) = Mul(α, γ) = 0
 // This binary operation is noncommutative but associative.
 func (z *Supra) Mul(x, y *Supra) *Supra {
-	a := new(Infra).Copy(&x.l)
-	b := new(Infra).Copy(&x.r)
-	c := new(Infra).Copy(&y.l)
-	d := new(Infra).Copy(&y.r)
+	a := new(Infra).Set(&x.l)
+	b := new(Infra).Set(&x.r)
+	c := new(Infra).Set(&y.l)
+	d := new(Infra).Set(&y.r)
 	temp := new(Infra)
 	z.l.Mul(a, c)
 	z.r.Add(

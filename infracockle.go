@@ -58,10 +58,10 @@ func (z *InfraCockle) Equals(y *InfraCockle) bool {
 	return true
 }
 
-// Copy copies y onto z, and returns z.
-func (z *InfraCockle) Copy(y *InfraCockle) *InfraCockle {
-	z.l.Copy(&y.l)
-	z.r.Copy(&y.r)
+// Set sets z equal to y, and returns z.
+func (z *InfraCockle) Set(y *InfraCockle) *InfraCockle {
+	z.l.Set(&y.l)
+	z.r.Set(&y.r)
 	return z
 }
 
@@ -144,10 +144,10 @@ func (z *InfraCockle) Sub(x, y *InfraCockle) *InfraCockle {
 // 		Mul(τ, υ) = Mul(υ, τ) = 0
 // This binary operation is noncommutative but associative.
 func (z *InfraCockle) Mul(x, y *InfraCockle) *InfraCockle {
-	a := new(Cockle).Copy(&x.l)
-	b := new(Cockle).Copy(&x.r)
-	c := new(Cockle).Copy(&y.l)
-	d := new(Cockle).Copy(&y.r)
+	a := new(Cockle).Set(&x.l)
+	b := new(Cockle).Set(&x.r)
+	c := new(Cockle).Set(&y.l)
+	d := new(Cockle).Set(&y.r)
 	temp := new(Cockle)
 	z.l.Mul(a, c)
 	z.r.Add(
