@@ -142,8 +142,7 @@ func (z *Complex) Quo(x, y *Complex) *Complex {
 	return z.Mul(x, z.Inv(y))
 }
 
-// Gauss sets z equal to a Gaussian integer with real part equal to a and
-// imaginary part equal to b, and returns z.
+// Gauss sets z equal to the Gaussian integer a+bi, and returns z.
 func (z *Complex) Gauss(a, b *big.Int) *Complex {
 	z.l.SetInt(a)
 	z.r.SetInt(b)

@@ -171,7 +171,7 @@ func (z *Hamilton) Lipschitz(a, b, c, d *big.Int) *Hamilton {
 }
 
 // Hurwitz sets z equal to the Hurwitz integer
-// (a+1/2)+(b+1/2)i+(c+1/2)j+(d+1/2)k, and returns z.
+// (a+½)+(b+½)i+(c+½)j+(d+½)k, and returns z.
 func (z *Hamilton) Hurwitz(a, b, c, d *big.Int) *Hamilton {
 	z.Lipschitz(a, b, c, d)
 	half := big.NewRat(1, 2)

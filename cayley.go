@@ -200,23 +200,16 @@ func (z *Cayley) Quo(x, y *Cayley) *Cayley {
 	return z.Mul(x, z.Inv(y))
 }
 
-// Graves sets z equal to the Graves integer a+bi+cj+dk+em+fn+gp+hq, and
+// Graves sets z equal to the Gravesian integer a+bi+cj+dk+em+fn+gp+hq, and
 // returns z.
 func (z *Cayley) Graves(a, b, c, d, e, f, g, h *big.Int) *Cayley {
-	z.l.l.l.SetInt(a)
-	z.l.l.r.SetInt(b)
-	z.l.r.l.SetInt(c)
-	z.l.r.r.SetInt(d)
-	z.r.l.l.SetInt(e)
-	z.r.l.r.SetInt(f)
-	z.r.r.l.SetInt(g)
-	z.r.r.r.SetInt(h)
+	z.l.Lipschitz(a, b, c, d)
+	z.r.Lipschitz(e, f, g, h)
 	return z
 }
 
-// Klein sets z equal to the Klein integer
-// (a+1/2)+(b+1/2)i+(c+1/2)j+(d+1/2)k+(e+1/2)m+(f+1/2)n+(g+1/2)p+(h+1/2)q,
-// and returns z.
+// Klein sets z equal to the Kleinian integer
+// (a+½)+(b+½)i+(c+½)j+(d+½)k+(e+½)m+(f+½)n+(g+½)p+(h+½)q, and returns z.
 func (z *Cayley) Klein(a, b, c, d, e, f, g, h *big.Int) *Cayley {
 	z.Graves(a, b, c, d, e, f, g, h)
 	half := big.NewRat(1, 2)
