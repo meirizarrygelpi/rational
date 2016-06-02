@@ -180,6 +180,54 @@ func (z *Complex) Möbius(y, a, b, c, d *Complex) *Complex {
 	return z
 }
 
+// PolyMul sets z equal to the polynomial in y with Complex coefficients coeff,
+// and returns z.
+func (z *Complex) PolyMul(y *Complex, coeff ...*Complex) *Complex {
+	pow, temp := new(Complex), new(Complex)
+	rank := len(coeff)
+	if rank == 0 {
+		z.Set(temp)
+		return z
+	}
+	z.Set(coeff[0])
+	if rank == 1 {
+		return z
+	}
+	pow.Set(y)
+	for _, c := range coeff[1:] {
+		temp.Mul(pow, c)
+		z.Add(z, temp)
+		pow.Mul(pow, y)
+	}
+	return z
+}
+
+// PolyScal sets z equal to the polynomial in y with big.Rat coefficients coeff,
+// and returns z.
+func (z *Complex) PolyScal(y *Complex, coeff ...*big.Rat) *Complex {
+	temp := new(Complex)
+	rank := len(coeff)
+	if rank == 0 {
+		z.Set(temp)
+		return z
+	}
+	z.Set(NewComplex(
+		coeff[0],
+		new(big.Rat),
+	))
+	if rank == 1 {
+		return z
+	}
+	pow := new(Complex)
+	pow.Set(y)
+	for _, c := range coeff[1:] {
+		temp.Scal(pow, c)
+		z.Add(z, temp)
+		pow.Mul(pow, y)
+	}
+	return z
+}
+
 // Generate returns a random Complex value for quick.Check testing.
 func (z *Complex) Generate(rand *rand.Rand, size int) reflect.Value {
 	randomComplex := &Complex{

@@ -4,6 +4,8 @@ Package `rational` brings rational [complex](https://en.wikipedia.org/wiki/Compl
 
 [![Go Report Card](https://goreportcard.com/badge/gojp/goreportcard)](https://goreportcard.com/report/github.com/meirizarrygelpi/rational) [![GoDoc](https://godoc.org/github.com/meirizarrygelpi/rational?status.svg)](https://godoc.org/github.com/meirizarrygelpi/rational)
 
+This package contains three two-dimensional types (like complex numbers), five four-dimensional types (like quaternions), and seven eight-dimensional types (like octonions).
+
 ## Two-Dimensional Types
 
 There are three two-dimensional types. The (binary) multiplication operation for all two-dimensional types is **commutative** and **associative**.
@@ -335,3 +337,5 @@ Using any of the Cayley-Dickson constructs on any of the eight-dimensional types
 
 1. Improve documentation
 1. Tests
+1. Polynomials
+1. Elementary and special functions via Padé approximants
