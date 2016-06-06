@@ -179,6 +179,56 @@ func (z *Infra) Möbius(y, a, b, c, d *Infra) *Infra {
 	return z
 }
 
+// PlusReal sets z equal to y shifted by the rational a, and returns z.
+func (z *Infra) PlusReal(y *Infra, a *big.Rat) *Infra {
+	z.l.Add(&y.l, a)
+	z.r.Set(&y.r)
+	return z
+}
+
+// PolyEval sets z equal to poly evaluated at y, and returns z.
+func (z *Infra) PolyEval(y *Infra, poly Laurent) *Infra {
+	neg, nonneg := poly.Degrees()
+	n := len(neg)
+	nn := len(nonneg)
+	rank := n + nn
+	temp := new(Infra)
+	if rank == 0 {
+		z.Set(temp)
+		return z
+	}
+	// zero degree
+	if c, ok := poly[0]; ok {
+		z.PlusReal(z, c)
+	}
+	pow := new(Infra)
+	// negative degrees
+	if n > 0 {
+		inv := new(Infra)
+		inv.Inv(y)
+		pow.Set(inv)
+		for d := int64(-1); d > neg[n-1]-1; d-- {
+			if c, ok := poly[d]; ok {
+				temp.Scal(pow, c)
+				z.Add(z, temp)
+			}
+			pow.Mul(pow, inv)
+		}
+	}
+	// positive degrees
+	if nn > 0 {
+		pow.Set(y)
+		for d := int64(1); d < nonneg[nn-1]+1; d++ {
+			if c, ok := poly[d]; ok {
+				temp.Scal(pow, c)
+				z.Add(z, temp)
+			}
+			pow.Mul(pow, y)
+		}
+	}
+	return z
+}
+
 // Generate returns a random Infra value for quick.Check testing.
 func (z *Infra) Generate(rand *rand.Rand, size int) reflect.Value {
 	randomInfra := &Infra{
