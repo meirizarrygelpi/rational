@@ -198,8 +198,23 @@ func (z *Cayley) Inv(y *Cayley) *Cayley {
 	return z.Scal(z.Conj(y), a)
 }
 
-// Quo sets z equal to the quotient of x and y, and returns z.
-func (z *Cayley) Quo(x, y *Cayley) *Cayley {
+// QuoL sets z equal to the left quotient of x and y:
+// 		Mul(Inv(y), x)
+// Then it returns z.
+func (z *Cayley) QuoL(x, y *Cayley) *Cayley {
+	if zero := new(Cayley); y.Equals(zero) {
+		panic("denominator is zero")
+	}
+	return z.Mul(z.Inv(y), x)
+}
+
+// QuoR sets z equal to the right quotient of x and y:
+// 		Mul(x, Inv(y))
+// Then it returns z.
+func (z *Cayley) QuoR(x, y *Cayley) *Cayley {
+	if zero := new(Cayley); y.Equals(zero) {
+		panic("denominator is zero")
+	}
 	return z.Mul(x, z.Inv(y))
 }
 

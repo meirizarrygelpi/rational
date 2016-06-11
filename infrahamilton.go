@@ -202,8 +202,20 @@ func (z *InfraHamilton) Inv(y *InfraHamilton) *InfraHamilton {
 	return z.Scal(z.Conj(y), a)
 }
 
-// Quo sets z equal to the quotient of x and y, and returns z.
-func (z *InfraHamilton) Quo(x, y *InfraHamilton) *InfraHamilton {
+// QuoL sets z equal to the left quotient of x and y:
+// 		Mul(Inv(y), x)
+// Then it returns z.
+func (z *InfraHamilton) QuoL(x, y *InfraHamilton) *InfraHamilton {
+	if y.IsZeroDiv() {
+		panic("denominator is zero divisor")
+	}
+	return z.Mul(z.Inv(y), x)
+}
+
+// QuoR sets z equal to the right quotient of x and y:
+// 		Mul(x, Inv(y))
+// Then it returns z.
+func (z *InfraHamilton) QuoR(x, y *InfraHamilton) *InfraHamilton {
 	if y.IsZeroDiv() {
 		panic("denominator is zero divisor")
 	}
