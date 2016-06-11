@@ -13,19 +13,19 @@ import (
 
 var symbSupraComplex = [8]string{"", "i", "α", "β", "γ", "δ", "ε", "ζ"}
 
-// An SupraComplex represents a rational infra-complex number.
+// A SupraComplex represents a rational supra-complex number.
 type SupraComplex struct {
 	l, r InfraComplex
 }
 
-// Cartesian returns the eight Cartesian components of z.
+// Cartesian returns the eight rational Cartesian components of z.
 func (z *SupraComplex) Cartesian() (*big.Rat, *big.Rat, *big.Rat, *big.Rat,
 	*big.Rat, *big.Rat, *big.Rat, *big.Rat) {
 	return &z.l.l.l, &z.l.l.r, &z.l.r.l, &z.l.r.r,
 		&z.r.l.l, &z.r.l.r, &z.r.r.l, &z.r.r.r
 }
 
-// String returns the string representation of an SupraComplex value.
+// String returns the string representation of a SupraComplex value.
 //
 // If z corresponds to a + bi + cα + dβ + eγ + fδ + gε + hζ, then the string
 // is"(a+bi+cα+dβ+eγ+fδ+gε+hζ)", similar to complex128 values.
@@ -101,14 +101,14 @@ func (z *SupraComplex) Conj(y *SupraComplex) *SupraComplex {
 	return z
 }
 
-// Add sets z equal to the sum of x and y, and returns z.
+// Add sets z equal to x+y, and returns z.
 func (z *SupraComplex) Add(x, y *SupraComplex) *SupraComplex {
 	z.l.Add(&x.l, &y.l)
 	z.r.Add(&x.r, &y.r)
 	return z
 }
 
-// Sub sets z equal to the difference of x and y, and returns z.
+// Sub sets z equal to x-y, and returns z.
 func (z *SupraComplex) Sub(x, y *SupraComplex) *SupraComplex {
 	z.l.Sub(&x.l, &y.l)
 	z.r.Sub(&x.r, &y.r)
@@ -142,7 +142,7 @@ func (z *SupraComplex) Sub(x, y *SupraComplex) *SupraComplex {
 // 		Mul(δ, ε) = Mul(ε, δ) = 0
 // 		Mul(δ, ζ) = Mul(ζ, δ) = 0
 // 		Mul(ε, ζ) = Mul(ζ, ε) = 0
-// This binary operation is noncommutative but associative.
+// This binary operation is noncommutative and nonassociative.
 func (z *SupraComplex) Mul(x, y *SupraComplex) *SupraComplex {
 	a := new(InfraComplex).Set(&x.l)
 	b := new(InfraComplex).Set(&x.r)
@@ -157,7 +157,9 @@ func (z *SupraComplex) Mul(x, y *SupraComplex) *SupraComplex {
 	return z
 }
 
-// Commutator sets z equal to the commutator of x and y, and returns z.
+// Commutator sets z equal to the commutator of x and y:
+// 		Mul(x, y) - Mul(y, x)
+// Then it returns z.
 func (z *SupraComplex) Commutator(x, y *SupraComplex) *SupraComplex {
 	return z.Sub(
 		z.Mul(x, y),
@@ -165,7 +167,9 @@ func (z *SupraComplex) Commutator(x, y *SupraComplex) *SupraComplex {
 	)
 }
 
-// Associator sets z equal to the associator of w, x, and y, and returns z.
+// Associator sets z equal to the associator of w, x, and y:
+// 		Mul(Mul(w, x), y) - Mul(w, Mul(x, y))
+// Then it returns z.
 func (z *SupraComplex) Associator(w, x, y *SupraComplex) *SupraComplex {
 	temp := new(SupraComplex)
 	return z.Sub(

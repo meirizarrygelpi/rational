@@ -13,7 +13,7 @@ import (
 
 var symbInfraHamilton = [8]string{"", "i", "j", "k", "α", "β", "γ", "δ"}
 
-// An InfraHamilton represents a rational infra-complex number.
+// An InfraHamilton represents a rational infra-Hamilton quaternion.
 type InfraHamilton struct {
 	l, r Hamilton
 }
@@ -65,8 +65,8 @@ func (z *InfraHamilton) Set(y *InfraHamilton) *InfraHamilton {
 	return z
 }
 
-// NewInfraHamilton returns a pointer to an InfraHamilton value made from eight
-// given pointers to big.Rat values.
+// NewInfraHamilton returns a pointer to the InfraHamilton value
+// a+bi+cj+dk+eα+fβ+gγ+hδ.
 func NewInfraHamilton(a, b, c, d, e, f, g, h *big.Rat) *InfraHamilton {
 	z := new(InfraHamilton)
 	z.l.l.l.Set(a)
@@ -101,14 +101,14 @@ func (z *InfraHamilton) Conj(y *InfraHamilton) *InfraHamilton {
 	return z
 }
 
-// Add sets z equal to the sum of x and y, and returns z.
+// Add sets z equal to x+y, and returns z.
 func (z *InfraHamilton) Add(x, y *InfraHamilton) *InfraHamilton {
 	z.l.Add(&x.l, &y.l)
 	z.r.Add(&x.r, &y.r)
 	return z
 }
 
-// Sub sets z equal to the difference of x and y, and returns z.
+// Sub sets z equal to x-y, and returns z.
 func (z *InfraHamilton) Sub(x, y *InfraHamilton) *InfraHamilton {
 	z.l.Sub(&x.l, &y.l)
 	z.r.Sub(&x.r, &y.r)
@@ -141,7 +141,7 @@ func (z *InfraHamilton) Sub(x, y *InfraHamilton) *InfraHamilton {
 // 		Mul(β, γ) = Mul(γ, β) = 0
 // 		Mul(β, δ) = Mul(δ, β) = 0
 // 		Mul(γ, δ) = Mul(δ, γ) = 0
-// This binary operation is noncommutative but associative.
+// This binary operation is noncommutative and nonassociative.
 func (z *InfraHamilton) Mul(x, y *InfraHamilton) *InfraHamilton {
 	a := new(Hamilton).Set(&x.l)
 	b := new(Hamilton).Set(&x.r)
@@ -156,7 +156,9 @@ func (z *InfraHamilton) Mul(x, y *InfraHamilton) *InfraHamilton {
 	return z
 }
 
-// Commutator sets z equal to the commutator of x and y, and returns z.
+// Commutator sets z equal to the commutator of x and y:
+// 		Mul(x, y) - Mul(y, x)
+// Then it returns z.
 func (z *InfraHamilton) Commutator(x, y *InfraHamilton) *InfraHamilton {
 	return z.Sub(
 		z.Mul(x, y),
@@ -164,7 +166,9 @@ func (z *InfraHamilton) Commutator(x, y *InfraHamilton) *InfraHamilton {
 	)
 }
 
-// Associator sets z equal to the associator of w, x, and y, and returns z.
+// Associator sets z equal to the associator of w, x, and y:
+// 		Mul(Mul(w, x), y) - Mul(w, Mul(x, y))
+// Then it returns z.
 func (z *InfraHamilton) Associator(w, x, y *InfraHamilton) *InfraHamilton {
 	temp := new(InfraHamilton)
 	return z.Sub(

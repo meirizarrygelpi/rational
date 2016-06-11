@@ -13,12 +13,12 @@ import (
 
 var symbSupraPerplex = [8]string{"", "s", "ρ", "σ", "τ", "υ", "φ", "ψ"}
 
-// An SupraPerplex represents a rational infra-complex number.
+// An SupraPerplex represents a rational supra-perplex number.
 type SupraPerplex struct {
 	l, r InfraPerplex
 }
 
-// Cartesian returns the eight Cartesian components of z.
+// Cartesian returns the eight rational Cartesian components of z.
 func (z *SupraPerplex) Cartesian() (*big.Rat, *big.Rat, *big.Rat, *big.Rat,
 	*big.Rat, *big.Rat, *big.Rat, *big.Rat) {
 	return &z.l.l.l, &z.l.l.r, &z.l.r.l, &z.l.r.r,
@@ -27,8 +27,8 @@ func (z *SupraPerplex) Cartesian() (*big.Rat, *big.Rat, *big.Rat, *big.Rat,
 
 // String returns the string representation of an SupraPerplex value.
 //
-// If z corresponds to a + bi + cρ + dσ + eτ + fυ + gφ + hψ, then the string
-// is"(a+bi+cρ+dσ+eτ+fυ+gφ+hψ)", similar to complex128 values.
+// If z corresponds to a + bs + cρ + dσ + eτ + fυ + gφ + hψ, then the string
+// is "(a+bs+cρ+dσ+eτ+fυ+gφ+hψ)", similar to complex128 values.
 func (z *SupraPerplex) String() string {
 	v := make([]*big.Rat, 8)
 	v[0], v[1], v[2], v[3] = z.l.Cartesian()
@@ -65,8 +65,8 @@ func (z *SupraPerplex) Set(y *SupraPerplex) *SupraPerplex {
 	return z
 }
 
-// NewSupraPerplex returns a pointer to an SupraPerplex value made from eight
-// given pointers to big.Rat values.
+// NewSupraPerplex returns a pointer to the SupraPerplex value
+// a+bs+cρ+dσ+eτ+fυ+gφ+hψ.
 func NewSupraPerplex(a, b, c, d, e, f, g, h *big.Rat) *SupraPerplex {
 	z := new(SupraPerplex)
 	z.l.l.l.Set(a)
@@ -101,14 +101,14 @@ func (z *SupraPerplex) Conj(y *SupraPerplex) *SupraPerplex {
 	return z
 }
 
-// Add sets z equal to the sum of x and y, and returns z.
+// Add sets z equal to x+y, and returns z.
 func (z *SupraPerplex) Add(x, y *SupraPerplex) *SupraPerplex {
 	z.l.Add(&x.l, &y.l)
 	z.r.Add(&x.r, &y.r)
 	return z
 }
 
-// Sub sets z equal to the difference of x and y, and returns z.
+// Sub sets z equal to x-y, and returns z.
 func (z *SupraPerplex) Sub(x, y *SupraPerplex) *SupraPerplex {
 	z.l.Sub(&x.l, &y.l)
 	z.r.Sub(&x.r, &y.r)
@@ -142,7 +142,7 @@ func (z *SupraPerplex) Sub(x, y *SupraPerplex) *SupraPerplex {
 // 		Mul(υ, φ) = Mul(φ, υ) = 0
 // 		Mul(υ, ψ) = Mul(ψ, υ) = 0
 // 		Mul(φ, ψ) = Mul(ψ, φ) = 0
-// This binary operation is noncommutative but associative.
+// This binary operation is noncommutative and nonassociative.
 func (z *SupraPerplex) Mul(x, y *SupraPerplex) *SupraPerplex {
 	a := new(InfraPerplex).Set(&x.l)
 	b := new(InfraPerplex).Set(&x.r)
@@ -157,7 +157,9 @@ func (z *SupraPerplex) Mul(x, y *SupraPerplex) *SupraPerplex {
 	return z
 }
 
-// Commutator sets z equal to the commutator of x and y, and returns z.
+// Commutator sets z equal to the commutator of x and y:
+// 		Mul(x, y) - Mul(y, x)
+// Then it returns z.
 func (z *SupraPerplex) Commutator(x, y *SupraPerplex) *SupraPerplex {
 	return z.Sub(
 		z.Mul(x, y),
@@ -165,7 +167,9 @@ func (z *SupraPerplex) Commutator(x, y *SupraPerplex) *SupraPerplex {
 	)
 }
 
-// Associator sets z equal to the associator of w, x, and y, and returns z.
+// Associator sets z equal to the associator of w, x, and y:
+// 		Mul(Mul(w, x), y) - Mul(w, Mul(x, y))
+// Then it returns z.
 func (z *SupraPerplex) Associator(w, x, y *SupraPerplex) *SupraPerplex {
 	temp := new(SupraPerplex)
 	return z.Sub(
@@ -174,10 +178,10 @@ func (z *SupraPerplex) Associator(w, x, y *SupraPerplex) *SupraPerplex {
 	)
 }
 
-// Quad returns the quadrance of z. If z = a+bi+cρ+dσ+eτ+fυ+gφ+hψ, then the
+// Quad returns the quadrance of z. If z = a+bs+cρ+dσ+eτ+fυ+gφ+hψ, then the
 // quadrance is
 //		Mul(a, a) - Mul(b, b)
-// This is always non-negative.
+// This can be positive, negative, or zero.
 func (z *SupraPerplex) Quad() *big.Rat {
 	return z.l.Quad()
 }
@@ -185,8 +189,7 @@ func (z *SupraPerplex) Quad() *big.Rat {
 // IsZeroDiv returns true if z is a zero divisor. This is equivalent to z being
 // nilpotent.
 func (z *SupraPerplex) IsZeroDiv() bool {
-	zero := new(InfraPerplex)
-	return z.l.Equals(zero)
+	return z.l.IsZeroDiv()
 }
 
 // Inv sets z equal to the inverse of y, and returns z.

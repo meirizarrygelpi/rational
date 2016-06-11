@@ -83,14 +83,14 @@ func (z *Complex) Conj(y *Complex) *Complex {
 	return z
 }
 
-// Add sets z equal to the sum of x and y, and returns z.
+// Add sets z equal to x+y, and returns z.
 func (z *Complex) Add(x, y *Complex) *Complex {
 	z.l.Add(&x.l, &y.l)
 	z.r.Add(&x.r, &y.r)
 	return z
 }
 
-// Sub sets z equal to the difference of x and y, and returns z.
+// Sub sets z equal to x-y, and returns z.
 func (z *Complex) Sub(x, y *Complex) *Complex {
 	z.l.Sub(&x.l, &y.l)
 	z.r.Sub(&x.r, &y.r)
@@ -132,6 +132,9 @@ func (z *Complex) Quad() *big.Rat {
 
 // Inv sets z equal to the inverse of y, and returns z.
 func (z *Complex) Inv(y *Complex) *Complex {
+	if zero := new(Complex); y.Equals(zero) {
+		panic("zero inverse")
+	}
 	a := y.Quad()
 	a.Inv(a)
 	return z.Scal(z.Conj(y), a)
@@ -139,6 +142,9 @@ func (z *Complex) Inv(y *Complex) *Complex {
 
 // Quo sets z equal to the quotient of x and y, and returns z.
 func (z *Complex) Quo(x, y *Complex) *Complex {
+	if zero := new(Complex); y.Equals(zero) {
+		panic("zero denominator")
+	}
 	return z.Mul(x, z.Inv(y))
 }
 

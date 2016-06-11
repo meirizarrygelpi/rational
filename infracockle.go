@@ -13,12 +13,12 @@ import (
 
 var symbInfraCockle = [8]string{"", "i", "t", "u", "ρ", "σ", "τ", "υ"}
 
-// An InfraCockle represents a rational infra-complex number.
+// An InfraCockle represents a rational infra-Cockle quaternion.
 type InfraCockle struct {
 	l, r Cockle
 }
 
-// Cartesian returns the eight Cartesian components of z.
+// Cartesian returns the eight rational Cartesian components of z.
 func (z *InfraCockle) Cartesian() (*big.Rat, *big.Rat, *big.Rat, *big.Rat,
 	*big.Rat, *big.Rat, *big.Rat, *big.Rat) {
 	return &z.l.l.l, &z.l.l.r, &z.l.r.l, &z.l.r.r,
@@ -65,8 +65,8 @@ func (z *InfraCockle) Set(y *InfraCockle) *InfraCockle {
 	return z
 }
 
-// NewInfraCockle returns a pointer to an InfraCockle value made from eight
-// given pointers to big.Rat values.
+// NewInfraCockle returns a pointer to the InfraCockle value
+// a+bi+ct+du+eρ+fσ+gτ+hυ.
 func NewInfraCockle(a, b, c, d, e, f, g, h *big.Rat) *InfraCockle {
 	z := new(InfraCockle)
 	z.l.l.l.Set(a)
@@ -101,14 +101,14 @@ func (z *InfraCockle) Conj(y *InfraCockle) *InfraCockle {
 	return z
 }
 
-// Add sets z equal to the sum of x and y, and returns z.
+// Add sets z equal to x+y, and returns z.
 func (z *InfraCockle) Add(x, y *InfraCockle) *InfraCockle {
 	z.l.Add(&x.l, &y.l)
 	z.r.Add(&x.r, &y.r)
 	return z
 }
 
-// Sub sets z equal to the difference of x and y, and returns z.
+// Sub sets z equal to x-y, and returns z.
 func (z *InfraCockle) Sub(x, y *InfraCockle) *InfraCockle {
 	z.l.Sub(&x.l, &y.l)
 	z.r.Sub(&x.r, &y.r)
@@ -142,7 +142,7 @@ func (z *InfraCockle) Sub(x, y *InfraCockle) *InfraCockle {
 // 		Mul(σ, τ) = Mul(τ, σ) = 0
 // 		Mul(σ, υ) = Mul(υ, σ) = 0
 // 		Mul(τ, υ) = Mul(υ, τ) = 0
-// This binary operation is noncommutative but associative.
+// This binary operation is noncommutative and nonassociative.
 func (z *InfraCockle) Mul(x, y *InfraCockle) *InfraCockle {
 	a := new(Cockle).Set(&x.l)
 	b := new(Cockle).Set(&x.r)
@@ -157,7 +157,9 @@ func (z *InfraCockle) Mul(x, y *InfraCockle) *InfraCockle {
 	return z
 }
 
-// Commutator sets z equal to the commutator of x and y, and returns z.
+// Commutator sets z equal to the commutator of x and y:
+// 		Mul(x, y) - Mul(y, x)
+// Then it returns z.
 func (z *InfraCockle) Commutator(x, y *InfraCockle) *InfraCockle {
 	return z.Sub(
 		z.Mul(x, y),
@@ -165,7 +167,9 @@ func (z *InfraCockle) Commutator(x, y *InfraCockle) *InfraCockle {
 	)
 }
 
-// Associator sets z equal to the associator of w, x, and y, and returns z.
+// Associator sets z equal to the associator of w, x, and y:
+// 		Mul(Mul(w, x), y) - Mul(w, Mul(x, y))
+// Then it returns z.
 func (z *InfraCockle) Associator(w, x, y *InfraCockle) *InfraCockle {
 	temp := new(InfraCockle)
 	return z.Sub(

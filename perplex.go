@@ -54,8 +54,7 @@ func (z *Perplex) Set(y *Perplex) *Perplex {
 	return z
 }
 
-// NewPerplex returns a pointer to a Perplex value made from two given pointers
-// to big.Rat values.
+// NewPerplex returns a pointer to the Perplex value a+bs.
 func NewPerplex(a, b *big.Rat) *Perplex {
 	z := new(Perplex)
 	z.l.Set(a)
@@ -84,14 +83,14 @@ func (z *Perplex) Conj(y *Perplex) *Perplex {
 	return z
 }
 
-// Add sets z equal to the sum of x and y, and returns z.
+// Add sets z equal to x+y, and returns z.
 func (z *Perplex) Add(x, y *Perplex) *Perplex {
 	z.l.Add(&x.l, &y.l)
 	z.r.Add(&x.r, &y.r)
 	return z
 }
 
-// Sub sets z equal to the difference of x and y, and returns z.
+// Sub sets z equal to x-y, and returns z.
 func (z *Perplex) Sub(x, y *Perplex) *Perplex {
 	z.l.Sub(&x.l, &y.l)
 	z.r.Sub(&x.r, &y.r)

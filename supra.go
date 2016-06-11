@@ -94,14 +94,14 @@ func (z *Supra) Conj(y *Supra) *Supra {
 	return z
 }
 
-// Add sets z equal to the sum of x and y, and returns z.
+// Add sets z equal to x+y, and returns z.
 func (z *Supra) Add(x, y *Supra) *Supra {
 	z.l.Add(&x.l, &y.l)
 	z.r.Add(&x.r, &y.r)
 	return z
 }
 
-// Sub sets z equal to the difference of x and y, and returns z.
+// Sub sets z equal to x-y, and returns z.
 func (z *Supra) Sub(x, y *Supra) *Supra {
 	z.l.Sub(&x.l, &y.l)
 	z.r.Sub(&x.r, &y.r)
@@ -130,7 +130,9 @@ func (z *Supra) Mul(x, y *Supra) *Supra {
 	return z
 }
 
-// Commutator sets z equal to the commutator of x and y, and returns z.
+// Commutator sets z equal to the commutator of x and y:
+// 		Mul(x, y) - Mul(y, x)
+// Then it returns z.
 func (z *Supra) Commutator(x, y *Supra) *Supra {
 	return z.Sub(
 		z.Mul(x, y),

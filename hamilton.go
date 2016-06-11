@@ -94,14 +94,14 @@ func (z *Hamilton) Conj(y *Hamilton) *Hamilton {
 	return z
 }
 
-// Add sets z equal to the sum of x and y, and returns z.
+// Add sets z equal to x+y, and returns z.
 func (z *Hamilton) Add(x, y *Hamilton) *Hamilton {
 	z.l.Add(&x.l, &y.l)
 	z.r.Add(&x.r, &y.r)
 	return z
 }
 
-// Sub sets z equal to the difference of x and y, and returns z.
+// Sub sets z equal to x-y, and returns z.
 func (z *Hamilton) Sub(x, y *Hamilton) *Hamilton {
 	z.l.Sub(&x.l, &y.l)
 	z.r.Sub(&x.r, &y.r)
@@ -133,7 +133,9 @@ func (z *Hamilton) Mul(x, y *Hamilton) *Hamilton {
 	return z
 }
 
-// Commutator sets z equal to the commutator of x and y, and returns z.
+// Commutator sets z equal to the commutator of x and y:
+// 		Mul(x, y) - Mul(y, x)
+// Then it returns z.
 func (z *Hamilton) Commutator(x, y *Hamilton) *Hamilton {
 	return z.Sub(
 		z.Mul(x, y),
@@ -170,13 +172,12 @@ func (z *Hamilton) Lipschitz(a, b, c, d *big.Int) *Hamilton {
 	return z
 }
 
-// Hurwitz sets z equal to the Hurwitz integer
-// (a+½)+(b+½)i+(c+½)j+(d+½)k, and returns z.
+// Hurwitz sets z equal to the Hurwitz integer (a+½)+(b+½)i+(c+½)j+(d+½)k,
+// and returns z.
 func (z *Hamilton) Hurwitz(a, b, c, d *big.Int) *Hamilton {
 	z.Lipschitz(a, b, c, d)
 	half := big.NewRat(1, 2)
-	z.Add(z, NewHamilton(half, half, half, half))
-	return z
+	return z.Add(z, NewHamilton(half, half, half, half))
 }
 
 // Generate returns a random Hamilton value for quick.Check testing.

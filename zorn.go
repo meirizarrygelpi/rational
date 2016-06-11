@@ -18,7 +18,7 @@ type Zorn struct {
 	l, r Hamilton
 }
 
-// Cartesian returns the eight Cartesian components of z.
+// Cartesian returns the eight rational Cartesian components of z.
 func (z *Zorn) Cartesian() (*big.Rat, *big.Rat, *big.Rat, *big.Rat,
 	*big.Rat, *big.Rat, *big.Rat, *big.Rat) {
 	return &z.l.l.l, &z.l.l.r, &z.l.r.l, &z.l.r.r,
@@ -65,8 +65,7 @@ func (z *Zorn) Set(y *Zorn) *Zorn {
 	return z
 }
 
-// NewZorn returns a pointer to a Zorn value made from eight given pointers
-// to big.Rat values.
+// NewZorn returns a pointer to the Zorn value a+bi+cj+dk+er+fs+gt+hu.
 func NewZorn(a, b, c, d, e, f, g, h *big.Rat) *Zorn {
 	z := new(Zorn)
 	z.l.l.l.Set(a)
@@ -101,14 +100,14 @@ func (z *Zorn) Conj(y *Zorn) *Zorn {
 	return z
 }
 
-// Add sets z equal to the sum of x and y, and returns z.
+// Add sets z equal to x+y, and returns z.
 func (z *Zorn) Add(x, y *Zorn) *Zorn {
 	z.l.Add(&x.l, &y.l)
 	z.r.Add(&x.r, &y.r)
 	return z
 }
 
-// Sub sets z equal to the difference of x and y, and returns z.
+// Sub sets z equal to x-y, and returns z.
 func (z *Zorn) Sub(x, y *Zorn) *Zorn {
 	z.l.Sub(&x.l, &y.l)
 	z.r.Sub(&x.r, &y.r)
@@ -159,7 +158,9 @@ func (z *Zorn) Mul(x, y *Zorn) *Zorn {
 	return z
 }
 
-// Commutator sets z equal to the commutator of x and y, and returns z.
+// Commutator sets z equal to the commutator of x and y:
+// 		Mul(x, y) - Mul(y, x)
+// Then it returns z.
 func (z *Zorn) Commutator(x, y *Zorn) *Zorn {
 	return z.Sub(
 		z.Mul(x, y),
@@ -167,7 +168,9 @@ func (z *Zorn) Commutator(x, y *Zorn) *Zorn {
 	)
 }
 
-// Associator sets z equal to the associator of w, x, and y, and returns z.
+// Associator sets z equal to the associator of w, x, and y:
+// 		Mul(Mul(w, x), y) - Mul(w, Mul(x, y))
+// Then it returns z.
 func (z *Zorn) Associator(w, x, y *Zorn) *Zorn {
 	temp := new(Zorn)
 	return z.Sub(
@@ -190,7 +193,7 @@ func (z *Zorn) Quad() *big.Rat {
 
 // IsZeroDiv returns true if z is a zero divisor.
 func (z *Zorn) IsZeroDiv() bool {
-	return z.l.Quad().Cmp((&z.r).Quad()) == 0
+	return z.l.Quad().Cmp(z.r.Quad()) == 0
 }
 
 // Inv sets z equal to the inverse of y, and returns z.

@@ -83,14 +83,14 @@ func (z *Infra) Conj(y *Infra) *Infra {
 	return z
 }
 
-// Add sets z to the sum of x and y, and returns z.
+// Add sets z equal to x+y, and returns z.
 func (z *Infra) Add(x, y *Infra) *Infra {
 	z.l.Add(&x.l, &y.l)
 	z.r.Add(&x.r, &y.r)
 	return z
 }
 
-// Sub sets z to the difference of x and y, and returns z.
+// Sub sets z equal to x-y, and returns z.
 func (z *Infra) Sub(x, y *Infra) *Infra {
 	z.l.Sub(&x.l, &y.l)
 	z.r.Sub(&x.r, &y.r)

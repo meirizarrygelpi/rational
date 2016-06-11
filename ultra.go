@@ -18,31 +18,11 @@ type Ultra struct {
 	l, r Supra
 }
 
-// L returns the left Cayley-Dickson part of z, a pointer to a Supra value.
-func (z *Ultra) L() *Supra {
-	return &z.l
-}
-
-// R returns the right Cayley-Dickson part of z, a pointer to a Supra value.
-func (z *Ultra) R() *Supra {
-	return &z.r
-}
-
-// SetL sets the left Cayley-Dickson part of z equal to a.
-func (z *Ultra) SetL(a *Supra) {
-	z.l = *a
-}
-
-// SetR sets the right Cayley-Dickson part of z equal to b.
-func (z *Ultra) SetR(b *Supra) {
-	z.r = *b
-}
-
 // Cartesian returns the eight Cartesian components of z.
-func (z *Ultra) Cartesian() (a, b, c, d, e, f, g, h *big.Rat) {
-	a, b, c, d = z.L().Cartesian()
-	e, f, g, h = z.R().Cartesian()
-	return
+func (z *Ultra) Cartesian() (*big.Rat, *big.Rat, *big.Rat, *big.Rat,
+	*big.Rat, *big.Rat, *big.Rat, *big.Rat) {
+	return &z.l.l.l, &z.l.l.r, &z.l.r.l, &z.l.r.r,
+		&z.r.l.l, &z.r.l.r, &z.r.r.l, &z.r.r.r
 }
 
 // String returns the string representation of an Ultra value.
@@ -51,14 +31,14 @@ func (z *Ultra) Cartesian() (a, b, c, d, e, f, g, h *big.Rat) {
 // is "(a+bα+cβ+dγ+eδ+fε+gζ+hη)", similar to complex128 values.
 func (z *Ultra) String() string {
 	v := make([]*big.Rat, 8)
-	v[0], v[1], v[2], v[3] = z.L().Cartesian()
-	v[4], v[5], v[6], v[7] = z.R().Cartesian()
+	v[0], v[1], v[2], v[3] = z.l.Cartesian()
+	v[4], v[5], v[6], v[7] = z.r.Cartesian()
 	a := make([]string, 17)
 	a[0] = "("
 	a[1] = fmt.Sprintf("%v", v[0].RatString())
 	i := 1
 	for j := 2; j < 16; j = j + 2 {
-		if v[i].Sign() == -1 {
+		if v[i].Sign() < 0 {
 			a[j] = fmt.Sprintf("%v", v[i].RatString())
 		} else {
 			a[j] = fmt.Sprintf("+%v", v[i].RatString())
@@ -72,7 +52,7 @@ func (z *Ultra) String() string {
 
 // Equals returns true if y and z are equal.
 func (z *Ultra) Equals(y *Ultra) bool {
-	if !z.L().Equals(y.L()) || !z.R().Equals(y.R()) {
+	if !z.l.Equals(&y.l) || !z.r.Equals(&y.r) {
 		return false
 	}
 	return true
@@ -80,52 +60,57 @@ func (z *Ultra) Equals(y *Ultra) bool {
 
 // Set sets z equal to y, and returns z.
 func (z *Ultra) Set(y *Ultra) *Ultra {
-	z.SetL(y.L())
-	z.SetR(y.R())
+	z.l.Set(&y.l)
+	z.r.Set(&y.r)
 	return z
 }
 
-// NewUltra returns a pointer to a Ultra value made from eight given pointers
-// to big.Rat values.
+// NewUltra returns a pointer to the Ultra value a+bα+cβ+dγ+eδ+fε+gζ+hη.
 func NewUltra(a, b, c, d, e, f, g, h *big.Rat) *Ultra {
 	z := new(Ultra)
-	z.SetL(NewSupra(a, b, c, d))
-	z.SetR(NewSupra(e, f, g, h))
+	z.l.l.l.Set(a)
+	z.l.l.r.Set(b)
+	z.l.r.l.Set(c)
+	z.l.r.r.Set(d)
+	z.r.l.l.Set(e)
+	z.r.l.r.Set(f)
+	z.r.r.l.Set(g)
+	z.r.r.r.Set(h)
 	return z
 }
 
 // Scal sets z equal to y scaled by a, and returns z.
 func (z *Ultra) Scal(y *Ultra, a *big.Rat) *Ultra {
-	z.SetL(new(Supra).Scal(y.L(), a))
-	z.SetR(new(Supra).Scal(y.R(), a))
+	z.l.Scal(&y.l, a)
+	z.r.Scal(&y.r, a)
 	return z
 }
 
 // Neg sets z equal to the negative of y, and returns z.
 func (z *Ultra) Neg(y *Ultra) *Ultra {
-	z.SetL(new(Supra).Neg(y.L()))
-	z.SetR(new(Supra).Neg(y.R()))
+	z.l.Neg(&y.l)
+	z.r.Neg(&y.r)
 	return z
 }
 
 // Conj sets z equal to the conjugate of y, and returns z.
 func (z *Ultra) Conj(y *Ultra) *Ultra {
-	z.SetL(new(Supra).Conj(y.L()))
-	z.SetR(new(Supra).Neg(y.R()))
+	z.l.Conj(&y.l)
+	z.r.Neg(&y.r)
 	return z
 }
 
 // Add sets z equal to the sum of x and y, and returns z.
 func (z *Ultra) Add(x, y *Ultra) *Ultra {
-	z.SetL(new(Supra).Add(x.L(), y.L()))
-	z.SetR(new(Supra).Add(x.R(), y.R()))
+	z.l.Add(&x.l, &y.l)
+	z.r.Add(&x.r, &y.r)
 	return z
 }
 
 // Sub sets z equal to the difference of x and y, and returns z.
 func (z *Ultra) Sub(x, y *Ultra) *Ultra {
-	z.SetL(new(Supra).Sub(x.L(), y.L()))
-	z.SetR(new(Supra).Sub(x.R(), y.R()))
+	z.l.Sub(&x.l, &y.l)
+	z.r.Sub(&x.r, &y.r)
 	return z
 }
 
@@ -157,22 +142,22 @@ func (z *Ultra) Sub(x, y *Ultra) *Ultra {
 // 		Mul(ζ, η) = Mul(η, ζ) = 0
 // This binary operation is noncommutative and nonassociative.
 func (z *Ultra) Mul(x, y *Ultra) *Ultra {
-	a := new(Supra).Set(x.L())
-	b := new(Supra).Set(x.R())
-	c := new(Supra).Set(y.L())
-	d := new(Supra).Set(y.R())
-	s, t, u := new(Supra), new(Supra), new(Supra)
-	z.SetL(
-		s.Mul(a, c),
+	a := new(Supra).Set(&x.l)
+	b := new(Supra).Set(&x.r)
+	c := new(Supra).Set(&y.l)
+	d := new(Supra).Set(&y.r)
+	temp := new(Supra)
+	z.l.Mul(a, c)
+	z.r.Add(
+		z.r.Mul(d, a),
+		temp.Mul(b, temp.Conj(c)),
 	)
-	z.SetR(t.Add(
-		t.Mul(d, a),
-		u.Mul(b, u.Conj(c)),
-	))
 	return z
 }
 
-// Commutator sets z equal to the commutator of x and y, and returns z.
+// Commutator sets z equal to the commutator of x and y:
+// 		Mul(x, y) - Mul(y, x)
+// Then it returns z.
 func (z *Ultra) Commutator(x, y *Ultra) *Ultra {
 	return z.Sub(
 		z.Mul(x, y),
@@ -180,12 +165,14 @@ func (z *Ultra) Commutator(x, y *Ultra) *Ultra {
 	)
 }
 
-// Associator sets z equal to the associator of w, x, and y, and returns z.
+// Associator sets z equal to the associator of w, x, and y:
+// 		Mul(Mul(w, x), y) - Mul(w, Mul(x, y))
+// Then it returns z.
 func (z *Ultra) Associator(w, x, y *Ultra) *Ultra {
-	t := new(Ultra)
+	temp := new(Ultra)
 	return z.Sub(
 		z.Mul(z.Mul(w, x), y),
-		t.Mul(w, t.Mul(x, y)),
+		temp.Mul(w, temp.Mul(x, y)),
 	)
 }
 
@@ -194,21 +181,29 @@ func (z *Ultra) Associator(w, x, y *Ultra) *Ultra {
 //		Mul(a, a)
 // This is always non-negative.
 func (z *Ultra) Quad() *big.Rat {
-	return z.L().Quad()
+	return z.l.Quad()
 }
 
 // IsZeroDiv returns true if z is a zero divisor.
 func (z *Ultra) IsZeroDiv() bool {
-	return z.L().IsZeroDiv()
+	return z.l.IsZeroDiv()
 }
 
 // Inv sets z equal to the inverse of y, and returns z.
 func (z *Ultra) Inv(y *Ultra) *Ultra {
-	return z.Scal(z.Conj(y), new(big.Rat).Inv(y.Quad()))
+	if y.IsZeroDiv() {
+		panic("inverse of zero divisor")
+	}
+	a := y.Quad()
+	a.Inv(a)
+	return z.Scal(z.Conj(y), a)
 }
 
 // Quo sets z equal to the quotient of x and y, and returns z.
 func (z *Ultra) Quo(x, y *Ultra) *Ultra {
+	if y.IsZeroDiv() {
+		panic("denominator is zero divisor")
+	}
 	return z.Mul(x, z.Inv(y))
 }
 

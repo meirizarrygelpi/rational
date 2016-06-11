@@ -93,14 +93,14 @@ func (z *Cockle) Conj(y *Cockle) *Cockle {
 	return z
 }
 
-// Add sets z equal to the sum of x and y, and returns z.
+// Add sets z equal to x+y, and returns z.
 func (z *Cockle) Add(x, y *Cockle) *Cockle {
 	z.l.Add(&x.l, &y.l)
 	z.r.Add(&x.r, &y.r)
 	return z
 }
 
-// Sub sets z equal to the difference of x and y, and returns z.
+// Sub sets z equal to x-y, and returns z.
 func (z *Cockle) Sub(x, y *Cockle) *Cockle {
 	z.l.Sub(&x.l, &y.l)
 	z.r.Sub(&x.r, &y.r)
@@ -133,7 +133,9 @@ func (z *Cockle) Mul(x, y *Cockle) *Cockle {
 	return z
 }
 
-// Commutator sets z equal to the commutator of x and y, and returns z.
+// Commutator sets z equal to the commutator of x and y
+// 		Mul(x, y) - Mul(y, x)
+// Then it returns z.
 func (z *Cockle) Commutator(x, y *Cockle) *Cockle {
 	return z.Sub(
 		z.Mul(x, y),
@@ -153,7 +155,7 @@ func (z *Cockle) Quad() *big.Rat {
 
 // IsZeroDiv returns true if z is a zero divisor.
 func (z *Cockle) IsZeroDiv() bool {
-	return z.l.Quad().Cmp((&z.r).Quad()) == 0
+	return z.l.Quad().Cmp(z.r.Quad()) == 0
 }
 
 // Inv sets z equal to the inverse of y, and returns z.
@@ -174,7 +176,7 @@ func (z *Cockle) Quo(x, y *Cockle) *Cockle {
 	return z.Mul(x, z.Inv(y))
 }
 
-// IsNilpotent returns true if z raised to the nth power vanishes.
+// IsNilpotent returns true if z raised to the n-th power vanishes.
 func (z *Cockle) IsNilpotent(n int) bool {
 	zero := new(Cockle)
 	zeroRat := new(big.Rat)

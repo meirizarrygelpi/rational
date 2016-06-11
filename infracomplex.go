@@ -63,8 +63,7 @@ func (z *InfraComplex) Set(y *InfraComplex) *InfraComplex {
 	return z
 }
 
-// NewInfraComplex returns a pointer to an InfraComplex value made from four
-// given pointers to big.Rat values.
+// NewInfraComplex returns a pointer to the InfraComplex value a+bi+cβ+dγ.
 func NewInfraComplex(a, b, c, d *big.Rat) *InfraComplex {
 	z := new(InfraComplex)
 	z.l.l.Set(a)
@@ -95,14 +94,14 @@ func (z *InfraComplex) Conj(y *InfraComplex) *InfraComplex {
 	return z
 }
 
-// Add sets z equal to the sum of x and y, and returns z.
+// Add sets z equal to x+y, and returns z.
 func (z *InfraComplex) Add(x, y *InfraComplex) *InfraComplex {
 	z.l.Add(&x.l, &y.l)
 	z.r.Add(&x.r, &y.r)
 	return z
 }
 
-// Sub sets z equal to the difference of x and y, and returns z.
+// Sub sets z equal to x-y, and returns z.
 func (z *InfraComplex) Sub(x, y *InfraComplex) *InfraComplex {
 	z.l.Sub(&x.l, &y.l)
 	z.r.Sub(&x.r, &y.r)
@@ -132,7 +131,9 @@ func (z *InfraComplex) Mul(x, y *InfraComplex) *InfraComplex {
 	return z
 }
 
-// Commutator sets z equal to the commutator of x and y, and returns z.
+// Commutator sets z equal to the commutator of x and y:
+// 		Mul(x, y) - Mul(y, x)
+// Then it returns z.
 func (z *InfraComplex) Commutator(x, y *InfraComplex) *InfraComplex {
 	return z.Sub(
 		z.Mul(x, y),
@@ -157,7 +158,7 @@ func (z *InfraComplex) IsZeroDiv() bool {
 // Inv sets z equal to the inverse of y, and returns z.
 func (z *InfraComplex) Inv(y *InfraComplex) *InfraComplex {
 	if y.IsZeroDiv() {
-		panic("inverse of zero divisor")
+		panic("inverse of inverse of zero divisor")
 	}
 	a := y.Quad()
 	a.Inv(a)

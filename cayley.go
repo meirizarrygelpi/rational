@@ -18,7 +18,7 @@ type Cayley struct {
 	l, r Hamilton
 }
 
-// Cartesian returns the eight Cartesian components of z.
+// Cartesian returns the eight rational Cartesian components of z.
 func (z *Cayley) Cartesian() (*big.Rat, *big.Rat, *big.Rat, *big.Rat,
 	*big.Rat, *big.Rat, *big.Rat, *big.Rat) {
 	return &z.l.l.l, &z.l.l.r, &z.l.r.l, &z.l.r.r,
@@ -65,8 +65,7 @@ func (z *Cayley) Set(y *Cayley) *Cayley {
 	return z
 }
 
-// NewCayley returns a pointer to a Cayley value made from eight given pointers
-// to big.Rat values.
+// NewCayley returns a pointer to the Cayley value a+bi+cj+dk+em+fn+gp+hq.
 func NewCayley(a, b, c, d, e, f, g, h *big.Rat) *Cayley {
 	z := new(Cayley)
 	z.l.l.l.Set(a)
@@ -101,7 +100,7 @@ func (z *Cayley) Conj(y *Cayley) *Cayley {
 	return z
 }
 
-// Add sets z equal to the sum of x and y, and returns z.
+// Add sets z equal to x+y, and returns z.
 func (z *Cayley) Add(x, y *Cayley) *Cayley {
 	z.l.Add(&x.l, &y.l)
 	z.r.Add(&x.r, &y.r)
@@ -159,7 +158,9 @@ func (z *Cayley) Mul(x, y *Cayley) *Cayley {
 	return z
 }
 
-// Commutator sets z equal to the commutator of x and y, and returns z.
+// Commutator sets z equal to the commutator of x and y
+// 		Mul(x, y) - Mul(y, x)
+// Then it returns z.
 func (z *Cayley) Commutator(x, y *Cayley) *Cayley {
 	return z.Sub(
 		z.Mul(x, y),
@@ -167,7 +168,9 @@ func (z *Cayley) Commutator(x, y *Cayley) *Cayley {
 	)
 }
 
-// Associator sets z equal to the associator of w, x, and y, and returns z.
+// Associator sets z equal to the associator of w, x, and y:
+// 		Mul(Mul(w, x), y) - Mul(w, Mul(x, y))
+// Then it returns z.
 func (z *Cayley) Associator(w, x, y *Cayley) *Cayley {
 	temp := new(Cayley)
 	return z.Sub(

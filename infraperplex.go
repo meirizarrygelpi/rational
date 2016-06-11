@@ -63,8 +63,7 @@ func (z *InfraPerplex) Set(y *InfraPerplex) *InfraPerplex {
 	return z
 }
 
-// NewInfraPerplex returns a pointer to an InfraPerplex value made from four
-// given pointers to big.Rat values.
+// NewInfraPerplex returns a pointer to the InfraPerplex value a+bs+cτ+dυ.
 func NewInfraPerplex(a, b, c, d *big.Rat) *InfraPerplex {
 	z := new(InfraPerplex)
 	z.l.l.Set(a)
@@ -95,14 +94,14 @@ func (z *InfraPerplex) Conj(y *InfraPerplex) *InfraPerplex {
 	return z
 }
 
-// Add sets z equal to the sum of x and y, and returns z.
+// Add sets z equal to x+y, and returns z.
 func (z *InfraPerplex) Add(x, y *InfraPerplex) *InfraPerplex {
 	z.l.Add(&x.l, &y.l)
 	z.r.Add(&x.r, &y.r)
 	return z
 }
 
-// Sub sets z equal to the difference of x and y, and returns z.
+// Sub sets z equal to x-y, and returns z.
 func (z *InfraPerplex) Sub(x, y *InfraPerplex) *InfraPerplex {
 	z.l.Sub(&x.l, &y.l)
 	z.r.Sub(&x.r, &y.r)
@@ -132,7 +131,9 @@ func (z *InfraPerplex) Mul(x, y *InfraPerplex) *InfraPerplex {
 	return z
 }
 
-// Commutator sets z equal to the commutator of x and y, and returns z.
+// Commutator sets z equal to the commutator of x and y:
+// 		Mul(x, y) - Mul(y, x)
+// Then it returns z.
 func (z *InfraPerplex) Commutator(x, y *InfraPerplex) *InfraPerplex {
 	return z.Sub(
 		z.Mul(x, y),
