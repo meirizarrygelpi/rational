@@ -107,7 +107,7 @@ func (z *Cayley) Add(x, y *Cayley) *Cayley {
 	return z
 }
 
-// Sub sets z equal to the difference of x and y, and returns z.
+// Sub sets z equal to x-y, and returns z.
 func (z *Cayley) Sub(x, y *Cayley) *Cayley {
 	z.l.Sub(&x.l, &y.l)
 	z.r.Sub(&x.r, &y.r)

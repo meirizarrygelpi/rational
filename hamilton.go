@@ -155,13 +155,31 @@ func (z *Hamilton) Quad() *big.Rat {
 
 // Inv sets z equal to the inverse of y, and returns z.
 func (z *Hamilton) Inv(y *Hamilton) *Hamilton {
+	if zero := new(Hamilton); y.Equals(zero) {
+		panic("inverse of zero")
+	}
 	a := y.Quad()
 	a.Inv(a)
 	return z.Scal(z.Conj(y), a)
 }
 
-// Quo sets z equal to the quotient of x and y, and returns z.
-func (z *Hamilton) Quo(x, y *Hamilton) *Hamilton {
+// QuoL sets z equal to the left quotient of x and y:
+// 		Mul(Inv(y), x)
+// Then it returns z.
+func (z *Hamilton) QuoL(x, y *Hamilton) *Hamilton {
+	if zero := new(Hamilton); y.Equals(zero) {
+		panic("denominator is zero")
+	}
+	return z.Mul(z.Inv(y), x)
+}
+
+// QuoR sets z equal to the right quotient of x and y:
+// 		Mul(x, Inv(y))
+// Then it returns z.
+func (z *Hamilton) QuoR(x, y *Hamilton) *Hamilton {
+	if zero := new(Hamilton); y.Equals(zero) {
+		panic("denominator is zero")
+	}
 	return z.Mul(x, z.Inv(y))
 }
 

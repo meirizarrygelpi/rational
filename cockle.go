@@ -168,8 +168,20 @@ func (z *Cockle) Inv(y *Cockle) *Cockle {
 	return z.Scal(z.Conj(y), a)
 }
 
-// Quo sets z equal to the quotient of x and y, and returns z.
-func (z *Cockle) Quo(x, y *Cockle) *Cockle {
+// QuoL sets z equal to the left quotient of x and y:
+// 		Mul(Inv(y), x)
+// Then it returns z.
+func (z *Cockle) QuoL(x, y *Cockle) *Cockle {
+	if y.IsZeroDiv() {
+		panic("denominator is zero divisor")
+	}
+	return z.Mul(z.Inv(y), x)
+}
+
+// QuoR sets z equal to the right quotient of x and y:
+// 		Mul(x, Inv(y))
+// Then it returns z.
+func (z *Cockle) QuoR(x, y *Cockle) *Cockle {
 	if y.IsZeroDiv() {
 		panic("denominator is zero divisor")
 	}

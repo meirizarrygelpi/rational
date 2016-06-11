@@ -158,15 +158,27 @@ func (z *InfraComplex) IsZeroDiv() bool {
 // Inv sets z equal to the inverse of y, and returns z.
 func (z *InfraComplex) Inv(y *InfraComplex) *InfraComplex {
 	if y.IsZeroDiv() {
-		panic("inverse of inverse of zero divisor")
+		panic("inverse of zero divisor")
 	}
 	a := y.Quad()
 	a.Inv(a)
 	return z.Scal(z.Conj(y), a)
 }
 
-// Quo sets z equal to the quotient of x and y, and returns z.
-func (z *InfraComplex) Quo(x, y *InfraComplex) *InfraComplex {
+// QuoL sets z equal to the left quotient of x and y:
+// 		Mul(Inv(y), x)
+// Then it returns z.
+func (z *InfraComplex) QuoL(x, y *InfraComplex) *InfraComplex {
+	if y.IsZeroDiv() {
+		panic("denominator is zero divisor")
+	}
+	return z.Mul(z.Inv(y), x)
+}
+
+// QuoR sets z equal to the right quotient of x and y:
+// 		Mul(x, Inv(y))
+// Then it returns z.
+func (z *InfraComplex) QuoR(x, y *InfraComplex) *InfraComplex {
 	if y.IsZeroDiv() {
 		panic("denominator is zero divisor")
 	}

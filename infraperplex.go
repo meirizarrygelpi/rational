@@ -164,8 +164,20 @@ func (z *InfraPerplex) Inv(y *InfraPerplex) *InfraPerplex {
 	return z.Scal(z.Conj(y), a)
 }
 
-// Quo sets z equal to the quotient of x and y, and returns z.
-func (z *InfraPerplex) Quo(x, y *InfraPerplex) *InfraPerplex {
+// QuoL sets z equal to the left quotient of x and y:
+// 		Mul(Inv(y), x)
+// Then it returns z.
+func (z *InfraPerplex) QuoL(x, y *InfraPerplex) *InfraPerplex {
+	if y.IsZeroDiv() {
+		panic("denominator is zero divisor")
+	}
+	return z.Mul(z.Inv(y), x)
+}
+
+// QuoR sets z equal to the right quotient of x and y:
+// 		Mul(x, Inv(y))
+// Then it returns z.
+func (z *InfraPerplex) QuoR(x, y *InfraPerplex) *InfraPerplex {
 	if y.IsZeroDiv() {
 		panic("denominator is zero divisor")
 	}
