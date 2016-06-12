@@ -18,6 +18,11 @@ type Cockle struct {
 	l, r Complex
 }
 
+// Real returns the (rational) real part of z.
+func (z *Cockle) Real() *big.Rat {
+	return (&z.l).Real()
+}
+
 // Cartesian returns the four rational Cartesian components of z.
 func (z *Cockle) Cartesian() (*big.Rat, *big.Rat, *big.Rat, *big.Rat) {
 	return &z.l.l, &z.l.r, &z.r.l, &z.r.r

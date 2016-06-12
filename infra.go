@@ -16,6 +16,11 @@ type Infra struct {
 	l, r big.Rat
 }
 
+// Real returns the (rational) real part of z.
+func (z *Infra) Real() *big.Rat {
+	return &z.l
+}
+
 // Cartesian returns the two rational Cartesian components of z.
 func (z *Infra) Cartesian() (*big.Rat, *big.Rat) {
 	return &z.l, &z.r

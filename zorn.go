@@ -18,6 +18,11 @@ type Zorn struct {
 	l, r Hamilton
 }
 
+// Real returns the (rational) real part of z.
+func (z *Zorn) Real() *big.Rat {
+	return (&z.l).Real()
+}
+
 // Cartesian returns the eight rational Cartesian components of z.
 func (z *Zorn) Cartesian() (*big.Rat, *big.Rat, *big.Rat, *big.Rat,
 	*big.Rat, *big.Rat, *big.Rat, *big.Rat) {

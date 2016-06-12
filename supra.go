@@ -18,6 +18,11 @@ type Supra struct {
 	l, r Infra
 }
 
+// Real returns the (rational) real part of z.
+func (z *Supra) Real() *big.Rat {
+	return (&z.l).Real()
+}
+
 // Cartesian returns the four rational Cartesian components of z.
 func (z *Supra) Cartesian() (*big.Rat, *big.Rat, *big.Rat, *big.Rat) {
 	return &z.l.l, &z.l.r, &z.r.l, &z.r.r

@@ -18,6 +18,11 @@ type SupraComplex struct {
 	l, r InfraComplex
 }
 
+// Real returns the (rational) real part of z.
+func (z *SupraComplex) Real() *big.Rat {
+	return (&z.l).Real()
+}
+
 // Cartesian returns the eight rational Cartesian components of z.
 func (z *SupraComplex) Cartesian() (*big.Rat, *big.Rat, *big.Rat, *big.Rat,
 	*big.Rat, *big.Rat, *big.Rat, *big.Rat) {

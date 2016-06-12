@@ -18,6 +18,11 @@ type InfraHamilton struct {
 	l, r Hamilton
 }
 
+// Real returns the (rational) real part of z.
+func (z *InfraHamilton) Real() *big.Rat {
+	return (&z.l).Real()
+}
+
 // Cartesian returns the eight Cartesian components of z.
 func (z *InfraHamilton) Cartesian() (*big.Rat, *big.Rat, *big.Rat, *big.Rat,
 	*big.Rat, *big.Rat, *big.Rat, *big.Rat) {

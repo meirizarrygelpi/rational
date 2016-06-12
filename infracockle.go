@@ -18,6 +18,11 @@ type InfraCockle struct {
 	l, r Cockle
 }
 
+// Real returns the (rational) real part of z.
+func (z *InfraCockle) Real() *big.Rat {
+	return (&z.l).Real()
+}
+
 // Cartesian returns the eight rational Cartesian components of z.
 func (z *InfraCockle) Cartesian() (*big.Rat, *big.Rat, *big.Rat, *big.Rat,
 	*big.Rat, *big.Rat, *big.Rat, *big.Rat) {

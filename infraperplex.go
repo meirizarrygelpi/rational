@@ -18,6 +18,11 @@ type InfraPerplex struct {
 	l, r Perplex
 }
 
+// Real returns the (rational) real part of z.
+func (z *InfraPerplex) Real() *big.Rat {
+	return (&z.l).Real()
+}
+
 // Cartesian returns the four rational Cartesian components of z.
 func (z *InfraPerplex) Cartesian() (*big.Rat, *big.Rat, *big.Rat, *big.Rat) {
 	return &z.l.l, &z.l.r, &z.r.l, &z.r.r
