@@ -170,7 +170,7 @@ func (z *Perplex) Idempotent(sign int) *Perplex {
 	return z
 }
 
-// CrossRatio sets z equal to the cross ratio
+// CrossRatio sets z equal to the cross-ratio of v, w, x, and y:
 // 		Inv(w - x) * (v - x) * Inv(v - y) * (w - y)
 // Then it returns z.
 func (z *Perplex) CrossRatio(v, w, x, y *Perplex) *Perplex {
@@ -186,7 +186,7 @@ func (z *Perplex) CrossRatio(v, w, x, y *Perplex) *Perplex {
 	return z.Mul(z, temp)
 }
 
-// Möbius sets z equal to the Möbius (fractional linear) transform
+// Möbius sets z equal to the Möbius (fractional linear) transform of y:
 // 		(a*y + b) * Inv(c*y + d)
 // Then it returns z.
 func (z *Perplex) Möbius(y, a, b, c, d *Perplex) *Perplex {

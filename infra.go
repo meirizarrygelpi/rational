@@ -148,7 +148,7 @@ func (z *Infra) Quo(x, y *Infra) *Infra {
 	return z.Mul(x, z.Inv(y))
 }
 
-// CrossRatio sets z equal to the cross ratio
+// CrossRatio sets z equal to the cross-ratio of v, w, x, and y:
 // 		Inv(w - x) * (v - x) * Inv(v - y) * (w - y)
 // Then it returns z.
 func (z *Infra) CrossRatio(v, w, x, y *Infra) *Infra {
@@ -164,7 +164,7 @@ func (z *Infra) CrossRatio(v, w, x, y *Infra) *Infra {
 	return z.Mul(z, temp)
 }
 
-// Möbius sets z equal to the Möbius (fractional linear) transform
+// Möbius sets z equal to the Möbius (fractional linear) transform of y:
 // 		(a*y + b) * Inv(c*y + d)
 // Then it returns z.
 func (z *Infra) Möbius(y, a, b, c, d *Infra) *Infra {
