@@ -168,8 +168,7 @@ func (z *Complex) CrossRatio(v, w, x, y *Complex) *Complex {
 	temp.Inv(temp)
 	z.Mul(z, temp)
 	temp.Sub(w, y)
-	z.Mul(z, temp)
-	return z
+	return z.Mul(z, temp)
 }
 
 // Möbius sets z equal to the Möbius (fractional linear) transform
@@ -182,8 +181,7 @@ func (z *Complex) Möbius(y, a, b, c, d *Complex) *Complex {
 	temp.Mul(c, y)
 	temp.Add(temp, d)
 	temp.Inv(temp)
-	z.Mul(z, temp)
-	return z
+	return z.Mul(z, temp)
 }
 
 // PlusReal sets z equal to y shifted by the rational a, and returns z.
