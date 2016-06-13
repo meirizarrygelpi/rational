@@ -135,20 +135,22 @@ func (z *Complex) Quad() *big.Rat {
 	)
 }
 
-// Inv sets z equal to the inverse of y, and returns z.
+// Inv sets z equal to the inverse of y, and returns z. If y is zero, then Inv
+// panics.
 func (z *Complex) Inv(y *Complex) *Complex {
 	if zero := new(Complex); y.Equals(zero) {
-		panic("zero inverse")
+		panic("inverse of zero")
 	}
 	a := y.Quad()
 	a.Inv(a)
 	return z.Scal(z.Conj(y), a)
 }
 
-// Quo sets z equal to the quotient of x and y, and returns z.
+// Quo sets z equal to the quotient of x and y, and returns z. If y is zero,
+// then Quo panics.
 func (z *Complex) Quo(x, y *Complex) *Complex {
 	if zero := new(Complex); y.Equals(zero) {
-		panic("zero denominator")
+		panic("denominator is zero")
 	}
 	return z.Mul(x, z.Inv(y))
 }

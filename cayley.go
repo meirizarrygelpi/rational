@@ -196,8 +196,12 @@ func (z *Cayley) Quad() *big.Rat {
 	)
 }
 
-// Inv sets z equal to the inverse of y, and returns z.
+// Inv sets z equal to the inverse of y, and returns z. If y is zero, then Inv
+// panics.
 func (z *Cayley) Inv(y *Cayley) *Cayley {
+	if zero := new(Cayley); y.Equals(zero) {
+		panic("inverse of zero")
+	}
 	a := y.Quad()
 	a.Inv(a)
 	return z.Scal(z.Conj(y), a)
@@ -205,7 +209,7 @@ func (z *Cayley) Inv(y *Cayley) *Cayley {
 
 // QuoL sets z equal to the left quotient of x and y:
 // 		Mul(Inv(y), x)
-// Then it returns z.
+// Then it returns z. If y is zero, then QuoL panics.
 func (z *Cayley) QuoL(x, y *Cayley) *Cayley {
 	if zero := new(Cayley); y.Equals(zero) {
 		panic("denominator is zero")
@@ -215,7 +219,7 @@ func (z *Cayley) QuoL(x, y *Cayley) *Cayley {
 
 // QuoR sets z equal to the right quotient of x and y:
 // 		Mul(x, Inv(y))
-// Then it returns z.
+// Then it returns z. If y is zero, then QuoR panics.
 func (z *Cayley) QuoR(x, y *Cayley) *Cayley {
 	if zero := new(Cayley); y.Equals(zero) {
 		panic("denominator is zero")

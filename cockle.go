@@ -163,7 +163,8 @@ func (z *Cockle) IsZeroDiv() bool {
 	return z.l.Quad().Cmp(z.r.Quad()) == 0
 }
 
-// Inv sets z equal to the inverse of y, and returns z.
+// Inv sets z equal to the inverse of y, and returns z. If y is a zero divisor,
+// then Inv panics.
 func (z *Cockle) Inv(y *Cockle) *Cockle {
 	if y.IsZeroDiv() {
 		panic("inverse of zero divisor")
@@ -175,7 +176,7 @@ func (z *Cockle) Inv(y *Cockle) *Cockle {
 
 // QuoL sets z equal to the left quotient of x and y:
 // 		Mul(Inv(y), x)
-// Then it returns z.
+// Then it returns z. If y is a zero divisor, then QuoL panics.
 func (z *Cockle) QuoL(x, y *Cockle) *Cockle {
 	if y.IsZeroDiv() {
 		panic("denominator is zero divisor")
@@ -185,7 +186,7 @@ func (z *Cockle) QuoL(x, y *Cockle) *Cockle {
 
 // QuoR sets z equal to the right quotient of x and y:
 // 		Mul(x, Inv(y))
-// Then it returns z.
+// Then it returns z. If y is a zero divisor, then QuoR panics.
 func (z *Cockle) QuoR(x, y *Cockle) *Cockle {
 	if y.IsZeroDiv() {
 		panic("denominator is zero divisor")

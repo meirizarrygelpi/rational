@@ -158,7 +158,8 @@ func (z *Hamilton) Quad() *big.Rat {
 	)
 }
 
-// Inv sets z equal to the inverse of y, and returns z.
+// Inv sets z equal to the inverse of y, and returns z. If y is zero, then Inv
+// panics.
 func (z *Hamilton) Inv(y *Hamilton) *Hamilton {
 	if zero := new(Hamilton); y.Equals(zero) {
 		panic("inverse of zero")
@@ -170,7 +171,7 @@ func (z *Hamilton) Inv(y *Hamilton) *Hamilton {
 
 // QuoL sets z equal to the left quotient of x and y:
 // 		Mul(Inv(y), x)
-// Then it returns z.
+// Then it returns z. If y is zero, then QuoL panics.
 func (z *Hamilton) QuoL(x, y *Hamilton) *Hamilton {
 	if zero := new(Hamilton); y.Equals(zero) {
 		panic("denominator is zero")
@@ -180,7 +181,7 @@ func (z *Hamilton) QuoL(x, y *Hamilton) *Hamilton {
 
 // QuoR sets z equal to the right quotient of x and y:
 // 		Mul(x, Inv(y))
-// Then it returns z.
+// Then it returns z. If y is zero, then QuoR panics.
 func (z *Hamilton) QuoR(x, y *Hamilton) *Hamilton {
 	if zero := new(Hamilton); y.Equals(zero) {
 		panic("denominator is zero")
