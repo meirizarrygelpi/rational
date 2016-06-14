@@ -4,7 +4,55 @@ Package `rational` brings rational [complex](https://en.wikipedia.org/wiki/Compl
 
 [![Go Report Card](https://goreportcard.com/badge/gojp/goreportcard)](https://goreportcard.com/report/github.com/meirizarrygelpi/rational) [![GoDoc](https://godoc.org/github.com/meirizarrygelpi/rational?status.svg)](https://godoc.org/github.com/meirizarrygelpi/rational)
 
-This package contains three two-dimensional types (e.g. complex numbers), five four-dimensional types (e.g. quaternions), and seven eight-dimensional types (e.g. octonions).
+This package contains three two-dimensional types (e.g. complex numbers), five four-dimensional types (e.g. quaternions), and seven eight-dimensional types (e.g. octonions). Each type is either an elliptic, a parabolic, or a hyperbolic Cayley-Dickson construct.
+
+## Cayley-Dickson Constructs
+
+Given elements from what I will call a seed algebra, the Cayley-Dickson construction allows you to build elements of a higher-dimensional algebra with certain interesting properties. Let `a`, `b`, `c`, and `d` be elements in the seed algebra. Let `p = (a, b)` and `q = (c, d)` be elements in the construct algebra. Thus,
+```go
+	Add(p, q) = (Add(a, c), Add(b, d))
+```
+That is, addition is element-wise. The multiplication operation can be any of three kinds. Before we look into these, we should mention that the seed algebra must also include two involutions, `Conj` and `Neg`, such that the construct algebra also has two involutions `Conj` and `Neg` given by:
+```go
+	Neg(p) = (Neg(a), Neg(b))
+	Conj(p) = (Conj(a), Neg(b))
+```
+With `Neg` you can define substraction:
+```go
+	Sub(p, q) = Add(p, Neg(q))
+```
+The three multiplication operations are named after conic sections. Each has the form
+```go
+	Mul(p, q) = (F(a, b, c, d), G(a, b, c, d))
+```
+With `F` and `G` being a linear combination of bilinear terms.
+
+### Elliptic Multiplication
+
+The **elliptic** multiplication operation is:
+```go
+	F(a, b, c, d) = Sub(Mul(a, c), Mul(Conj(d), b))
+	G(a, b, c, d) = Add(Mul(d, a), Mul(b, Conj(c)))
+```
+The order of the arguments in all `Mul` calls is very important.
+
+### Parabolic Multiplication
+
+The **parabolic** multiplication operation is:
+```go
+	F(a, b, c, d) = Mul(a, c)
+	G(a, b, c, d) = Add(Mul(d, a), Mul(b, Conj(c)))
+```
+The order of the arguments in all `Mul` calls is very important. Note that if `a` and `c` are both zero, then `Mul(p, q) = (0, 0)` with `p` and `q` not necessarily being zero. That is, there are zero divisors with this multiplication operation.
+
+### Hyperbolic Multiplication
+
+The **hyperbolic** multiplication operation is:
+```go
+	F(a, b, c, d) = Add(Mul(a, c), Mul(Conj(d), b))
+	G(a, b, c, d) = Add(Mul(d, a), Mul(b, Conj(c)))
+```
+The order of the arguments in all `Mul` calls is very important. Although it is not obvious, this multiplication operation also leads to zero divisors.
 
 ## Two-Dimensional Types
 
