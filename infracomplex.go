@@ -191,6 +191,64 @@ func (z *InfraComplex) QuoR(x, y *InfraComplex) *InfraComplex {
 	return z.Mul(x, z.Inv(y))
 }
 
+// CrossRatioL sets z equal to the left cross-ratio of v, w, x, and y:
+// 		Inv(w - x) * (v - x) * Inv(v - y) * (w - y)
+// Then it returns z.
+func (z *InfraComplex) CrossRatioL(v, w, x, y *InfraComplex) *InfraComplex {
+	temp := new(InfraComplex)
+	z.Sub(w, x)
+	z.Inv(z)
+	temp.Sub(v, x)
+	z.Mul(z, temp)
+	temp.Sub(v, y)
+	temp.Inv(temp)
+	z.Mul(z, temp)
+	temp.Sub(w, y)
+	return z.Mul(z, temp)
+}
+
+// CrossRatioR sets z equal to the right cross-ratio of v, w, x, and y:
+// 		(v - x) * Inv(w - x) * (w - y) * Inv(v - y)
+// Then it returns z.
+func (z *InfraComplex) CrossRatioR(v, w, x, y *InfraComplex) *InfraComplex {
+	temp := new(InfraComplex)
+	z.Sub(v, x)
+	temp.Sub(w, x)
+	temp.Inv(temp)
+	z.Mul(z, temp)
+	temp.Sub(w, y)
+	z.Mul(z, temp)
+	temp.Sub(v, y)
+	temp.Inv(temp)
+	return z.Mul(z, temp)
+}
+
+// MöbiusL sets z equal to the left Möbius (fractional linear) transform of y:
+// 		Inv(y*c + d) * (y*a + b)
+// Then it returns z.
+func (z *InfraComplex) MöbiusL(y, a, b, c, d *InfraComplex) *InfraComplex {
+	z.Mul(y, a)
+	z.Add(z, b)
+	temp := new(InfraComplex)
+	temp.Mul(y, c)
+	temp.Add(temp, d)
+	temp.Inv(temp)
+	return z.Mul(temp, z)
+}
+
+// MöbiusR sets z equal to the right Möbius (fractional linear) transform of y:
+// 		(a*y + b) * Inv(c*y + d)
+// Then it returns z.
+func (z *InfraComplex) MöbiusR(y, a, b, c, d *InfraComplex) *InfraComplex {
+	z.Mul(a, y)
+	z.Add(z, b)
+	temp := new(InfraComplex)
+	temp.Mul(c, y)
+	temp.Add(temp, d)
+	temp.Inv(temp)
+	return z.Mul(z, temp)
+}
+
 // Generate returns a random InfraComplex value for quick.Check testing.
 func (z *InfraComplex) Generate(rand *rand.Rand, size int) reflect.Value {
 	randomInfraComplex := &InfraComplex{

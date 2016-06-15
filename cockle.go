@@ -194,6 +194,64 @@ func (z *Cockle) QuoR(x, y *Cockle) *Cockle {
 	return z.Mul(x, z.Inv(y))
 }
 
+// CrossRatioL sets z equal to the left cross-ratio of v, w, x, and y:
+// 		Inv(w - x) * (v - x) * Inv(v - y) * (w - y)
+// Then it returns z.
+func (z *Cockle) CrossRatioL(v, w, x, y *Cockle) *Cockle {
+	temp := new(Cockle)
+	z.Sub(w, x)
+	z.Inv(z)
+	temp.Sub(v, x)
+	z.Mul(z, temp)
+	temp.Sub(v, y)
+	temp.Inv(temp)
+	z.Mul(z, temp)
+	temp.Sub(w, y)
+	return z.Mul(z, temp)
+}
+
+// CrossRatioR sets z equal to the right cross-ratio of v, w, x, and y:
+// 		(v - x) * Inv(w - x) * (w - y) * Inv(v - y)
+// Then it returns z.
+func (z *Cockle) CrossRatioR(v, w, x, y *Cockle) *Cockle {
+	temp := new(Cockle)
+	z.Sub(v, x)
+	temp.Sub(w, x)
+	temp.Inv(temp)
+	z.Mul(z, temp)
+	temp.Sub(w, y)
+	z.Mul(z, temp)
+	temp.Sub(v, y)
+	temp.Inv(temp)
+	return z.Mul(z, temp)
+}
+
+// MöbiusL sets z equal to the left Möbius (fractional linear) transform of y:
+// 		Inv(y*c + d) * (y*a + b)
+// Then it returns z.
+func (z *Cockle) MöbiusL(y, a, b, c, d *Cockle) *Cockle {
+	z.Mul(y, a)
+	z.Add(z, b)
+	temp := new(Cockle)
+	temp.Mul(y, c)
+	temp.Add(temp, d)
+	temp.Inv(temp)
+	return z.Mul(temp, z)
+}
+
+// MöbiusR sets z equal to the right Möbius (fractional linear) transform of y:
+// 		(a*y + b) * Inv(c*y + d)
+// Then it returns z.
+func (z *Cockle) MöbiusR(y, a, b, c, d *Cockle) *Cockle {
+	z.Mul(a, y)
+	z.Add(z, b)
+	temp := new(Cockle)
+	temp.Mul(c, y)
+	temp.Add(temp, d)
+	temp.Inv(temp)
+	return z.Mul(z, temp)
+}
+
 // IsNilpotent returns true if z raised to the n-th power vanishes.
 func (z *Cockle) IsNilpotent(n int) bool {
 	zero := new(Cockle)
