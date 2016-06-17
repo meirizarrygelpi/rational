@@ -191,8 +191,8 @@ func (z *Complex) Möbius(y, a, b, c, d *Complex) *Complex {
 	return z.Mul(z, temp)
 }
 
-// PlusReal sets z equal to y shifted by the rational a, and returns z.
-func (z *Complex) PlusReal(y *Complex, a *big.Rat) *Complex {
+// Plus sets z equal to y shifted by the rational a, and returns z.
+func (z *Complex) Plus(y *Complex, a *big.Rat) *Complex {
 	z.l.Add(&y.l, a)
 	z.r.Set(&y.r)
 	return z
@@ -211,7 +211,7 @@ func (z *Complex) PolyEval(y *Complex, poly Laurent) *Complex {
 	}
 	// zero degree
 	if c, ok := poly[0]; ok {
-		z.PlusReal(z, c)
+		z.Plus(z, c)
 	}
 	pow := new(Complex)
 	// negative degrees

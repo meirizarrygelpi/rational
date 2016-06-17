@@ -206,8 +206,8 @@ func (z *Perplex) Möbius(y, a, b, c, d *Perplex) *Perplex {
 	return z.Mul(z, temp)
 }
 
-// PlusReal sets z equal to y shifted by the rational a, and returns z.
-func (z *Perplex) PlusReal(y *Perplex, a *big.Rat) *Perplex {
+// Plus sets z equal to y shifted by the rational a, and returns z.
+func (z *Perplex) Plus(y *Perplex, a *big.Rat) *Perplex {
 	z.l.Add(&y.l, a)
 	z.r.Set(&y.r)
 	return z
@@ -226,7 +226,7 @@ func (z *Perplex) PolyEval(y *Perplex, poly Laurent) *Perplex {
 	}
 	// zero degree
 	if c, ok := poly[0]; ok {
-		z.PlusReal(z, c)
+		z.Plus(z, c)
 	}
 	pow := new(Perplex)
 	// negative degrees
