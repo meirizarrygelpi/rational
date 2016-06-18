@@ -21,8 +21,8 @@ func (z *Infra) Real() *big.Rat {
 	return &z.l
 }
 
-// Cartesian returns the two rational Cartesian components of z.
-func (z *Infra) Cartesian() (*big.Rat, *big.Rat) {
+// Rats returns the two rational components of z.
+func (z *Infra) Rats() (*big.Rat, *big.Rat) {
 	return &z.l, &z.r
 }
 

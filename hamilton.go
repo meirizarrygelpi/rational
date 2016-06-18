@@ -23,8 +23,8 @@ func (z *Hamilton) Real() *big.Rat {
 	return (&z.l).Real()
 }
 
-// Cartesian returns the four rational Cartesian components of z.
-func (z *Hamilton) Cartesian() (*big.Rat, *big.Rat, *big.Rat, *big.Rat) {
+// Rats returns the four rational components of z.
+func (z *Hamilton) Rats() (*big.Rat, *big.Rat, *big.Rat, *big.Rat) {
 	return &z.l.l, &z.l.r, &z.r.l, &z.r.r
 }
 
@@ -34,8 +34,8 @@ func (z *Hamilton) Cartesian() (*big.Rat, *big.Rat, *big.Rat, *big.Rat) {
 // similar to complex128 values.
 func (z *Hamilton) String() string {
 	v := make([]*big.Rat, 4)
-	v[0], v[1] = z.l.Cartesian()
-	v[2], v[3] = z.r.Cartesian()
+	v[0], v[1] = z.l.Rats()
+	v[2], v[3] = z.r.Rats()
 	a := make([]string, 9)
 	a[0] = "("
 	a[1] = fmt.Sprintf("%v", v[0].RatString())

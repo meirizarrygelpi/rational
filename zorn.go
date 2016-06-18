@@ -23,8 +23,8 @@ func (z *Zorn) Real() *big.Rat {
 	return (&z.l).Real()
 }
 
-// Cartesian returns the eight rational Cartesian components of z.
-func (z *Zorn) Cartesian() (*big.Rat, *big.Rat, *big.Rat, *big.Rat,
+// Rats returns the eight rational components of z.
+func (z *Zorn) Rats() (*big.Rat, *big.Rat, *big.Rat, *big.Rat,
 	*big.Rat, *big.Rat, *big.Rat, *big.Rat) {
 	return &z.l.l.l, &z.l.l.r, &z.l.r.l, &z.l.r.r,
 		&z.r.l.l, &z.r.l.r, &z.r.r.l, &z.r.r.r
@@ -36,8 +36,8 @@ func (z *Zorn) Cartesian() (*big.Rat, *big.Rat, *big.Rat, *big.Rat,
 // string is"(a+bi+cj+dk+er+fs+gt+hu)", similar to complex128 values.
 func (z *Zorn) String() string {
 	v := make([]*big.Rat, 8)
-	v[0], v[1], v[2], v[3] = z.l.Cartesian()
-	v[4], v[5], v[6], v[7] = z.r.Cartesian()
+	v[0], v[1], v[2], v[3] = z.l.Rats()
+	v[4], v[5], v[6], v[7] = z.r.Rats()
 	a := make([]string, 17)
 	a[0] = "("
 	a[1] = fmt.Sprintf("%v", v[0].RatString())
