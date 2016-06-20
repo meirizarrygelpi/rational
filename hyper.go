@@ -11,7 +11,7 @@ import (
 	"strings"
 )
 
-var symbHyper = [4]string{"", "θ", "ι", "κ"}
+var symbHyper = [4]string{"", "α", "κ", "λ"}
 
 // A Hyper represents a rational hyper-dual number.
 type Hyper struct {
@@ -30,7 +30,7 @@ func (z *Hyper) Rats() (*big.Rat, *big.Rat, *big.Rat, *big.Rat) {
 
 // String returns the string representation of a Hyper value.
 //
-// If z corresponds to a + bθ + cι + dκ, then the string is "(a+bθ+cι+dκ)",
+// If z corresponds to a + bα + cκ + dλ, then the string is "(a+bα+cκ+dλ)",
 // similar to complex128 values.
 func (z *Hyper) String() string {
 	v := make([]*big.Rat, 4)
@@ -68,7 +68,7 @@ func (z *Hyper) Set(y *Hyper) *Hyper {
 	return z
 }
 
-// NewHyper returns a *Hyper with value a+bθ+cι+dκ.
+// NewHyper returns a *Hyper with value a+bα+cκ+dλ.
 func NewHyper(a, b, c, d *big.Rat) *Hyper {
 	z := new(Hyper)
 	z.l.l.Set(a)
@@ -92,22 +92,17 @@ func (z *Hyper) Neg(y *Hyper) *Hyper {
 	return z
 }
 
-// Conj sets z equal to the conjugate of y, and returns z. If y is a zero
-// divisor, then Conj panics.
+// Conj sets z equal to the hyper-dual conjugate of y, and returns z.
 func (z *Hyper) Conj(y *Hyper) *Hyper {
-	if y.IsZeroDiv() {
-		panic("conjugate of zero divisor")
-	}
-	a, b, c, d := y.Rats()
-	z.l.l.Set(a)
-	z.l.r.Neg(b)
-	z.r.l.Neg(c)
-	temp := new(big.Rat)
-	temp.Mul(b, c)
-	temp.Add(temp, temp)
-	temp.Quo(temp, a)
-	temp.Sub(temp, d)
-	z.r.r.Set(temp)
+	z.l.Set(&y.l)
+	z.r.Neg(&y.r)
+	return z
+}
+
+// Star sets z equal to the star conjugate of y, and returns z.
+func (z *Hyper) Star(y *Hyper) *Hyper {
+	z.l.Conj(&y.l)
+	z.r.Conj(&y.r)
 	return z
 }
 
@@ -128,10 +123,10 @@ func (z *Hyper) Sub(x, y *Hyper) *Hyper {
 // Mul sets z equal to the product of x and y, and returns z.
 //
 // The multiplication rules are:
-// 		Mul(θ, θ) = Mul(ι, ι) = Mul(κ, κ) = 0
-// 		Mul(θ, ι) = Mul(ι, θ) = κ
-// 		Mul(ι, κ) = Mul(κ, ι) = 0
-// 		Mul(κ, θ) = Mul(θ, ι) = 0
+// 		Mul(α, α) = Mul(κ, κ) = Mul(λ, λ) = 0
+// 		Mul(α, κ) = Mul(κ, α) = λ
+// 		Mul(κ, λ) = Mul(λ, κ) = 0
+// 		Mul(λ, α) = Mul(α, κ) = 0
 // This binary operation is commutative and associative.
 func (z *Hyper) Mul(x, y *Hyper) *Hyper {
 	a := new(Infra).Set(&x.l)
@@ -147,16 +142,20 @@ func (z *Hyper) Mul(x, y *Hyper) *Hyper {
 	return z
 }
 
-// Quad returns the quadrance of z. If z = a+bθ+cι+dκ, then the quadrance is
-// 		Mul(a, a)
-// This is always non-negative.
+// Norm returns the infra norm of z.
+func (z *Hyper) Norm() *Infra {
+	norm := new(Infra)
+	return norm.Mul(&z.l, &z.l)
+}
+
+// Quad returns the quadrance of z. This is always non-negative.
 func (z *Hyper) Quad() *big.Rat {
-	return z.l.Quad()
+	return z.Norm().Quad()
 }
 
 // IsZeroDiv returns true if z is a zero divisor.
 func (z *Hyper) IsZeroDiv() bool {
-	return z.l.IsZeroDiv()
+	return z.Norm().IsZeroDiv()
 }
 
 // Inv sets z equal to the inverse of y, and returns z. If y is a zero divisor,
@@ -165,9 +164,15 @@ func (z *Hyper) Inv(y *Hyper) *Hyper {
 	if y.IsZeroDiv() {
 		panic("inverse of zero divisor")
 	}
-	quad := y.Quad()
+	p := new(Hyper)
+	p.Set(y)
+	quad := p.Quad()
 	quad.Inv(quad)
-	return z.Scal(z.Conj(y), quad)
+	temp := new(Hyper)
+	z.Conj(p)
+	z.Mul(z, temp.Star(p))
+	z.Mul(z, temp.Conj(temp.Star(p)))
+	return z.Scal(z, quad)
 }
 
 // Quo sets z equal to the quotient of x and y. If y is a zero divisor, then

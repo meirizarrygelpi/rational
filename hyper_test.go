@@ -231,7 +231,7 @@ func TestHyperMulInvAntiDistributive(t *testing.T) {
 
 // Distributivity
 
-func XTestHyperAddConjDistributive(t *testing.T) {
+func TestHyperAddConjDistributive(t *testing.T) {
 	f := func(x, y *Hyper) bool {
 		// t.Logf("x = %v, y = %v", x, y)
 		l, r := new(Hyper), new(Hyper)
@@ -245,7 +245,7 @@ func XTestHyperAddConjDistributive(t *testing.T) {
 	}
 }
 
-func XTestHyperSubConjDistributive(t *testing.T) {
+func TestHyperSubConjDistributive(t *testing.T) {
 	f := func(x, y *Hyper) bool {
 		// t.Logf("x = %v, y = %v", x, y)
 		l, r := new(Hyper), new(Hyper)

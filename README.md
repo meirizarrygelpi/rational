@@ -381,6 +381,37 @@ Alternatively, you can obtain the supra perplex numbers from a *hyperbolic* Cayl
 
 Using any of the Cayley-Dickson constructs on any of the eight-dimensional types would produce one of nine sixteen-dimensional types. These types include the [sedenions](https://en.wikipedia.org/wiki/Sedenion), which are infamous for containing zero divisors.
 
+## Other Types
+
+Besides all the types mentioned above, other types are included. These types have multiplication operations that do not involve conjugation.
+
+### rational.BiComplex
+
+The `rational.BiComplex` type represents a bicomplex number. It corresponds to a non-sesquilinear elliptic construct with `rational.Complex` values. The imaginary units are denoted `i` and `h`, and the split unit is denoted `s`. The multiplication rules are:
+```go
+	Mul(i, i) = Mul(h, h) = -1
+	Mul(s, s) = +1
+	Mul(i, h) = Mul(h, i) = s
+	Mul(h, s) = Mul(s, h) = -i
+	Mul(s, i) = Mul(i, s) = -h
+```
+Note that this multiplication operation is **commutative** and **associative**.
+
+### rational.Hyper
+
+The `rational.Hyper` type represents a hyper-dual number. It corresponds to a non-sesquilinear parabolic construct with `rational.Infra` values. The dual units are denoted `α`, `κ`, and `λ`. The multiplication rules are:
+```go
+	Mul(α, α) = Mul(κ, κ) = Mul(λ, λ) = 0
+	Mul(α, κ) = Mul(κ, α) = λ
+	Mul(κ, λ) = Mul(λ, κ) = 0
+	Mul(λ, α) = Mul(α, κ) = 0
+```
+Note that this multiplication operation is **commutative** and **associative**.
+
+Hyper-dual numbers are useful for computing second-order derivatives.
+
+Another name for the dual numbers could be the nilplex numbers. Thus, in analogy with the bicomplex numbers, another name for the hyper-dual numbers could be the binilplex numbers.
+
 ## To Do
 
 1. Improve documentation

@@ -11,7 +11,7 @@ import (
 	"strings"
 )
 
-var symbBiComplex = [4]string{"", "i", "j", "s"}
+var symbBiComplex = [4]string{"", "i", "h", "s"}
 
 // A BiComplex represents a rational bicomplex number.
 type BiComplex struct {
@@ -30,7 +30,7 @@ func (z *BiComplex) Rats() (*big.Rat, *big.Rat, *big.Rat, *big.Rat) {
 
 // String returns the string representation of a BiComplex value.
 //
-// If z corresponds to a + bi + cj + ds, then the string is "(a+bi+cj+ds)",
+// If z corresponds to a + bi + ch + ds, then the string is "(a+bi+ch+ds)",
 // similar to complex128 values.
 func (z *BiComplex) String() string {
 	v := make([]*big.Rat, 4)
@@ -68,7 +68,7 @@ func (z *BiComplex) Set(y *BiComplex) *BiComplex {
 	return z
 }
 
-// NewBiComplex returns a *BiComplex with value a+bh+cj+ds.
+// NewBiComplex returns a *BiComplex with value a+bh+ch+ds.
 func NewBiComplex(a, b, c, d *big.Rat) *BiComplex {
 	z := new(BiComplex)
 	z.l.l.Set(a)
@@ -123,11 +123,11 @@ func (z *BiComplex) Sub(x, y *BiComplex) *BiComplex {
 // Mul sets z equal to the product of x and y, and returns z.
 //
 // The multiplication rules are:
-// 		Mul(i, i) = Mul(j, j) = -1
+// 		Mul(i, i) = Mul(h, h) = -1
 // 		Mul(s, s) = +1
-// 		Mul(i, j) = Mul(j, i) = s
-// 		Mul(j, s) = Mul(s, j) = -i
-// 		Mul(s, i) = Mul(i, s) = -j
+// 		Mul(i, h) = Mul(h, i) = s
+// 		Mul(h, s) = Mul(s, h) = -i
+// 		Mul(s, i) = Mul(i, s) = -h
 // This binary operation is commutative and associative.
 func (z *BiComplex) Mul(x, y *BiComplex) *BiComplex {
 	a := new(Complex).Set(&x.l)
@@ -146,7 +146,7 @@ func (z *BiComplex) Mul(x, y *BiComplex) *BiComplex {
 	return z
 }
 
-// Norm returns the complex-valued norm of z.
+// Norm returns the complex norm of z.
 func (z *BiComplex) Norm() *Complex {
 	norm := new(Complex)
 	norm.Mul(&z.l, &z.l)
