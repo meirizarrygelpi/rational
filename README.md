@@ -397,6 +397,17 @@ The `rational.BiComplex` type represents a bicomplex number. It corresponds to a
 ```
 Note that this multiplication operation is **commutative** and **associative**.
 
+### rational.BiPerplex
+
+The `rational.BiPerplex` type represents a biperplex number. It corresponds to a non-sesquilinear hyperbolic construct with `rational.Perplex` values. The split units are denoted `s`, `r`, and `q`. The multiplication rules are:
+```go
+	Mul(s, s) = Mul(r, r) = Mul(q, q) = +1
+	Mul(s, r) = Mul(r, s) = q
+	Mul(r, q) = Mul(q, r) = s
+	Mul(q, s) = Mul(s, q) = r
+```
+Note that this multiplication operation is **commutative** and **associative**.
+
 ### rational.Hyper
 
 The `rational.Hyper` type represents a hyper-dual number. It corresponds to a non-sesquilinear parabolic construct with `rational.Infra` values. The dual units are denoted `α`, `κ`, and `λ`. The multiplication rules are:
@@ -408,8 +419,10 @@ The `rational.Hyper` type represents a hyper-dual number. It corresponds to a no
 ```
 Note that this multiplication operation is **commutative** and **associative**.
 
-Hyper-dual numbers are useful for computing second-order derivatives.
-
+Hyper-dual numbers are useful for computing second-order derivatives. If `z = a + 1α + 1κ + 0λ`, and `f` is a function, then
+```go
+	f(z) = f(a) + f'(a)α + f'(a)κ + f''(a)λ
+```
 Another name for the dual numbers could be the *nilplex* numbers. Thus, in analogy with the bicomplex numbers, another name for the hyper-dual numbers could be the *binilplex* numbers.
 
 ## To Do
