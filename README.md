@@ -410,7 +410,7 @@ Note that this multiplication operation is **commutative** and **associative**.
 
 Hyper-dual numbers are useful for computing second-order derivatives.
 
-Another name for the dual numbers could be the nilplex numbers. Thus, in analogy with the bicomplex numbers, another name for the hyper-dual numbers could be the binilplex numbers.
+Another name for the dual numbers could be the *nilplex* numbers. Thus, in analogy with the bicomplex numbers, another name for the hyper-dual numbers could be the *binilplex* numbers.
 
 ## To Do
 

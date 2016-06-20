@@ -11,28 +11,28 @@ import (
 	"strings"
 )
 
-var symbBiComplex = [4]string{"", "i", "h", "s"}
+var symbBiPerplex = [4]string{"", "s", "r", "q"}
 
-// A BiComplex represents a rational bicomplex number.
-type BiComplex struct {
-	l, r Complex
+// A BiPerplex represents a rational biperplex number.
+type BiPerplex struct {
+	l, r Perplex
 }
 
 // Real returns the (rational) real part of z.
-func (z *BiComplex) Real() *big.Rat {
+func (z *BiPerplex) Real() *big.Rat {
 	return (&z.l).Real()
 }
 
 // Rats returns the four rational components of z.
-func (z *BiComplex) Rats() (*big.Rat, *big.Rat, *big.Rat, *big.Rat) {
+func (z *BiPerplex) Rats() (*big.Rat, *big.Rat, *big.Rat, *big.Rat) {
 	return &z.l.l, &z.l.r, &z.r.l, &z.r.r
 }
 
-// String returns the string representation of a BiComplex value.
+// String returns the string representation of a BiPerplex value.
 //
-// If z corresponds to a + bi + ch + ds, then the string is "(a+bi+ch+ds)",
+// If z corresponds to a + bs + cr + dq, then the string is "(a+bs+cr+dq)",
 // similar to complex128 values.
-func (z *BiComplex) String() string {
+func (z *BiPerplex) String() string {
 	v := make([]*big.Rat, 4)
 	v[0], v[1] = z.l.Rats()
 	v[2], v[3] = z.r.Rats()
@@ -46,7 +46,7 @@ func (z *BiComplex) String() string {
 		} else {
 			a[j] = fmt.Sprintf("+%v", v[i].RatString())
 		}
-		a[j+1] = symbBiComplex[i]
+		a[j+1] = symbBiPerplex[i]
 		i++
 	}
 	a[8] = ")"
@@ -54,7 +54,7 @@ func (z *BiComplex) String() string {
 }
 
 // Equals returns true if y and z are equal.
-func (z *BiComplex) Equals(y *BiComplex) bool {
+func (z *BiPerplex) Equals(y *BiPerplex) bool {
 	if !z.l.Equals(&y.l) || !z.r.Equals(&y.r) {
 		return false
 	}
@@ -62,15 +62,15 @@ func (z *BiComplex) Equals(y *BiComplex) bool {
 }
 
 // Set sets z equal to y, and returns z.
-func (z *BiComplex) Set(y *BiComplex) *BiComplex {
+func (z *BiPerplex) Set(y *BiPerplex) *BiPerplex {
 	z.l.Set(&y.l)
 	z.r.Set(&y.r)
 	return z
 }
 
-// NewBiComplex returns a *BiComplex with value a+bh+ch+ds.
-func NewBiComplex(a, b, c, d *big.Rat) *BiComplex {
-	z := new(BiComplex)
+// NewBiPerplex returns a *BiPerplex with value a+bs+cr+dq.
+func NewBiPerplex(a, b, c, d *big.Rat) *BiPerplex {
+	z := new(BiPerplex)
 	z.l.l.Set(a)
 	z.l.r.Set(b)
 	z.r.l.Set(c)
@@ -79,42 +79,42 @@ func NewBiComplex(a, b, c, d *big.Rat) *BiComplex {
 }
 
 // Scal sets z equal to y scaled by a, and returns z.
-func (z *BiComplex) Scal(y *BiComplex, a *big.Rat) *BiComplex {
+func (z *BiPerplex) Scal(y *BiPerplex, a *big.Rat) *BiPerplex {
 	z.l.Scal(&y.l, a)
 	z.r.Scal(&y.r, a)
 	return z
 }
 
 // Neg sets z equal to the negative of y, and returns z.
-func (z *BiComplex) Neg(y *BiComplex) *BiComplex {
+func (z *BiPerplex) Neg(y *BiPerplex) *BiPerplex {
 	z.l.Neg(&y.l)
 	z.r.Neg(&y.r)
 	return z
 }
 
-// Conj sets z equal to the bicomplex conjugate of y, and returns z.
-func (z *BiComplex) Conj(y *BiComplex) *BiComplex {
+// Conj sets z equal to the biperplex conjugate of y, and returns z.
+func (z *BiPerplex) Conj(y *BiPerplex) *BiPerplex {
 	z.l.Set(&y.l)
 	z.r.Neg(&y.r)
 	return z
 }
 
 // Star sets z equal to the star conjugate of y, and returns z.
-func (z *BiComplex) Star(y *BiComplex) *BiComplex {
+func (z *BiPerplex) Star(y *BiPerplex) *BiPerplex {
 	z.l.Conj(&y.l)
 	z.r.Conj(&y.r)
 	return z
 }
 
 // Add sets z equal to x+y, and returns z.
-func (z *BiComplex) Add(x, y *BiComplex) *BiComplex {
+func (z *BiPerplex) Add(x, y *BiPerplex) *BiPerplex {
 	z.l.Add(&x.l, &y.l)
 	z.r.Add(&x.r, &y.r)
 	return z
 }
 
 // Sub sets z equal to x-y, and returns z.
-func (z *BiComplex) Sub(x, y *BiComplex) *BiComplex {
+func (z *BiPerplex) Sub(x, y *BiPerplex) *BiPerplex {
 	z.l.Sub(&x.l, &y.l)
 	z.r.Sub(&x.r, &y.r)
 	return z
@@ -123,19 +123,18 @@ func (z *BiComplex) Sub(x, y *BiComplex) *BiComplex {
 // Mul sets z equal to the product of x and y, and returns z.
 //
 // The multiplication rules are:
-// 		Mul(i, i) = Mul(h, h) = -1
-// 		Mul(s, s) = +1
-// 		Mul(i, h) = Mul(h, i) = s
-// 		Mul(h, s) = Mul(s, h) = -i
-// 		Mul(s, i) = Mul(i, s) = -h
+// 		Mul(s, s) = Mul(r, r) = Mul(q, q) = +1
+// 		Mul(s, r) = Mul(r, s) = q
+// 		Mul(r, q) = Mul(q, r) = s
+// 		Mul(q, s) = Mul(s, q) = r
 // This binary operation is commutative and associative.
-func (z *BiComplex) Mul(x, y *BiComplex) *BiComplex {
-	a := new(Complex).Set(&x.l)
-	b := new(Complex).Set(&x.r)
-	c := new(Complex).Set(&y.l)
-	d := new(Complex).Set(&y.r)
-	temp := new(Complex)
-	z.l.Sub(
+func (z *BiPerplex) Mul(x, y *BiPerplex) *BiPerplex {
+	a := new(Perplex).Set(&x.l)
+	b := new(Perplex).Set(&x.r)
+	c := new(Perplex).Set(&y.l)
+	d := new(Perplex).Set(&y.r)
+	temp := new(Perplex)
+	z.l.Add(
 		z.l.Mul(a, c),
 		temp.Mul(b, d),
 	)
@@ -146,36 +145,35 @@ func (z *BiComplex) Mul(x, y *BiComplex) *BiComplex {
 	return z
 }
 
-// Norm returns the complex norm of z.
-func (z *BiComplex) Norm() *Complex {
-	norm := new(Complex)
+// Norm returns the perplex norm of z.
+func (z *BiPerplex) Norm() *Perplex {
+	norm := new(Perplex)
 	norm.Mul(&z.l, &z.l)
-	norm.Add(norm, new(Complex).Mul(&z.r, &z.r))
+	norm.Sub(norm, new(Perplex).Mul(&z.r, &z.r))
 	return norm
 }
 
-// Quad returns the quadrance of z. This is always non-negative.
-func (z *BiComplex) Quad() *big.Rat {
+// Quad returns the quadrance of z. This can be positive, negative, or zero.
+func (z *BiPerplex) Quad() *big.Rat {
 	return z.Norm().Quad()
 }
 
 // IsZeroDiv returns true if z is a zero divisor.
-func (z *BiComplex) IsZeroDiv() bool {
-	zero := new(Complex)
-	return zero.Equals(z.Norm())
+func (z *BiPerplex) IsZeroDiv() bool {
+	return z.Norm().IsZeroDiv()
 }
 
 // Inv sets z equal to the inverse of y, and returns z. If y is a zero divisor,
 // then Inv panics.
-func (z *BiComplex) Inv(y *BiComplex) *BiComplex {
+func (z *BiPerplex) Inv(y *BiPerplex) *BiPerplex {
 	if y.IsZeroDiv() {
 		panic("inverse of zero divisor")
 	}
-	p := new(BiComplex)
+	p := new(BiPerplex)
 	p.Set(y)
 	quad := p.Quad()
 	quad.Inv(quad)
-	temp := new(BiComplex)
+	temp := new(BiPerplex)
 	z.Conj(p)
 	z.Mul(z, temp.Star(p))
 	z.Mul(z, temp.Conj(temp.Star(p)))
@@ -184,7 +182,7 @@ func (z *BiComplex) Inv(y *BiComplex) *BiComplex {
 
 // Quo sets z equal to the quotient of x and y. If y is a zero divisor, then
 // Quo panics.
-func (z *BiComplex) Quo(x, y *BiComplex) *BiComplex {
+func (z *BiPerplex) Quo(x, y *BiPerplex) *BiPerplex {
 	if y.IsZeroDiv() {
 		panic("denominator is zero divisor")
 	}
@@ -194,8 +192,8 @@ func (z *BiComplex) Quo(x, y *BiComplex) *BiComplex {
 // CrossRatio sets z equal to the cross-ratio of v, w, x, and y:
 // 		Inv(w - x) * (v - x) * Inv(v - y) * (w - y)
 // Then it returns z.
-func (z *BiComplex) CrossRatio(v, w, x, y *BiComplex) *BiComplex {
-	temp := new(BiComplex)
+func (z *BiPerplex) CrossRatio(v, w, x, y *BiPerplex) *BiPerplex {
+	temp := new(BiPerplex)
 	z.Sub(w, x)
 	z.Inv(z)
 	temp.Sub(v, x)
@@ -210,27 +208,27 @@ func (z *BiComplex) CrossRatio(v, w, x, y *BiComplex) *BiComplex {
 // Möbius sets z equal to the Möbius (fractional linear) transform of y:
 // 		(a*y + b) * Inv(c*y + d)
 // Then it returns z.
-func (z *BiComplex) Möbius(y, a, b, c, d *BiComplex) *BiComplex {
+func (z *BiPerplex) Möbius(y, a, b, c, d *BiPerplex) *BiPerplex {
 	z.Mul(a, y)
 	z.Add(z, b)
-	temp := new(BiComplex)
+	temp := new(BiPerplex)
 	temp.Mul(c, y)
 	temp.Add(temp, d)
 	temp.Inv(temp)
 	return z.Mul(z, temp)
 }
 
-// Generate returns a random BiComplex value for quick.Check testing.
-func (z *BiComplex) Generate(rand *rand.Rand, size int) reflect.Value {
-	randomBiComplex := &BiComplex{
-		*NewComplex(
+// Generate returns a random BiPerplex value for quick.Check testing.
+func (z *BiPerplex) Generate(rand *rand.Rand, size int) reflect.Value {
+	randomBiPerplex := &BiPerplex{
+		*NewPerplex(
 			big.NewRat(rand.Int63(), rand.Int63()),
 			big.NewRat(rand.Int63(), rand.Int63()),
 		),
-		*NewComplex(
+		*NewPerplex(
 			big.NewRat(rand.Int63(), rand.Int63()),
 			big.NewRat(rand.Int63(), rand.Int63()),
 		),
 	}
-	return reflect.ValueOf(randomBiComplex)
+	return reflect.ValueOf(randomBiPerplex)
 }
