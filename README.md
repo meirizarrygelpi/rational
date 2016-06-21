@@ -391,7 +391,7 @@ The `rational.BiComplex` type represents a bicomplex number. It corresponds to a
 ```go
 	Mul(i, i) = Mul(h, h) = -1
 	Mul(s, s) = +1
-	Mul(i, h) = Mul(h, i) = s
+	Mul(i, h) = Mul(h, i) = +s
 	Mul(h, s) = Mul(s, h) = -i
 	Mul(s, i) = Mul(i, s) = -h
 ```
@@ -415,7 +415,7 @@ The `rational.Hyper` type represents a hyper-dual number. It corresponds to a no
 	Mul(α, α) = Mul(κ, κ) = Mul(λ, λ) = 0
 	Mul(α, κ) = Mul(κ, α) = λ
 	Mul(κ, λ) = Mul(λ, κ) = 0
-	Mul(λ, α) = Mul(α, κ) = 0
+	Mul(λ, α) = Mul(α, λ) = 0
 ```
 Note that this multiplication operation is **commutative** and **associative**.
 
@@ -427,14 +427,36 @@ Another name for the dual numbers could be the *nilplex* numbers. Thus, in analo
 
 ### rational.DualComplex
 
-...
+The `rational.DualComplex` type represents a dual-complex number. It corresponds to a non-sesquilinear parabolic construct with `rational.Complex` values. The imaginary unit is denoted `i`, and the dual units are denoted `κ` and `λ`. The multiplication rules are:
+```go
+	Mul(i, i) = -1
+	Mul(κ, κ) = Mul(λ, λ) = 0
+	Mul(i, κ) = Mul(κ, i) = +λ
+	Mul(κ, λ) = Mul(λ, κ) = 0
+	Mul(λ, i) = Mul(i, λ) = -κ
+```
+Note that this multiplication operation is **commutative** and **associative**.
 
 ### rational.DualPerplex
 
-...
+The `rational.DualPerplex` type represents a dual-perplex number. It corresponds to a non-sesquilinear parabolic construct with `rational.Perplex` values. The split unit is denoted `s`, and the dual units are denoted `κ` and `λ`. The multiplication rules are:
+```go
+	Mul(s, s) = +1
+	Mul(κ, κ) = Mul(λ, λ) = 0
+	Mul(s, κ) = Mul(κ, s) = +λ
+	Mul(κ, λ) = Mul(λ, κ) = 0
+	Mul(λ, s) = Mul(s, λ) = +κ
+```
+Note that this multiplication operation is **commutative** and **associative**.
 
 ## To Do
 
 1. Improve documentation
 1. Tests
+1. TriComplex type
+1. TriPerplex type
+1. TriNilplex type
+1. BiHamilton type
+1. DualHamilton type
+1. Other types
 1. Elementary and special functions via Padé approximants
