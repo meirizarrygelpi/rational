@@ -420,10 +420,18 @@ The `rational.Hyper` type represents a hyper-dual number. It corresponds to a no
 Note that this multiplication operation is **commutative** and **associative**.
 
 Hyper-dual numbers are useful for computing second-order derivatives. If `z = a + 1α + 1κ + 0λ`, and `f` is a function, then
-```go
+```
 	f(z) = f(a) + f'(a)α + f'(a)κ + f''(a)λ
 ```
 Another name for the dual numbers could be the *nilplex* numbers. Thus, in analogy with the bicomplex numbers, another name for the hyper-dual numbers could be the *binilplex* numbers.
+
+### rational.DualComplex
+
+...
+
+### rational.DualPerplex
+
+...
 
 ## To Do
 

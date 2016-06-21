@@ -11,28 +11,28 @@ import (
 	"strings"
 )
 
-var symbHyper = [4]string{"", "α", "κ", "λ"}
+var symbDualComplex = [4]string{"", "i", "κ", "λ"}
 
-// A Hyper represents a rational hyper-dual number.
-type Hyper struct {
-	l, r Infra
+// A DualComplex represents a rational dual complex number.
+type DualComplex struct {
+	l, r Complex
 }
 
 // Real returns the (rational) real part of z.
-func (z *Hyper) Real() *big.Rat {
+func (z *DualComplex) Real() *big.Rat {
 	return (&z.l).Real()
 }
 
 // Rats returns the four rational components of z.
-func (z *Hyper) Rats() (*big.Rat, *big.Rat, *big.Rat, *big.Rat) {
+func (z *DualComplex) Rats() (*big.Rat, *big.Rat, *big.Rat, *big.Rat) {
 	return &z.l.l, &z.l.r, &z.r.l, &z.r.r
 }
 
-// String returns the string representation of a Hyper value.
+// String returns the string representation of a DualComplex value.
 //
 // If z corresponds to a + bα + cκ + dλ, then the string is "(a+bα+cκ+dλ)",
 // similar to complex128 values.
-func (z *Hyper) String() string {
+func (z *DualComplex) String() string {
 	v := make([]*big.Rat, 4)
 	v[0], v[1] = z.l.Rats()
 	v[2], v[3] = z.r.Rats()
@@ -46,7 +46,7 @@ func (z *Hyper) String() string {
 		} else {
 			a[j] = fmt.Sprintf("+%v", v[i].RatString())
 		}
-		a[j+1] = symbHyper[i]
+		a[j+1] = symbDualComplex[i]
 		i++
 	}
 	a[8] = ")"
@@ -54,7 +54,7 @@ func (z *Hyper) String() string {
 }
 
 // Equals returns true if y and z are equal.
-func (z *Hyper) Equals(y *Hyper) bool {
+func (z *DualComplex) Equals(y *DualComplex) bool {
 	if !z.l.Equals(&y.l) || !z.r.Equals(&y.r) {
 		return false
 	}
@@ -62,15 +62,15 @@ func (z *Hyper) Equals(y *Hyper) bool {
 }
 
 // Set sets z equal to y, and returns z.
-func (z *Hyper) Set(y *Hyper) *Hyper {
+func (z *DualComplex) Set(y *DualComplex) *DualComplex {
 	z.l.Set(&y.l)
 	z.r.Set(&y.r)
 	return z
 }
 
-// NewHyper returns a *Hyper with value a+bα+cκ+dλ.
-func NewHyper(a, b, c, d *big.Rat) *Hyper {
-	z := new(Hyper)
+// NewDualComplex returns a *DualComplex with value a+bi+cκ+dλ.
+func NewDualComplex(a, b, c, d *big.Rat) *DualComplex {
+	z := new(DualComplex)
 	z.l.l.Set(a)
 	z.l.r.Set(b)
 	z.r.l.Set(c)
@@ -79,42 +79,42 @@ func NewHyper(a, b, c, d *big.Rat) *Hyper {
 }
 
 // Scal sets z equal to y scaled by a, and returns z.
-func (z *Hyper) Scal(y *Hyper, a *big.Rat) *Hyper {
+func (z *DualComplex) Scal(y *DualComplex, a *big.Rat) *DualComplex {
 	z.l.Scal(&y.l, a)
 	z.r.Scal(&y.r, a)
 	return z
 }
 
 // Neg sets z equal to the negative of y, and returns z.
-func (z *Hyper) Neg(y *Hyper) *Hyper {
+func (z *DualComplex) Neg(y *DualComplex) *DualComplex {
 	z.l.Neg(&y.l)
 	z.r.Neg(&y.r)
 	return z
 }
 
 // Conj sets z equal to the hyper-dual conjugate of y, and returns z.
-func (z *Hyper) Conj(y *Hyper) *Hyper {
+func (z *DualComplex) Conj(y *DualComplex) *DualComplex {
 	z.l.Set(&y.l)
 	z.r.Neg(&y.r)
 	return z
 }
 
 // Star sets z equal to the star conjugate of y, and returns z.
-func (z *Hyper) Star(y *Hyper) *Hyper {
+func (z *DualComplex) Star(y *DualComplex) *DualComplex {
 	z.l.Conj(&y.l)
 	z.r.Conj(&y.r)
 	return z
 }
 
 // Add sets z equal to x+y, and returns z.
-func (z *Hyper) Add(x, y *Hyper) *Hyper {
+func (z *DualComplex) Add(x, y *DualComplex) *DualComplex {
 	z.l.Add(&x.l, &y.l)
 	z.r.Add(&x.r, &y.r)
 	return z
 }
 
 // Sub sets z equal to x-y, and returns z.
-func (z *Hyper) Sub(x, y *Hyper) *Hyper {
+func (z *DualComplex) Sub(x, y *DualComplex) *DualComplex {
 	z.l.Sub(&x.l, &y.l)
 	z.r.Sub(&x.r, &y.r)
 	return z
@@ -123,17 +123,18 @@ func (z *Hyper) Sub(x, y *Hyper) *Hyper {
 // Mul sets z equal to the product of x and y, and returns z.
 //
 // The multiplication rules are:
-// 		Mul(α, α) = Mul(κ, κ) = Mul(λ, λ) = 0
-// 		Mul(α, κ) = Mul(κ, α) = λ
+// 		Mul(i, i) = -1
+// 		Mul(κ, κ) = Mul(λ, λ) = 0
+// 		Mul(i, κ) = Mul(κ, i) = λ
 // 		Mul(κ, λ) = Mul(λ, κ) = 0
-// 		Mul(λ, α) = Mul(α, λ) = 0
+// 		Mul(λ, i) = Mul(i, λ) = -κ
 // This binary operation is commutative and associative.
-func (z *Hyper) Mul(x, y *Hyper) *Hyper {
-	a := new(Infra).Set(&x.l)
-	b := new(Infra).Set(&x.r)
-	c := new(Infra).Set(&y.l)
-	d := new(Infra).Set(&y.r)
-	temp := new(Infra)
+func (z *DualComplex) Mul(x, y *DualComplex) *DualComplex {
+	a := new(Complex).Set(&x.l)
+	b := new(Complex).Set(&x.r)
+	c := new(Complex).Set(&y.l)
+	d := new(Complex).Set(&y.r)
+	temp := new(Complex)
 	z.l.Mul(a, c)
 	z.r.Add(
 		z.r.Mul(a, d),
@@ -142,33 +143,34 @@ func (z *Hyper) Mul(x, y *Hyper) *Hyper {
 	return z
 }
 
-// Norm returns the infra norm of z.
-func (z *Hyper) Norm() *Infra {
-	norm := new(Infra)
+// Norm returns the complex norm of z.
+func (z *DualComplex) Norm() *Complex {
+	norm := new(Complex)
 	return norm.Mul(&z.l, &z.l)
 }
 
 // Quad returns the quadrance of z. This is always non-negative.
-func (z *Hyper) Quad() *big.Rat {
+func (z *DualComplex) Quad() *big.Rat {
 	return z.Norm().Quad()
 }
 
 // IsZeroDiv returns true if z is a zero divisor.
-func (z *Hyper) IsZeroDiv() bool {
-	return z.Norm().IsZeroDiv()
+func (z *DualComplex) IsZeroDiv() bool {
+	zero := new(Complex)
+	return zero.Equals(z.Norm())
 }
 
 // Inv sets z equal to the inverse of y, and returns z. If y is a zero divisor,
 // then Inv panics.
-func (z *Hyper) Inv(y *Hyper) *Hyper {
+func (z *DualComplex) Inv(y *DualComplex) *DualComplex {
 	if y.IsZeroDiv() {
 		panic("inverse of zero divisor")
 	}
-	p := new(Hyper)
+	p := new(DualComplex)
 	p.Set(y)
 	quad := p.Quad()
 	quad.Inv(quad)
-	temp := new(Hyper)
+	temp := new(DualComplex)
 	z.Conj(p)
 	z.Mul(z, temp.Star(p))
 	z.Mul(z, temp.Conj(temp.Star(p)))
@@ -177,7 +179,7 @@ func (z *Hyper) Inv(y *Hyper) *Hyper {
 
 // Quo sets z equal to the quotient of x and y. If y is a zero divisor, then
 // Quo panics.
-func (z *Hyper) Quo(x, y *Hyper) *Hyper {
+func (z *DualComplex) Quo(x, y *DualComplex) *DualComplex {
 	if y.IsZeroDiv() {
 		panic("denominator is zero divisor")
 	}
@@ -187,8 +189,8 @@ func (z *Hyper) Quo(x, y *Hyper) *Hyper {
 // CrossRatio sets z equal to the cross-ratio of v, w, x, and y:
 // 		Inv(w - x) * (v - x) * Inv(v - y) * (w - y)
 // Then it returns z.
-func (z *Hyper) CrossRatio(v, w, x, y *Hyper) *Hyper {
-	temp := new(Hyper)
+func (z *DualComplex) CrossRatio(v, w, x, y *DualComplex) *DualComplex {
+	temp := new(DualComplex)
 	z.Sub(w, x)
 	z.Inv(z)
 	temp.Sub(v, x)
@@ -203,27 +205,27 @@ func (z *Hyper) CrossRatio(v, w, x, y *Hyper) *Hyper {
 // Möbius sets z equal to the Möbius (fractional linear) transform of y:
 // 		(a*y + b) * Inv(c*y + d)
 // Then it returns z.
-func (z *Hyper) Möbius(y, a, b, c, d *Hyper) *Hyper {
+func (z *DualComplex) Möbius(y, a, b, c, d *DualComplex) *DualComplex {
 	z.Mul(a, y)
 	z.Add(z, b)
-	temp := new(Hyper)
+	temp := new(DualComplex)
 	temp.Mul(c, y)
 	temp.Add(temp, d)
 	temp.Inv(temp)
 	return z.Mul(z, temp)
 }
 
-// Generate returns a random Hyper value for quick.Check testing.
-func (z *Hyper) Generate(rand *rand.Rand, size int) reflect.Value {
-	randomHyper := &Hyper{
-		*NewInfra(
+// Generate returns a random DualComplex value for quick.Check testing.
+func (z *DualComplex) Generate(rand *rand.Rand, size int) reflect.Value {
+	randomDualComplex := &DualComplex{
+		*NewComplex(
 			big.NewRat(rand.Int63(), rand.Int63()),
 			big.NewRat(rand.Int63(), rand.Int63()),
 		),
-		*NewInfra(
+		*NewComplex(
 			big.NewRat(rand.Int63(), rand.Int63()),
 			big.NewRat(rand.Int63(), rand.Int63()),
 		),
 	}
-	return reflect.ValueOf(randomHyper)
+	return reflect.ValueOf(randomDualComplex)
 }
