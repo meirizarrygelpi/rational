@@ -158,15 +158,15 @@ func (z *BiPerplex) Quad() *big.Rat {
 	return z.Norm().Quad()
 }
 
-// IsZeroDiv returns true if z is a zero divisor.
-func (z *BiPerplex) IsZeroDiv() bool {
-	return z.Norm().IsZeroDiv()
+// IsZeroDivisor returns true if z is a zero divisor.
+func (z *BiPerplex) IsZeroDivisor() bool {
+	return z.Norm().IsZeroDivisor()
 }
 
 // Inv sets z equal to the inverse of y, and returns z. If y is a zero divisor,
 // then Inv panics.
 func (z *BiPerplex) Inv(y *BiPerplex) *BiPerplex {
-	if y.IsZeroDiv() {
+	if y.IsZeroDivisor() {
 		panic("inverse of zero divisor")
 	}
 	p := new(BiPerplex)
@@ -183,7 +183,7 @@ func (z *BiPerplex) Inv(y *BiPerplex) *BiPerplex {
 // Quo sets z equal to the quotient of x and y. If y is a zero divisor, then
 // Quo panics.
 func (z *BiPerplex) Quo(x, y *BiPerplex) *BiPerplex {
-	if y.IsZeroDiv() {
+	if y.IsZeroDivisor() {
 		panic("denominator is zero divisor")
 	}
 	return z.Mul(z.Inv(y), x)

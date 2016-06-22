@@ -135,8 +135,8 @@ func (z *Perplex) Quad() *big.Rat {
 	)
 }
 
-// IsZeroDiv returns true if z is a zero divisor.
-func (z *Perplex) IsZeroDiv() bool {
+// IsZeroDivisor returns true if z is a zero divisor.
+func (z *Perplex) IsZeroDivisor() bool {
 	if z.l.Cmp(&z.r) == 0 {
 		return true
 	}
@@ -149,7 +149,7 @@ func (z *Perplex) IsZeroDiv() bool {
 // Inv sets z equal to the inverse of y, and returns z. If y is a zero divisor,
 // then Inv panics.
 func (z *Perplex) Inv(y *Perplex) *Perplex {
-	if y.IsZeroDiv() {
+	if y.IsZeroDivisor() {
 		panic("inverse of zero divisor")
 	}
 	a := y.Quad()
@@ -160,7 +160,7 @@ func (z *Perplex) Inv(y *Perplex) *Perplex {
 // Quo sets z equal to the quotient of x and y, and returns z. If y is a zero
 // divisor, then Quo panics.
 func (z *Perplex) Quo(x, y *Perplex) *Perplex {
-	if y.IsZeroDiv() {
+	if y.IsZeroDivisor() {
 		panic("denominator is zero divisor")
 	}
 	return z.Mul(x, z.Inv(y))

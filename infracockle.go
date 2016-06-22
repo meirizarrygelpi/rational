@@ -191,16 +191,16 @@ func (z *InfraCockle) Quad() *big.Rat {
 	return z.l.Quad()
 }
 
-// IsZeroDiv returns true if z is a zero divisor. This is equivalent to z being
+// IsZeroDivisor returns true if z is a zero divisor. This is equivalent to z being
 // nilpotent.
-func (z *InfraCockle) IsZeroDiv() bool {
-	return z.l.IsZeroDiv()
+func (z *InfraCockle) IsZeroDivisor() bool {
+	return z.l.IsZeroDivisor()
 }
 
 // Inv sets z equal to the inverse of y, and returns z. If y is a zero divisor,
 // then Inv panics.
 func (z *InfraCockle) Inv(y *InfraCockle) *InfraCockle {
-	if y.IsZeroDiv() {
+	if y.IsZeroDivisor() {
 		panic("inverse of zero divisor")
 	}
 	a := y.Quad()
@@ -212,7 +212,7 @@ func (z *InfraCockle) Inv(y *InfraCockle) *InfraCockle {
 // 		Mul(Inv(y), x)
 // Then it returns z. If y is a zero divisor, then QuoL panics.
 func (z *InfraCockle) QuoL(x, y *InfraCockle) *InfraCockle {
-	if y.IsZeroDiv() {
+	if y.IsZeroDivisor() {
 		panic("denominator is zero divisor")
 	}
 	return z.Mul(z.Inv(y), x)
@@ -222,7 +222,7 @@ func (z *InfraCockle) QuoL(x, y *InfraCockle) *InfraCockle {
 // 		Mul(x, Inv(y))
 // Then it returns z. If y is a zero divisor, then QuoR panics.
 func (z *InfraCockle) QuoR(x, y *InfraCockle) *InfraCockle {
-	if y.IsZeroDiv() {
+	if y.IsZeroDivisor() {
 		panic("denominator is zero divisor")
 	}
 	return z.Mul(x, z.Inv(y))

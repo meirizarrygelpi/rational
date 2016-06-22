@@ -153,16 +153,16 @@ func (z *InfraPerplex) Quad() *big.Rat {
 	return z.l.Quad()
 }
 
-// IsZeroDiv returns true if z is a zero divisor. This is equivalent to z being
+// IsZeroDivisor returns true if z is a zero divisor. This is equivalent to z being
 // nilpotent.
-func (z *InfraPerplex) IsZeroDiv() bool {
-	return z.l.IsZeroDiv()
+func (z *InfraPerplex) IsZeroDivisor() bool {
+	return z.l.IsZeroDivisor()
 }
 
 // Inv sets z equal to the inverse of y, and returns z. If y is a zero divisor,
 // then Inv panics.
 func (z *InfraPerplex) Inv(y *InfraPerplex) *InfraPerplex {
-	if y.IsZeroDiv() {
+	if y.IsZeroDivisor() {
 		panic("inverse of zero divisor")
 	}
 	a := y.Quad()
@@ -174,7 +174,7 @@ func (z *InfraPerplex) Inv(y *InfraPerplex) *InfraPerplex {
 // 		Mul(Inv(y), x)
 // Then it returns z. If y is a zero divisor, then QuoL panics.
 func (z *InfraPerplex) QuoL(x, y *InfraPerplex) *InfraPerplex {
-	if y.IsZeroDiv() {
+	if y.IsZeroDivisor() {
 		panic("denominator is zero divisor")
 	}
 	return z.Mul(z.Inv(y), x)
@@ -184,7 +184,7 @@ func (z *InfraPerplex) QuoL(x, y *InfraPerplex) *InfraPerplex {
 // 		Mul(x, Inv(y))
 // Then it returns z. If y is a zero divisor, then QuoR panics.
 func (z *InfraPerplex) QuoR(x, y *InfraPerplex) *InfraPerplex {
-	if y.IsZeroDiv() {
+	if y.IsZeroDivisor() {
 		panic("denominator is zero divisor")
 	}
 	return z.Mul(x, z.Inv(y))

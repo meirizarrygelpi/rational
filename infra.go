@@ -128,9 +128,9 @@ func (z *Infra) Quad() *big.Rat {
 	return new(big.Rat).Mul(&z.l, &z.l)
 }
 
-// IsZeroDiv returns true if z is a zero divisor. This is equivalent to z being
+// IsZeroDivisor returns true if z is a zero divisor. This is equivalent to z being
 // nilpotent.
-func (z *Infra) IsZeroDiv() bool {
+func (z *Infra) IsZeroDivisor() bool {
 	zero := new(big.Int)
 	return z.l.Num().Cmp(zero) == 0
 }
@@ -138,7 +138,7 @@ func (z *Infra) IsZeroDiv() bool {
 // Inv sets z equal to the inverse of y, and returns z. If y is a zero divisor,
 // then Inv panics.
 func (z *Infra) Inv(y *Infra) *Infra {
-	if y.IsZeroDiv() {
+	if y.IsZeroDivisor() {
 		panic("inverse of zero divisor")
 	}
 	a := y.Quad()
@@ -149,7 +149,7 @@ func (z *Infra) Inv(y *Infra) *Infra {
 // Quo sets z equal to the quotient of x and y, and returns z. If y is a zero
 // divisor, then Quo panics.
 func (z *Infra) Quo(x, y *Infra) *Infra {
-	if y.IsZeroDiv() {
+	if y.IsZeroDivisor() {
 		panic("denominator is zero divisor")
 	}
 	return z.Mul(x, z.Inv(y))

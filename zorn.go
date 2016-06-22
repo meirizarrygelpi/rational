@@ -196,15 +196,15 @@ func (z *Zorn) Quad() *big.Rat {
 	)
 }
 
-// IsZeroDiv returns true if z is a zero divisor.
-func (z *Zorn) IsZeroDiv() bool {
+// IsZeroDivisor returns true if z is a zero divisor.
+func (z *Zorn) IsZeroDivisor() bool {
 	return z.l.Quad().Cmp(z.r.Quad()) == 0
 }
 
 // Inv sets z equal to the inverse of y, and returns z. If y is a zero divisor,
 // then Inv panics.
 func (z *Zorn) Inv(y *Zorn) *Zorn {
-	if y.IsZeroDiv() {
+	if y.IsZeroDivisor() {
 		panic("inverse of zero divisor")
 	}
 	a := y.Quad()
@@ -216,7 +216,7 @@ func (z *Zorn) Inv(y *Zorn) *Zorn {
 // 		Mul(Inv(y), x)
 // Then it returns z. If y is a zero divisor, then QuoL panics.
 func (z *Zorn) QuoL(x, y *Zorn) *Zorn {
-	if y.IsZeroDiv() {
+	if y.IsZeroDivisor() {
 		panic("denominator is zero divisor")
 	}
 	return z.Mul(z.Inv(y), x)
@@ -226,7 +226,7 @@ func (z *Zorn) QuoL(x, y *Zorn) *Zorn {
 // 		Mul(x, Inv(y))
 // Then it returns z. If y is a zero divisor, then QuoR panics.
 func (z *Zorn) QuoR(x, y *Zorn) *Zorn {
-	if y.IsZeroDiv() {
+	if y.IsZeroDivisor() {
 		panic("denominator is zero divisor")
 	}
 	return z.Mul(x, z.Inv(y))

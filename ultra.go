@@ -189,15 +189,15 @@ func (z *Ultra) Quad() *big.Rat {
 	return z.l.Quad()
 }
 
-// IsZeroDiv returns true if z is a zero divisor.
-func (z *Ultra) IsZeroDiv() bool {
-	return z.l.IsZeroDiv()
+// IsZeroDivisor returns true if z is a zero divisor.
+func (z *Ultra) IsZeroDivisor() bool {
+	return z.l.IsZeroDivisor()
 }
 
 // Inv sets z equal to the inverse of y, and returns z. If y is a zero divisor,
 // then Inv panics.
 func (z *Ultra) Inv(y *Ultra) *Ultra {
-	if y.IsZeroDiv() {
+	if y.IsZeroDivisor() {
 		panic("inverse of zero divisor")
 	}
 	a := y.Quad()
@@ -209,7 +209,7 @@ func (z *Ultra) Inv(y *Ultra) *Ultra {
 // 		Mul(Inv(y), x)
 // Then it returns z. If y is a zero divisor, then QuoL panics.
 func (z *Ultra) QuoL(x, y *Ultra) *Ultra {
-	if y.IsZeroDiv() {
+	if y.IsZeroDivisor() {
 		panic("denominator is zero divisor")
 	}
 	return z.Mul(z.Inv(y), x)
@@ -219,7 +219,7 @@ func (z *Ultra) QuoL(x, y *Ultra) *Ultra {
 // 		Mul(x, Inv(y))
 // Then it returns z. If y is a zero divisor, then QuoR panics.
 func (z *Ultra) QuoR(x, y *Ultra) *Ultra {
-	if y.IsZeroDiv() {
+	if y.IsZeroDivisor() {
 		panic("denominator is zero divisor")
 	}
 	return z.Mul(x, z.Inv(y))

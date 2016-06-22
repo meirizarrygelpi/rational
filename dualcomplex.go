@@ -154,8 +154,8 @@ func (z *DualComplex) Quad() *big.Rat {
 	return z.Norm().Quad()
 }
 
-// IsZeroDiv returns true if z is a zero divisor.
-func (z *DualComplex) IsZeroDiv() bool {
+// IsZeroDivisor returns true if z is a zero divisor.
+func (z *DualComplex) IsZeroDivisor() bool {
 	zero := new(Complex)
 	return zero.Equals(z.Norm())
 }
@@ -163,7 +163,7 @@ func (z *DualComplex) IsZeroDiv() bool {
 // Inv sets z equal to the inverse of y, and returns z. If y is a zero divisor,
 // then Inv panics.
 func (z *DualComplex) Inv(y *DualComplex) *DualComplex {
-	if y.IsZeroDiv() {
+	if y.IsZeroDivisor() {
 		panic("inverse of zero divisor")
 	}
 	p := new(DualComplex)
@@ -180,7 +180,7 @@ func (z *DualComplex) Inv(y *DualComplex) *DualComplex {
 // Quo sets z equal to the quotient of x and y. If y is a zero divisor, then
 // Quo panics.
 func (z *DualComplex) Quo(x, y *DualComplex) *DualComplex {
-	if y.IsZeroDiv() {
+	if y.IsZeroDivisor() {
 		panic("denominator is zero divisor")
 	}
 	return z.Mul(z.Inv(y), x)

@@ -159,8 +159,8 @@ func (z *BiComplex) Quad() *big.Rat {
 	return z.Norm().Quad()
 }
 
-// IsZeroDiv returns true if z is a zero divisor.
-func (z *BiComplex) IsZeroDiv() bool {
+// IsZeroDivisor returns true if z is a zero divisor.
+func (z *BiComplex) IsZeroDivisor() bool {
 	zero := new(Complex)
 	return zero.Equals(z.Norm())
 }
@@ -168,7 +168,7 @@ func (z *BiComplex) IsZeroDiv() bool {
 // Inv sets z equal to the inverse of y, and returns z. If y is a zero divisor,
 // then Inv panics.
 func (z *BiComplex) Inv(y *BiComplex) *BiComplex {
-	if y.IsZeroDiv() {
+	if y.IsZeroDivisor() {
 		panic("inverse of zero divisor")
 	}
 	p := new(BiComplex)
@@ -185,7 +185,7 @@ func (z *BiComplex) Inv(y *BiComplex) *BiComplex {
 // Quo sets z equal to the quotient of x and y. If y is a zero divisor, then
 // Quo panics.
 func (z *BiComplex) Quo(x, y *BiComplex) *BiComplex {
-	if y.IsZeroDiv() {
+	if y.IsZeroDivisor() {
 		panic("denominator is zero divisor")
 	}
 	return z.Mul(z.Inv(y), x)
