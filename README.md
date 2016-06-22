@@ -80,6 +80,10 @@ The `rational.Infra` type represents a rational infra number. It corresponds to 
 ```go
 	Mul(α, α) = 0
 ```
+Infra numbers are useful for computing numerical first-order derivatives. If `z = a + 1α`, and `f` is a function, then
+```
+	f(z) = f(a) + f'(a)α
+```
 Infra numbers are more commonly known as [dual numbers](https://en.wikipedia.org/wiki/Dual_number), but "infra" is used here along with "supra" and "ultra" for the higher-dimensional analogs.
 
 ## Four-Dimensional Types
@@ -437,6 +441,26 @@ The `rational.DualComplex` type represents a dual-complex number. It corresponds
 ```
 Note that this multiplication operation is **commutative** and **associative**.
 
+Dual-complex numbers are useful for evaluating two-dimensional vector derivatives. Let `(x, y)` be the coordinate vector in a two-dimensional space. Also, let `f = (g, h)` be a function vector. Then, the **divergence** and the **curl** of `f` are:
+```go
+	Div(f) = (∂g / ∂x) + (∂h / ∂y)
+	Curl(f) = (∂h / ∂x) - (∂g / ∂y)
+```
+A two-dimensional vector `(x, y)` can be associated with a complex number `z = x + yi`. Introduce the Wirtinger derivative
+```
+	(∂ / ∂z) = (1 / 2) * ((∂ / ∂x) - (∂ / ∂y)i)
+```
+The function vector `(g, h)` becomes the complex number `f = g + hi`. Then:
+```
+	2 * (∂f / ∂z) = Div(f) + (Curl(f))i
+```
+Thus, in analogy with the dual numbers, given a dual-complex number `p = a + bi + 2κ + 0λ`, and a function `f`, then
+```
+	f(p) = f(a + bi) + (∂f / ∂z) * (2κ + 0λ)
+		 = f(a + bi) + (Div(f))κ + (Curl(f))λ
+```
+In this manner, `f`, `Div(f)`, and `Curl(f)` can be calculated at the point `a + bi` by just evaluating `f(a + bi + 2κ + 0λ)`. Note that this derivation assumes that `f` is holomorphic (i.e. that it only depends on `a` and `b` in the combination `a + bi`).
+
 ### rational.DualPerplex
 
 The `rational.DualPerplex` type represents a dual-perplex number. It corresponds to a non-sesquilinear parabolic construct with `rational.Perplex` values. The split unit is denoted `s`, and the dual units are denoted `κ` and `λ`. The multiplication rules are:
@@ -448,6 +472,24 @@ The `rational.DualPerplex` type represents a dual-perplex number. It corresponds
 	Mul(λ, s) = Mul(s, λ) = +κ
 ```
 Note that this multiplication operation is **commutative** and **associative**.
+
+Just like dual-complex numbers, the dual-perplex numbers can be used to evaluate certain vector derivatives. Let `w = x + ys` and `f = g + hs`. The Wirtinger derivative is now
+```
+	(∂ / ∂w) = (1 / 2) * ((∂ / ∂x) + (∂ / ∂y)s)
+```
+Then:
+```
+	2 * (∂f / ∂w) = ((∂g / ∂x) + (∂h / ∂y)) + ((∂h / ∂x) + (∂g / ∂y))s
+```
+This suggests the introduction of the hyperbolic version of the curl:
+```
+	Hurl(f) = (∂h / ∂x) + (∂g / ∂y)
+```
+Now let `p = a + bs + 2κ + 0λ`. Thus,
+```
+	f(p) = f(a + bs) + (Div(f))κ + (Hurl(f))λ
+```
+Again, `f`, `Div(f)`, and now `Hurl(f)` can be calculated at the point `a + bs` by just evaluating `f(a + bs + 2κ + 0λ)`.
 
 ## To Do
 
