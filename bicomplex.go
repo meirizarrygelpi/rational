@@ -167,7 +167,9 @@ func (z *BiComplex) Quad() *Complex {
 
 // Norm returns the norm of z. If z = a+bi+ch+ds, then the norm is
 // 		(a² - b² + c² - d²)² + 4(ab + cd)²
-// This is always non-negative.
+// This can also be written as
+// 		((a - d)² + (b + c)²)((a + d)² + (b - c)²)
+// The norm is always non-negative.
 func (z *BiComplex) Norm() *big.Rat {
 	return z.Quad().Quad()
 }

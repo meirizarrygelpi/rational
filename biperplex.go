@@ -166,7 +166,10 @@ func (z *BiPerplex) Quad() *Perplex {
 
 // Norm returns the norm of z. If z = a+bs+cr+dq, then the norm is
 // 		(a² + b² - c² - d²)² - 4(ab - cd)²
-// This can be positive, negative, or zero.
+// This can also be written as
+// 		(a + b + c + d)(a + b - c - d)(a - b + c - d)(a - b - c + d)
+// In this form the norm looks similar to Brahmagupta's formula for the area
+// of a cyclic quadrilateral. The norm can be positive, negative, or zero.
 func (z *BiPerplex) Norm() *big.Rat {
 	return z.Quad().Quad()
 }
