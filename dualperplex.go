@@ -93,6 +93,11 @@ func (z *DualPerplex) Neg(y *DualPerplex) *DualPerplex {
 }
 
 // Conj sets z equal to the dual-perplex conjugate of y, and returns z.
+//
+// If y = a+bs+cκ+dλ, then the dual-perplex conjugate is
+// 		a+bs-cκ-dλ
+// This differs from the usual conjugate by not changing the sign of the s
+// coefficient.
 func (z *DualPerplex) Conj(y *DualPerplex) *DualPerplex {
 	z.l.Set(&y.l)
 	z.r.Neg(&y.r)
@@ -100,6 +105,11 @@ func (z *DualPerplex) Conj(y *DualPerplex) *DualPerplex {
 }
 
 // Star sets z equal to the star conjugate of y, and returns z.
+//
+// If y = a+bs+cκ+dλ, then the star conjugate is
+// 		a-bs+cκ-dλ
+// This differs from the usual conjugate by not changing the sign of the κ
+// coefficient.
 func (z *DualPerplex) Star(y *DualPerplex) *DualPerplex {
 	z.l.Conj(&y.l)
 	z.r.Conj(&y.r)
@@ -143,13 +153,17 @@ func (z *DualPerplex) Mul(x, y *DualPerplex) *DualPerplex {
 	return z
 }
 
-// Norm returns the perplex norm of z.
+// Norm returns the perplex norm of z. If z = a+bs+cκ+dλ, then the norm is
+// 		a² + b² + 2abs
+// Note that this is a perplex number.
 func (z *DualPerplex) Norm() *Perplex {
 	norm := new(Perplex)
 	return norm.Mul(&z.l, &z.l)
 }
 
-// Quad returns the quadrance of z. This is always non-negative.
+// Quad returns the quadrance of z. If z = a+bs+cκ+dλ, then the quadrance is
+// 		(a² - b²)²
+// This can be positive or zero.
 func (z *DualPerplex) Quad() *big.Rat {
 	return z.Norm().Quad()
 }

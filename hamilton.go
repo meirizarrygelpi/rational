@@ -149,7 +149,7 @@ func (z *Hamilton) Commutator(x, y *Hamilton) *Hamilton {
 }
 
 // Quad returns the quadrance of z. If z = a+bi+cj+dk, then the quadrance is
-// 		Mul(a, a) + Mul(b, b) + Mul(c, c) + Mul(d, d)
+// 		a² + b² + c² + d²
 // This is always non-negative.
 func (z *Hamilton) Quad() *big.Rat {
 	return new(big.Rat).Add(

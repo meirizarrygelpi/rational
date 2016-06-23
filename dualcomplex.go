@@ -93,6 +93,11 @@ func (z *DualComplex) Neg(y *DualComplex) *DualComplex {
 }
 
 // Conj sets z equal to the dual-complex conjugate of y, and returns z.
+//
+// If y = a+bi+cκ+dλ, then the dual-complex conjugate is
+// 		a+bi-cκ-dλ
+// This differs from the usual conjugate by not changing the sign of the i
+// coefficient.
 func (z *DualComplex) Conj(y *DualComplex) *DualComplex {
 	z.l.Set(&y.l)
 	z.r.Neg(&y.r)
@@ -100,6 +105,11 @@ func (z *DualComplex) Conj(y *DualComplex) *DualComplex {
 }
 
 // Star sets z equal to the star conjugate of y, and returns z.
+//
+// If y = a+bi+cκ+dλ, then the star conjugate is
+// 		a-bi+cκ-dλ
+// This differs from the usual conjugate by not changing the sign of the κ
+// coefficient.
 func (z *DualComplex) Star(y *DualComplex) *DualComplex {
 	z.l.Conj(&y.l)
 	z.r.Conj(&y.r)
@@ -143,13 +153,17 @@ func (z *DualComplex) Mul(x, y *DualComplex) *DualComplex {
 	return z
 }
 
-// Norm returns the complex norm of z.
+// Norm returns the norm of z. If z = a+bi+cκ+dλ, then the norm is
+// 		a² - b² + 2abi
+// Note that this is a complex number.
 func (z *DualComplex) Norm() *Complex {
 	norm := new(Complex)
 	return norm.Mul(&z.l, &z.l)
 }
 
-// Quad returns the quadrance of z. This is always non-negative.
+// Quad returns the quadrance of z. If z = a+bi+cκ+dλ, then the quadrance is
+// 		(a² + b²)²
+// This is always non-negative.
 func (z *DualComplex) Quad() *big.Rat {
 	return z.Norm().Quad()
 }

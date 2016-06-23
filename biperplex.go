@@ -93,6 +93,11 @@ func (z *BiPerplex) Neg(y *BiPerplex) *BiPerplex {
 }
 
 // Conj sets z equal to the biperplex conjugate of y, and returns z.
+//
+// If y = a+bs+cr+dq, then the biperplex conjugate is
+// 		a+bs-cr-dq
+// This differs from the usual conjugate by not changing the sign of the s
+// coefficient.
 func (z *BiPerplex) Conj(y *BiPerplex) *BiPerplex {
 	z.l.Set(&y.l)
 	z.r.Neg(&y.r)
@@ -100,6 +105,11 @@ func (z *BiPerplex) Conj(y *BiPerplex) *BiPerplex {
 }
 
 // Star sets z equal to the star conjugate of y, and returns z.
+//
+// If y = a+bs+cr+dq, then the star conjugate is
+// 		a-bs+cr-dq
+// This differs from the usual conjugate by not changing the sign of the r
+// coefficient.
 func (z *BiPerplex) Star(y *BiPerplex) *BiPerplex {
 	z.l.Conj(&y.l)
 	z.r.Conj(&y.r)
@@ -145,7 +155,9 @@ func (z *BiPerplex) Mul(x, y *BiPerplex) *BiPerplex {
 	return z
 }
 
-// Norm returns the perplex norm of z.
+// Norm returns the norm of z. If z = a+bs+cr+dq, then the norm is
+// 		a² + b² - c² - d² + 2(ab - cd)s
+// Note that this is a perplex number.
 func (z *BiPerplex) Norm() *Perplex {
 	norm := new(Perplex)
 	norm.Mul(&z.l, &z.l)
@@ -153,7 +165,9 @@ func (z *BiPerplex) Norm() *Perplex {
 	return norm
 }
 
-// Quad returns the quadrance of z. This can be positive, negative, or zero.
+// Quad returns the quadrance of z. If z = a+bs+cr+dq, then the quadrance is
+// 		(a² + b² - c² - d²)² - 4(ab - cd)²
+// This can be positive, negative, or zero.
 func (z *BiPerplex) Quad() *big.Rat {
 	return z.Norm().Quad()
 }

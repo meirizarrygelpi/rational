@@ -93,6 +93,11 @@ func (z *BiComplex) Neg(y *BiComplex) *BiComplex {
 }
 
 // Conj sets z equal to the bicomplex conjugate of y, and returns z.
+//
+// If y = a+bi+ch+ds, then the bicomplex conjugate is
+// 		a+bi-ch-ds
+// This differs from the usual conjugate by not changing the sign of the i
+// coefficient.
 func (z *BiComplex) Conj(y *BiComplex) *BiComplex {
 	z.l.Set(&y.l)
 	z.r.Neg(&y.r)
@@ -100,6 +105,11 @@ func (z *BiComplex) Conj(y *BiComplex) *BiComplex {
 }
 
 // Star sets z equal to the star conjugate of y, and returns z.
+//
+// If y = a+bi+ch+ds, then the star conjugate is
+// 		a-bi+ch-ds
+// This differs from the usual conjugate by not changing the sign of the h
+// coefficient.
 func (z *BiComplex) Star(y *BiComplex) *BiComplex {
 	z.l.Conj(&y.l)
 	z.r.Conj(&y.r)
@@ -146,7 +156,9 @@ func (z *BiComplex) Mul(x, y *BiComplex) *BiComplex {
 	return z
 }
 
-// Norm returns the complex norm of z.
+// Norm returns the norm of z. If z = a+bi+ch+ds, then the norm is
+// 		a² - b² + c² - d² + 2(ab + cd)i
+// Note that this is a complex number.
 func (z *BiComplex) Norm() *Complex {
 	norm := new(Complex)
 	norm.Mul(&z.l, &z.l)
@@ -154,7 +166,9 @@ func (z *BiComplex) Norm() *Complex {
 	return norm
 }
 
-// Quad returns the quadrance of z. This is always non-negative.
+// Quad returns the quadrance of z. If z = a+bi+ch+ds, then the quadrance is
+// 		(a² - b² + c² - d²)² + 4(ab + cd)²
+// This is always non-negative.
 func (z *BiComplex) Quad() *big.Rat {
 	return z.Norm().Quad()
 }

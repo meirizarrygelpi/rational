@@ -125,7 +125,7 @@ func (z *Complex) Mul(x, y *Complex) *Complex {
 }
 
 // Quad returns the quadrance of z. If z = a+bi, then the quadrance is
-// 		Mul(a, a) + Mul(b, b)
+// 		a² + b²
 // This is always non-negative.
 func (z *Complex) Quad() *big.Rat {
 	quad := new(big.Rat)

@@ -147,14 +147,14 @@ func (z *InfraPerplex) Commutator(x, y *InfraPerplex) *InfraPerplex {
 }
 
 // Quad returns the quadrance of z. If z = a+bs+cτ+dυ, then the quadrance is
-//		Mul(a, a) - Mul(b, b)
+//		a² - b²
 // This can be positive, negative, or zero.
 func (z *InfraPerplex) Quad() *big.Rat {
 	return z.l.Quad()
 }
 
-// IsZeroDivisor returns true if z is a zero divisor. This is equivalent to z being
-// nilpotent.
+// IsZeroDivisor returns true if z is a zero divisor. This is equivalent to z
+// being nilpotent.
 func (z *InfraPerplex) IsZeroDivisor() bool {
 	return z.l.IsZeroDivisor()
 }

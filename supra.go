@@ -146,7 +146,7 @@ func (z *Supra) Commutator(x, y *Supra) *Supra {
 }
 
 // Quad returns the quadrance of z. If z = a+bα+cβ+dγ, then the quadrance is
-// 		Mul(a, a)
+// 		a²
 // This is always non-negative.
 func (z *Supra) Quad() *big.Rat {
 	return z.l.Quad()

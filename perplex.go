@@ -125,7 +125,7 @@ func (z *Perplex) Mul(x, y *Perplex) *Perplex {
 }
 
 // Quad returns the quadrance of z. If z = a+bs, then the quadrance is
-// 		Mul(a, a) - Mul(b, b)
+// 		a² - b²
 // This can be positive, negative, or zero.
 func (z *Perplex) Quad() *big.Rat {
 	quad := new(big.Rat)

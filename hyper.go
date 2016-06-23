@@ -93,6 +93,11 @@ func (z *Hyper) Neg(y *Hyper) *Hyper {
 }
 
 // Conj sets z equal to the hyper-dual conjugate of y, and returns z.
+//
+// If y = a+bα+cκ+dλ, then the hyper-dual conjugate is
+// 		a+bα-cκ-dλ
+// This differs from the usual conjugate by not changing the sign of the α
+// coefficient.
 func (z *Hyper) Conj(y *Hyper) *Hyper {
 	z.l.Set(&y.l)
 	z.r.Neg(&y.r)
@@ -100,6 +105,11 @@ func (z *Hyper) Conj(y *Hyper) *Hyper {
 }
 
 // Star sets z equal to the star conjugate of y, and returns z.
+//
+// If y = a+bα+cκ+dλ, then the star conjugate is
+// 		a-bα+cκ-dλ
+// This differs from the usual conjugate by not changing the sign of the κ
+// coefficient.
 func (z *Hyper) Star(y *Hyper) *Hyper {
 	z.l.Conj(&y.l)
 	z.r.Conj(&y.r)
@@ -142,13 +152,17 @@ func (z *Hyper) Mul(x, y *Hyper) *Hyper {
 	return z
 }
 
-// Norm returns the infra norm of z.
+// Norm returns the infra norm of z. If z = a+bα+cκ+dλ, then the norm is
+// 		a² + 2abα
+// Note that this is an infra number.
 func (z *Hyper) Norm() *Infra {
 	norm := new(Infra)
 	return norm.Mul(&z.l, &z.l)
 }
 
-// Quad returns the quadrance of z. This is always non-negative.
+// Quad returns the quadrance of z. If z = a+bα+cκ+dλ, then the quadrance is
+// 		a⁴
+// This is always non-negative.
 func (z *Hyper) Quad() *big.Rat {
 	return z.Norm().Quad()
 }

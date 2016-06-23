@@ -185,7 +185,7 @@ func (z *SupraPerplex) Associator(w, x, y *SupraPerplex) *SupraPerplex {
 
 // Quad returns the quadrance of z. If z = a+bs+cρ+dσ+eτ+fυ+gφ+hψ, then the
 // quadrance is
-//		Mul(a, a) - Mul(b, b)
+//		a² - b²
 // This can be positive, negative, or zero.
 func (z *SupraPerplex) Quad() *big.Rat {
 	return z.l.Quad()

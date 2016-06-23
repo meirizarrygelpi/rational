@@ -183,7 +183,7 @@ func (z *Ultra) Associator(w, x, y *Ultra) *Ultra {
 
 // Quad returns the quadrance of z. If z = a+bα+cβ+dγ+eδ+fε+gζ+hη, then the
 // quadrance is
-//		Mul(a, a)
+//		a²
 // This is always non-negative.
 func (z *Ultra) Quad() *big.Rat {
 	return z.l.Quad()

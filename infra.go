@@ -122,14 +122,14 @@ func (z *Infra) Mul(x, y *Infra) *Infra {
 }
 
 // Quad returns the quadrance of z. If z = a+bα, then the quadrance is
-// 		Mul(a, a)
+// 		a²
 // This is always non-negative.
 func (z *Infra) Quad() *big.Rat {
 	return new(big.Rat).Mul(&z.l, &z.l)
 }
 
-// IsZeroDivisor returns true if z is a zero divisor. This is equivalent to z being
-// nilpotent.
+// IsZeroDivisor returns true if z is a zero divisor. This is equivalent to z
+// being nilpotent.
 func (z *Infra) IsZeroDivisor() bool {
 	zero := new(big.Int)
 	return z.l.Num().Cmp(zero) == 0

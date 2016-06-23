@@ -185,7 +185,7 @@ func (z *SupraComplex) Associator(w, x, y *SupraComplex) *SupraComplex {
 
 // Quad returns the quadrance of z. If z = a+bi+cα+dβ+eγ+fδ+gε+hζ, then the
 // quadrance is
-//		Mul(a, a) + Mul(b, b)
+//		a² + b²
 // This is always non-negative.
 func (z *SupraComplex) Quad() *big.Rat {
 	return z.l.Quad()
