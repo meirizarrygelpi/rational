@@ -153,25 +153,25 @@ func (z *DualComplex) Mul(x, y *DualComplex) *DualComplex {
 	return z
 }
 
-// Norm returns the norm of z. If z = a+bi+cκ+dλ, then the norm is
+// Quad returns the quadrance of z. If z = a+bi+cκ+dλ, then the quadrance is
 // 		a² - b² + 2abi
 // Note that this is a complex number.
-func (z *DualComplex) Norm() *Complex {
-	norm := new(Complex)
-	return norm.Mul(&z.l, &z.l)
+func (z *DualComplex) Quad() *Complex {
+	quad := new(Complex)
+	return quad.Mul(&z.l, &z.l)
 }
 
-// Quad returns the quadrance of z. If z = a+bi+cκ+dλ, then the quadrance is
+// Norm returns the norm of z. If z = a+bi+cκ+dλ, then the norm is
 // 		(a² + b²)²
 // This is always non-negative.
-func (z *DualComplex) Quad() *big.Rat {
-	return z.Norm().Quad()
+func (z *DualComplex) Norm() *big.Rat {
+	return z.Quad().Quad()
 }
 
 // IsZeroDivisor returns true if z is a zero divisor.
 func (z *DualComplex) IsZeroDivisor() bool {
 	zero := new(Complex)
-	return zero.Equals(z.Norm())
+	return zero.Equals(z.Quad())
 }
 
 // Inv sets z equal to the inverse of y, and returns z. If y is a zero divisor,
@@ -182,13 +182,13 @@ func (z *DualComplex) Inv(y *DualComplex) *DualComplex {
 	}
 	p := new(DualComplex)
 	p.Set(y)
-	quad := p.Quad()
-	quad.Inv(quad)
+	norm := p.Norm()
+	norm.Inv(norm)
 	temp := new(DualComplex)
 	z.Conj(p)
 	z.Mul(z, temp.Star(p))
 	z.Mul(z, temp.Conj(temp.Star(p)))
-	return z.Scal(z, quad)
+	return z.Scal(z, norm)
 }
 
 // Quo sets z equal to the quotient of x and y. If y is a zero divisor, then

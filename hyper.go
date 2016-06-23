@@ -152,24 +152,24 @@ func (z *Hyper) Mul(x, y *Hyper) *Hyper {
 	return z
 }
 
-// Norm returns the infra norm of z. If z = a+bα+cκ+dλ, then the norm is
+// Quad returns the quadrance of z. If z = a+bα+cκ+dλ, then the quadrance is
 // 		a² + 2abα
 // Note that this is an infra number.
-func (z *Hyper) Norm() *Infra {
-	norm := new(Infra)
-	return norm.Mul(&z.l, &z.l)
+func (z *Hyper) Quad() *Infra {
+	quad := new(Infra)
+	return quad.Mul(&z.l, &z.l)
 }
 
-// Quad returns the quadrance of z. If z = a+bα+cκ+dλ, then the quadrance is
-// 		a⁴
+// Norm returns the norm of z. If z = a+bα+cκ+dλ, then the norm is
+// 		(a²)²
 // This is always non-negative.
-func (z *Hyper) Quad() *big.Rat {
-	return z.Norm().Quad()
+func (z *Hyper) Norm() *big.Rat {
+	return z.Quad().Quad()
 }
 
 // IsZeroDivisor returns true if z is a zero divisor.
 func (z *Hyper) IsZeroDivisor() bool {
-	return z.Norm().IsZeroDivisor()
+	return z.Quad().IsZeroDivisor()
 }
 
 // Inv sets z equal to the inverse of y, and returns z. If y is a zero divisor,
@@ -180,13 +180,13 @@ func (z *Hyper) Inv(y *Hyper) *Hyper {
 	}
 	p := new(Hyper)
 	p.Set(y)
-	quad := p.Quad()
-	quad.Inv(quad)
+	norm := p.Norm()
+	norm.Inv(norm)
 	temp := new(Hyper)
 	z.Conj(p)
 	z.Mul(z, temp.Star(p))
 	z.Mul(z, temp.Conj(temp.Star(p)))
-	return z.Scal(z, quad)
+	return z.Scal(z, norm)
 }
 
 // Quo sets z equal to the quotient of x and y. If y is a zero divisor, then

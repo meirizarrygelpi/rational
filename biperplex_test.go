@@ -321,8 +321,8 @@ func TestBiPerplexComposition(t *testing.T) {
 		p := new(BiPerplex)
 		a, b := new(big.Rat), new(big.Rat)
 		p.Mul(x, y)
-		a.Set(p.Quad())
-		b.Mul(x.Quad(), y.Quad())
+		a.Set(p.Norm())
+		b.Mul(x.Norm(), y.Norm())
 		return a.Cmp(b) == 0
 	}
 	if err := quick.Check(f, nil); err != nil {

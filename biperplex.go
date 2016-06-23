@@ -155,26 +155,25 @@ func (z *BiPerplex) Mul(x, y *BiPerplex) *BiPerplex {
 	return z
 }
 
-// Norm returns the norm of z. If z = a+bs+cr+dq, then the norm is
+// Quad returns the quadrance of z. If z = a+bs+cr+dq, then the quadrance is
 // 		a² + b² - c² - d² + 2(ab - cd)s
 // Note that this is a perplex number.
-func (z *BiPerplex) Norm() *Perplex {
-	norm := new(Perplex)
-	norm.Mul(&z.l, &z.l)
-	norm.Sub(norm, new(Perplex).Mul(&z.r, &z.r))
-	return norm
+func (z *BiPerplex) Quad() *Perplex {
+	quad := new(Perplex)
+	quad.Mul(&z.l, &z.l)
+	return quad.Sub(quad, new(Perplex).Mul(&z.r, &z.r))
 }
 
-// Quad returns the quadrance of z. If z = a+bs+cr+dq, then the quadrance is
+// Norm returns the norm of z. If z = a+bs+cr+dq, then the norm is
 // 		(a² + b² - c² - d²)² - 4(ab - cd)²
 // This can be positive, negative, or zero.
-func (z *BiPerplex) Quad() *big.Rat {
-	return z.Norm().Quad()
+func (z *BiPerplex) Norm() *big.Rat {
+	return z.Quad().Quad()
 }
 
 // IsZeroDivisor returns true if z is a zero divisor.
 func (z *BiPerplex) IsZeroDivisor() bool {
-	return z.Norm().IsZeroDivisor()
+	return z.Quad().IsZeroDivisor()
 }
 
 // Inv sets z equal to the inverse of y, and returns z. If y is a zero divisor,
@@ -185,13 +184,13 @@ func (z *BiPerplex) Inv(y *BiPerplex) *BiPerplex {
 	}
 	p := new(BiPerplex)
 	p.Set(y)
-	quad := p.Quad()
-	quad.Inv(quad)
+	norm := p.Norm()
+	norm.Inv(norm)
 	temp := new(BiPerplex)
 	z.Conj(p)
 	z.Mul(z, temp.Star(p))
 	z.Mul(z, temp.Conj(temp.Star(p)))
-	return z.Scal(z, quad)
+	return z.Scal(z, norm)
 }
 
 // Quo sets z equal to the quotient of x and y. If y is a zero divisor, then

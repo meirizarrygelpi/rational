@@ -156,27 +156,26 @@ func (z *BiComplex) Mul(x, y *BiComplex) *BiComplex {
 	return z
 }
 
-// Norm returns the norm of z. If z = a+bi+ch+ds, then the norm is
+// Quad returns the quadrance of z. If z = a+bi+ch+ds, then the quadrance is
 // 		a² - b² + c² - d² + 2(ab + cd)i
 // Note that this is a complex number.
-func (z *BiComplex) Norm() *Complex {
-	norm := new(Complex)
-	norm.Mul(&z.l, &z.l)
-	norm.Add(norm, new(Complex).Mul(&z.r, &z.r))
-	return norm
+func (z *BiComplex) Quad() *Complex {
+	quad := new(Complex)
+	quad.Mul(&z.l, &z.l)
+	return quad.Add(quad, new(Complex).Mul(&z.r, &z.r))
 }
 
-// Quad returns the quadrance of z. If z = a+bi+ch+ds, then the quadrance is
+// Norm returns the norm of z. If z = a+bi+ch+ds, then the norm is
 // 		(a² - b² + c² - d²)² + 4(ab + cd)²
 // This is always non-negative.
-func (z *BiComplex) Quad() *big.Rat {
-	return z.Norm().Quad()
+func (z *BiComplex) Norm() *big.Rat {
+	return z.Quad().Quad()
 }
 
 // IsZeroDivisor returns true if z is a zero divisor.
 func (z *BiComplex) IsZeroDivisor() bool {
 	zero := new(Complex)
-	return zero.Equals(z.Norm())
+	return zero.Equals(z.Quad())
 }
 
 // Inv sets z equal to the inverse of y, and returns z. If y is a zero divisor,
@@ -187,13 +186,13 @@ func (z *BiComplex) Inv(y *BiComplex) *BiComplex {
 	}
 	p := new(BiComplex)
 	p.Set(y)
-	quad := p.Quad()
-	quad.Inv(quad)
+	norm := p.Norm()
+	norm.Inv(norm)
 	temp := new(BiComplex)
 	z.Conj(p)
 	z.Mul(z, temp.Star(p))
 	z.Mul(z, temp.Conj(temp.Star(p)))
-	return z.Scal(z, quad)
+	return z.Scal(z, norm)
 }
 
 // Quo sets z equal to the quotient of x and y. If y is a zero divisor, then

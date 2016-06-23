@@ -153,24 +153,24 @@ func (z *DualPerplex) Mul(x, y *DualPerplex) *DualPerplex {
 	return z
 }
 
-// Norm returns the perplex norm of z. If z = a+bs+cκ+dλ, then the norm is
+// Quad returns the quadrance of z. If z = a+bs+cκ+dλ, then the quadrance is
 // 		a² + b² + 2abs
 // Note that this is a perplex number.
-func (z *DualPerplex) Norm() *Perplex {
-	norm := new(Perplex)
-	return norm.Mul(&z.l, &z.l)
+func (z *DualPerplex) Quad() *Perplex {
+	quad := new(Perplex)
+	return quad.Mul(&z.l, &z.l)
 }
 
-// Quad returns the quadrance of z. If z = a+bs+cκ+dλ, then the quadrance is
+// Norm returns the norm of z. If z = a+bs+cκ+dλ, then the norm is
 // 		(a² - b²)²
-// This can be positive or zero.
-func (z *DualPerplex) Quad() *big.Rat {
-	return z.Norm().Quad()
+// This is always non-negative.
+func (z *DualPerplex) Norm() *big.Rat {
+	return z.Quad().Quad()
 }
 
 // IsZeroDivisor returns true if z is a zero divisor.
 func (z *DualPerplex) IsZeroDivisor() bool {
-	return z.Norm().IsZeroDivisor()
+	return z.Quad().IsZeroDivisor()
 }
 
 // Inv sets z equal to the inverse of y, and returns z. If y is a zero divisor,
@@ -181,13 +181,13 @@ func (z *DualPerplex) Inv(y *DualPerplex) *DualPerplex {
 	}
 	p := new(DualPerplex)
 	p.Set(y)
-	quad := p.Quad()
-	quad.Inv(quad)
+	norm := p.Norm()
+	norm.Inv(norm)
 	temp := new(DualPerplex)
 	z.Conj(p)
 	z.Mul(z, temp.Star(p))
 	z.Mul(z, temp.Conj(temp.Star(p)))
-	return z.Scal(z, quad)
+	return z.Scal(z, norm)
 }
 
 // Quo sets z equal to the quotient of x and y. If y is a zero divisor, then

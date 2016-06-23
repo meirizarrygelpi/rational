@@ -315,10 +315,10 @@ func TestBiComplexSubMulDistributive(t *testing.T) {
 
 // Positivity
 
-func TestBiComplexQuadPositive(t *testing.T) {
+func TestBiComplexNormPositive(t *testing.T) {
 	f := func(x *BiComplex) bool {
 		// t.Logf("x = %v", x)
-		return x.Quad().Sign() > 0
+		return x.Norm().Sign() > 0
 	}
 	if err := quick.Check(f, nil); err != nil {
 		t.Error(err)
@@ -333,8 +333,8 @@ func TestBiComplexComposition(t *testing.T) {
 		p := new(BiComplex)
 		a, b := new(big.Rat), new(big.Rat)
 		p.Mul(x, y)
-		a.Set(p.Quad())
-		b.Mul(x.Quad(), y.Quad())
+		a.Set(p.Norm())
+		b.Mul(x.Norm(), y.Norm())
 		return a.Cmp(b) == 0
 	}
 	if err := quick.Check(f, nil); err != nil {

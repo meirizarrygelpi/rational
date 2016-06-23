@@ -315,10 +315,10 @@ func TestDualPerplexSubMulDistributive(t *testing.T) {
 
 // Positivity
 
-func TestDualPerplexQuadPositive(t *testing.T) {
+func TestDualPerplexNormPositive(t *testing.T) {
 	f := func(x *DualPerplex) bool {
 		// t.Logf("x = %v", x)
-		return x.Quad().Sign() > 0
+		return x.Norm().Sign() > 0
 	}
 	if err := quick.Check(f, nil); err != nil {
 		t.Error(err)
@@ -333,8 +333,8 @@ func TestDualPerplexComposition(t *testing.T) {
 		p := new(DualPerplex)
 		a, b := new(big.Rat), new(big.Rat)
 		p.Mul(x, y)
-		a.Set(p.Quad())
-		b.Mul(x.Quad(), y.Quad())
+		a.Set(p.Norm())
+		b.Mul(x.Norm(), y.Norm())
 		return a.Cmp(b) == 0
 	}
 	if err := quick.Check(f, nil); err != nil {
