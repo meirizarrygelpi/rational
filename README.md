@@ -516,7 +516,6 @@ Again, `f`, `Div(f)`, and now `Hurl(f)` can be calculated at the point `a + bs` 
 
 1. Improve documentation
 1. Tests
-1. TriComplex type
 1. TriPerplex type
 1. TriNilplex type
 1. BiHamilton type
