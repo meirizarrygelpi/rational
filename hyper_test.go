@@ -48,6 +48,19 @@ func TestHyperNegConjCommutative(t *testing.T) {
 	}
 }
 
+func TestHyperStarConjCommutative(t *testing.T) {
+	f := func(x *Hyper) bool {
+		// t.Logf("x = %v", x)
+		l, r := new(Hyper), new(Hyper)
+		l.Star(l.Conj(x))
+		r.Conj(r.Star(x))
+		return l.Equals(r)
+	}
+	if err := quick.Check(f, nil); err != nil {
+		t.Error(err)
+	}
+}
+
 // Anti-commutativity
 
 func TestHyperSubAntiCommutative(t *testing.T) {
@@ -194,6 +207,18 @@ func TestHyperConjInvolutive(t *testing.T) {
 		// t.Logf("x = %v", x)
 		l := new(Hyper)
 		l.Conj(l.Conj(x))
+		return l.Equals(x)
+	}
+	if err := quick.Check(f, nil); err != nil {
+		t.Error(err)
+	}
+}
+
+func TestHyperStarInvolutive(t *testing.T) {
+	f := func(x *Hyper) bool {
+		// t.Logf("x = %v", x)
+		l := new(Hyper)
+		l.Star(l.Star(x))
 		return l.Equals(x)
 	}
 	if err := quick.Check(f, nil); err != nil {
