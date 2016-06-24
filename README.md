@@ -54,6 +54,27 @@ The **hyperbolic** multiplication operation is:
 ```
 The order of the arguments in all `Mul` calls is very important. Although it is not obvious, this multiplication operation also leads to zero divisors.
 
+### Non-Sesquilinear Multiplication
+
+The three "conic" multiplication operations above all use the `Conj` involution of the seed algebra. One can also consider non-sesquilinear multiplication rules. If the seed algebra is commutative and associative, then the resulting construct algebra will also be commutative and associative.
+
+The **non-sesquilinear elliptic** multiplication operation is:
+```go
+	F(a, b, c, d) = Sub(Mul(a, c), Mul(b, d))
+	G(a, b, c, d) = Add(Mul(a, d), Mul(b, c))
+```
+The **non-sesquilinear parabolic** multiplication operation is:
+```go
+	F(a, b, c, d) = Mul(a, c)
+	G(a, b, c, d) = Add(Mul(a, d), Mul(b, c))
+```
+The **non-sesquilinear hyperbolic** multiplication operation is:
+```go
+	F(a, b, c, d) = Add(Mul(a, c), Mul(b, d))
+	G(a, b, c, d) = Add(Mul(a, d), Mul(b, c))
+```
+Note the change in order of the arguments in some of the `Mul` calls.
+
 ## Two-Dimensional Types
 
 There are three two-dimensional types. The (binary) multiplication operation for all two-dimensional types is **commutative** and **associative**.
