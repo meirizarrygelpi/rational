@@ -9,20 +9,20 @@ This package contains three two-dimensional types (e.g. complex numbers), five f
 ## Cayley-Dickson Constructs
 
 Given elements from what I will call a seed algebra, the Cayley-Dickson construction allows you to build elements of a higher-dimensional algebra with certain interesting properties. Let `a`, `b`, `c`, and `d` be elements in the seed algebra. Let `p = (a, b)` and `q = (c, d)` be elements in the construct algebra. Thus,
-```go
+```
 	Add(p, q) = (Add(a, c), Add(b, d))
 ```
 That is, addition is element-wise. The multiplication operation can be any of three kinds. Before we look into these, we should mention that the seed algebra must also include two involutions, `Conj` and `Neg`, such that the construct algebra also has two involutions `Conj` and `Neg` given by:
-```go
+```
 	Neg(p) = (Neg(a), Neg(b))
 	Conj(p) = (Conj(a), Neg(b))
 ```
 With `Neg` you can define subtraction:
-```go
+```
 	Sub(p, q) = Add(p, Neg(q))
 ```
 The three multiplication operations are named after conic sections. Each has the form
-```go
+```
 	Mul(p, q) = (F(a, b, c, d), G(a, b, c, d))
 ```
 With `F` and `G` being a linear combination of bilinear terms.
@@ -30,7 +30,7 @@ With `F` and `G` being a linear combination of bilinear terms.
 ### Elliptic Multiplication
 
 The **elliptic** multiplication operation is:
-```go
+```
 	F(a, b, c, d) = Sub(Mul(a, c), Mul(Conj(d), b))
 	G(a, b, c, d) = Add(Mul(d, a), Mul(b, Conj(c)))
 ```
@@ -39,7 +39,7 @@ The order of the arguments in all `Mul` calls is very important.
 ### Parabolic Multiplication
 
 The **parabolic** multiplication operation is:
-```go
+```
 	F(a, b, c, d) = Mul(a, c)
 	G(a, b, c, d) = Add(Mul(d, a), Mul(b, Conj(c)))
 ```
@@ -48,7 +48,7 @@ The order of the arguments in all `Mul` calls is very important. Note that if `a
 ### Hyperbolic Multiplication
 
 The **hyperbolic** multiplication operation is:
-```go
+```
 	F(a, b, c, d) = Add(Mul(a, c), Mul(Conj(d), b))
 	G(a, b, c, d) = Add(Mul(d, a), Mul(b, Conj(c)))
 ```
@@ -59,17 +59,17 @@ The order of the arguments in all `Mul` calls is very important. Although it is 
 The three "conic" multiplication operations above all use the `Conj` involution of the seed algebra. One can also consider non-sesquilinear multiplication rules. If the seed algebra is commutative and associative, then the resulting construct algebra will also be commutative and associative.
 
 The **non-sesquilinear elliptic** multiplication operation is:
-```go
+```
 	F(a, b, c, d) = Sub(Mul(a, c), Mul(d, b))
 	G(a, b, c, d) = Add(Mul(d, a), Mul(b, c))
 ```
 The **non-sesquilinear parabolic** multiplication operation is:
-```go
+```
 	F(a, b, c, d) = Mul(a, c)
 	G(a, b, c, d) = Add(Mul(d, a), Mul(b, c))
 ```
 The **non-sesquilinear hyperbolic** multiplication operation is:
-```go
+```
 	F(a, b, c, d) = Add(Mul(a, c), Mul(d, b))
 	G(a, b, c, d) = Add(Mul(d, a), Mul(b, c))
 ```
@@ -82,7 +82,7 @@ There are three two-dimensional types. The (binary) multiplication operation for
 ### rational.Complex
 
 The `rational.Complex` type represents a rational complex number. It corresponds to an elliptic Cayley-Dickson construct with `big.Rat` values. The imaginary unit element is denoted `i`. The multiplication rule is:
-```go
+```
 	Mul(i, i) = -1
 ```
 This type can be used to study [Gaussian integers](https://en.wikipedia.org/wiki/Gaussian_integer).
@@ -90,7 +90,7 @@ This type can be used to study [Gaussian integers](https://en.wikipedia.org/wiki
 ### rational.Perplex
 
 The `rational.Perplex` type represents a rational perplex number. It corresponds to a hyperbolic Cayley-Dickson construct with `big.Rat` values. The split unit element is denoted `s`. The multiplication rule is:
-```go
+```
 	Mul(s, s) = +1
 ```
 Perplex numbers are more commonly known as [split-complex numbers](https://en.wikipedia.org/wiki/Split-complex_number), but "perplex" is used here for brevity and symmetry with "complex".
@@ -98,7 +98,7 @@ Perplex numbers are more commonly known as [split-complex numbers](https://en.wi
 ### rational.Infra
 
 The `rational.Infra` type represents a rational infra number. It corresponds to a parabolic Cayley-Dickson construct with `big.Rat` values. The dual unit element is denoted `α`. The multiplication rule is:
-```go
+```
 	Mul(α, α) = 0
 ```
 Infra numbers are useful for computing numerical first-order derivatives. If `z = a + 1α`, and `f` is a function, then
@@ -114,7 +114,7 @@ There are five four-dimensional types. The (binary) multiplication operation for
 ### rational.Hamilton
 
 The `rational.Hamilton` type represents a rational Hamilton quaternion. It corresponds to an elliptic Cayley-Dickson construct with `rational.Complex` values. The imaginary unit elements are denoted `i`, `j`, and `k`. The multiplication rules are:
-```go
+```
 	Mul(i, i) = Mul(j, j) = Mul(k, k) = -1
 	Mul(i, j) = -Mul(j, i) = k
 	Mul(j, k) = -Mul(k, j) = i
@@ -127,7 +127,7 @@ This type can be used to study [Hurwitz and Lipschitz integers](https://en.wikip
 ### rational.Cockle
 
 The `rational.Cockle` type represents a rational Cockle quaternion. It corresponds to a hyperbolic Cayley-Dickson construct with `rational.Complex` values. The imaginary unit element is denoted `i`, and the split unit elements are denoted `t` and `u`. The multiplication rules are:
-```go
+```
 	Mul(i, i) = -1
 	Mul(t, t) = Mul(u, u) = +1
 	Mul(i, t) = -Mul(t, i) = u
@@ -141,7 +141,7 @@ Alternatively, you can obtain the Cockle quaternions from an *elliptic* Cayley-D
 ### rational.Supra
 
 The `rational.Supra` type represents a rational supra number. It corresponds to a parabolic Cayley-Dickson construct with `rational.Infra` values. The dual unit elements are denoted `α`, `β`, and `γ`. The multiplication rules are:
-```go
+```
 	Mul(α, α) = Mul(β, β) = Mul(γ, γ) = 0
 	Mul(α, β) = -Mul(β, α) = γ
 	Mul(β, γ) = Mul(γ, β) = 0
@@ -152,7 +152,7 @@ Note that supra numbers are very different from [hyper-dual numbers](http://adl.
 ### rational.InfraComplex
 
 The `rational.InfraComplex` type represents a rational infra complex number. It corresponds to a parabolic Cayley-Dickson construct with `rational.Complex` values. The imaginary unit element is denoted `i`, and the dual unit elements are denoted `β` and `γ`. The multiplication rules are:
-```go
+```
 	Mul(i, i) = -1
 	Mul(β, β) = Mul(γ, γ) = 0
 	Mul(β, γ) = Mul(γ, β) = 0
@@ -166,7 +166,7 @@ Alternatively, you can obtain the infra complex numbers from an *elliptic* Cayle
 ### rational.InfraPerplex
 
 The `rational.InfraPerplex` type represents a rational infra perplex number. It corresponds to a parabolic Cayley-Dickson construct with `rational.Perplex` values. The split unit element is denoted `s`, and the dual unit elements are denoted `τ` and `υ`. The multiplication rules are:
-```go
+```
 	Mul(s, s) = +1
 	Mul(τ, τ) = Mul(υ, υ) = 0
 	Mul(τ, υ) = Mul(υ, τ) = 0
@@ -184,7 +184,7 @@ There are seven eight-dimensional types. The (binary) multiplication operation f
 ### rational.Cayley
 
 The `rational.Cayley` type represents a rational Cayley octonion. It corresponds to an elliptic Cayley-Dickson construct with `rational.Hamilton` values. The imaginary unit elements are denoted `i`, `j`, `k`, `m`, `n`, `p`, and `q`. The multiplication rules are:
-```go
+```
 	Mul(i, i) = Mul(j, j) = Mul(k, k) = -1
 	Mul(m, m) = Mul(n, n) = Mul(p, p) = Mul(q, q) = -1
 	Mul(i, j) = -Mul(j, i) = +k
@@ -216,7 +216,7 @@ This type can be used to study [Gravesian and Kleinian integers](https://en.wiki
 ### rational.Zorn
 
 The `rational.Zorn` type represents a rational Zorn octonion. It corresponds to a hyperbolic Cayley-Dickson construct with `rational.Hamilton` values. The imaginary unit elements are denoted `i`, `j`, and `k`, and the split unit elements are `r`, `s`, `t`, and `u`. The multiplication rules are:
-```go
+```
 	Mul(i, i) = Mul(j, j) = Mul(k, k) = -1
 	Mul(r, r) = Mul(s, s) = Mul(t, t) = Mul(u, u) = +1
 	Mul(i, j) = -Mul(j, i) = +k
@@ -248,7 +248,7 @@ Alternatively, you can obtain the Zorn octonions from an *elliptic* Cayley-Dicks
 ### rational.Ultra
 
 The `rational.Ultra` type represents a rational ultra number. It corresponds to a parabolic Cayley-Dickson construct with `rational.Supra` values. The dual unit elements are denoted `α`, `β`, `γ`, `δ`, `ε`, `ζ`, and `η`. The multiplication rules are:
-```go
+```
 	Mul(α, α) = Mul(β, β) = Mul(γ, γ) = 0
 	Mul(δ, δ) = Mul(ε, ε) = Mul(ζ, ζ) = Mul(η, η) = 0
 	Mul(α, β) = -Mul(β, α) = +γ
@@ -278,7 +278,7 @@ In some ways, ultra numbers are the dual analog of octonions.
 ### rational.InfraHamilton
 
 The `rational.InfraHamilton` type represents a rational infra Hamilton quaternion. It corresponds to a parabolic Cayley-Dickson construct with `rational.Hamilton` values. The imaginary unit elements are denoted `i`, `j` and `k`, and the dual unit elements are denoted `α`, `β`, `γ`, and `δ`. The multiplication rules are:
-```go
+```
 	Mul(i, i) = Mul(j, j) = Mul(k, k) = -1
 	Mul(α, α) = Mul(β, β) = Mul(γ, γ) = Mul(δ, δ) = 0
 	Mul(i, j) = -Mul(j, i) = +k
@@ -310,7 +310,7 @@ Alternatively, you can obtain the infra Hamilton quaternions from an *elliptic* 
 ### rational.InfraCockle
 
 The `rational.InfraCockle` type represents a rational infra Cockle quaternion. It corresponds to a parabolic Cayley-Dickson construct with `rational.Cockle` values. The imaginary unit element is denoted `i`, the split unit elements are denoted `t` and `u`, and the dual unit elements are denoted `ρ`, `σ`, `τ`, and `υ`. The multiplication rules are:
-```go
+```
 	Mul(i, i) = -1
 	Mul(t, t) = Mul(u, u) = +1
 	Mul(ρ, ρ) = Mul(σ, σ) = Mul(τ, τ) = Mul(υ, υ) = 0
@@ -343,7 +343,7 @@ Alternatively, you can obtain the infra Cockle quaternions from a *hyperbolic* C
 ### rational.SupraComplex
 
 The `rational.SupraComplex` type represents a rational supra complex number. It corresponds to a parabolic Cayley-Dickson construct with `rational.InfraComplex` values. The imaginary unit element is denoted `i`, and the dual unit elements are denoted `α`, `β`, `γ`, `δ`, `ε`, and `ζ`. The multiplication rules are:
-```go
+```
 	Mul(i, i) = -1
 	Mul(α, α) = Mul(β, β) = Mul(γ, γ) = 0
 	Mul(δ, δ) = Mul(ε, ε) = Mul(ζ, ζ) = 0
@@ -374,7 +374,7 @@ Alternatively, you can obtain the supra complex numbers from an *elliptic* Cayle
 ### rational.SupraPerplex
 
 The `rational.SupraPerplex` type represents a rational supra perplex number. It corresponds to a parabolic Cayley-Dickson construct with `rational.InfraPerplex` values. The split unit element is denoted `s`, and the dual unit elements are denoted `ρ`, `σ`, `τ`, `υ`, `φ`, and `ψ`. The multiplication rules are:
-```go
+```
 	Mul(s, s) = +1
 	Mul(ρ, ρ) = Mul(σ, σ) = Mul(τ, τ) = 0
 	Mul(υ, υ) = Mul(φ, φ) = Mul(ψ, ψ) = 0
@@ -413,7 +413,7 @@ Besides all the types mentioned above, other types are included. These types hav
 ### rational.BiComplex
 
 The `rational.BiComplex` type represents a [bicomplex number](https://en.wikipedia.org/wiki/Bicomplex_number). It corresponds to a non-sesquilinear elliptic construct with `rational.Complex` values. The imaginary units are denoted `i` and `J`, and the split unit is denoted `S`. The multiplication rules are:
-```go
+```
 	Mul(i, i) = Mul(J, J) = -1
 	Mul(S, S) = +1
 	Mul(i, J) = Mul(J, i) = +S
@@ -425,7 +425,7 @@ Note that this multiplication operation is **commutative** and **associative**.
 ### rational.BiPerplex
 
 The `rational.BiPerplex` type represents a biperplex number. It corresponds to a non-sesquilinear hyperbolic construct with `rational.Perplex` values. The split units are denoted `s`, `T`, and `U`. The multiplication rules are:
-```go
+```
 	Mul(s, s) = Mul(T, T) = Mul(U, U) = +1
 	Mul(s, T) = Mul(T, s) = U
 	Mul(T, U) = Mul(U, T) = s
@@ -436,7 +436,7 @@ Note that this multiplication operation is **commutative** and **associative**.
 ### rational.Hyper
 
 The `rational.Hyper` type represents a hyper-dual number. It corresponds to a non-sesquilinear parabolic construct with `rational.Infra` values. The dual units are denoted `α`, `κ`, and `λ`. The multiplication rules are:
-```go
+```
 	Mul(α, α) = Mul(κ, κ) = Mul(λ, λ) = 0
 	Mul(α, κ) = Mul(κ, α) = λ
 	Mul(κ, λ) = Mul(λ, κ) = 0
@@ -453,7 +453,7 @@ Another name for the dual numbers could be the *nilplex* numbers. Thus, in analo
 ### rational.DualComplex
 
 The `rational.DualComplex` type represents a dual-complex number. It corresponds to a non-sesquilinear parabolic construct with `rational.Complex` values. The imaginary unit is denoted `i`, and the dual units are denoted `κ` and `λ`. The multiplication rules are:
-```go
+```
 	Mul(i, i) = -1
 	Mul(κ, κ) = Mul(λ, λ) = 0
 	Mul(i, κ) = Mul(κ, i) = +λ
@@ -463,7 +463,7 @@ The `rational.DualComplex` type represents a dual-complex number. It corresponds
 Note that this multiplication operation is **commutative** and **associative**.
 
 Dual-complex numbers are useful for evaluating two-dimensional vector derivatives. Let `(x, y)` be the coordinate vector in a two-dimensional space. Also, let `f = (g, h)` be a function vector. Then, the **divergence** and the **curl** of `f` are:
-```go
+```
 	Div(f) = (∂g / ∂x) + (∂h / ∂y)
 	Curl(f) = (∂h / ∂x) - (∂g / ∂y)
 ```
@@ -485,7 +485,7 @@ In this manner, `f`, `Div(f)`, and `Curl(f)` can be calculated at the point `a +
 ### rational.DualPerplex
 
 The `rational.DualPerplex` type represents a dual-perplex number. It corresponds to a non-sesquilinear parabolic construct with `rational.Perplex` values. The split unit is denoted `s`, and the dual units are denoted `κ` and `λ`. The multiplication rules are:
-```go
+```
 	Mul(s, s) = +1
 	Mul(κ, κ) = Mul(λ, λ) = 0
 	Mul(s, κ) = Mul(κ, s) = +λ
