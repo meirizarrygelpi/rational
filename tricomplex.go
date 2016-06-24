@@ -182,8 +182,7 @@ func (z *TriComplex) Norm() *big.Rat {
 
 // IsZeroDivisor returns true if z is a zero divisor.
 func (z *TriComplex) IsZeroDivisor() bool {
-	zero := new(Complex)
-	return zero.Equals(z.Quad().Quad())
+	return z.Quad().IsZeroDivisor()
 }
 
 // Inv sets z equal to the inverse of y, and returns z. If y is a zero divisor,

@@ -179,15 +179,12 @@ func (z *DualPerplex) Inv(y *DualPerplex) *DualPerplex {
 	if y.IsZeroDivisor() {
 		panic("inverse of zero divisor")
 	}
-	p := new(DualPerplex)
-	p.Set(y)
-	norm := p.Norm()
-	norm.Inv(norm)
-	temp := new(DualPerplex)
-	z.Conj(p)
-	z.Mul(z, temp.Star(p))
-	z.Mul(z, temp.Conj(temp.Star(p)))
-	return z.Scal(z, norm)
+	quad := y.Quad()
+	quad.Inv(quad)
+	z.Conj(y)
+	z.l.Mul(&z.l, quad)
+	z.r.Mul(&z.r, quad)
+	return z
 }
 
 // Quo sets z equal to the quotient of x and y. If y is a zero divisor, then
