@@ -11,7 +11,7 @@ import (
 	"strings"
 )
 
-var symbBiComplex = [4]string{"", "i", "h", "s"}
+var symbBiComplex = [4]string{"", "i", "J", "S"}
 
 // A BiComplex represents a rational bicomplex number.
 type BiComplex struct {
@@ -30,7 +30,7 @@ func (z *BiComplex) Rats() (*big.Rat, *big.Rat, *big.Rat, *big.Rat) {
 
 // String returns the string representation of a BiComplex value.
 //
-// If z corresponds to a + bi + ch + ds, then the string is "(a+bi+ch+ds)",
+// If z corresponds to a + bi + cJ + dS, then the string is "(a+bi+cJ+dS)",
 // similar to complex128 values.
 func (z *BiComplex) String() string {
 	v := make([]*big.Rat, 4)
@@ -68,7 +68,7 @@ func (z *BiComplex) Set(y *BiComplex) *BiComplex {
 	return z
 }
 
-// NewBiComplex returns a *BiComplex with value a+bh+ch+ds.
+// NewBiComplex returns a *BiComplex with value a+bi+cJ+dS.
 func NewBiComplex(a, b, c, d *big.Rat) *BiComplex {
 	z := new(BiComplex)
 	z.l.l.Set(a)
@@ -94,8 +94,8 @@ func (z *BiComplex) Neg(y *BiComplex) *BiComplex {
 
 // Conj sets z equal to the bicomplex conjugate of y, and returns z.
 //
-// If y = a+bi+ch+ds, then the bicomplex conjugate is
-// 		a+bi-ch-ds
+// If y = a+bi+cJ+dS, then the bicomplex conjugate is
+// 		a+bi-cJ-dS
 // This differs from the usual conjugate by not changing the sign of the i
 // coefficient.
 func (z *BiComplex) Conj(y *BiComplex) *BiComplex {
@@ -106,9 +106,9 @@ func (z *BiComplex) Conj(y *BiComplex) *BiComplex {
 
 // Star sets z equal to the star conjugate of y, and returns z.
 //
-// If y = a+bi+ch+ds, then the star conjugate is
-// 		a-bi+ch-ds
-// This differs from the usual conjugate by not changing the sign of the h
+// If y = a+bi+cJ+dS, then the star conjugate is
+// 		a-bi+cJ-dS
+// This differs from the usual conjugate by not changing the sign of the J
 // coefficient.
 func (z *BiComplex) Star(y *BiComplex) *BiComplex {
 	z.l.Conj(&y.l)
@@ -133,11 +133,11 @@ func (z *BiComplex) Sub(x, y *BiComplex) *BiComplex {
 // Mul sets z equal to the product of x and y, and returns z.
 //
 // The multiplication rules are:
-// 		Mul(i, i) = Mul(h, h) = -1
-// 		Mul(s, s) = +1
-// 		Mul(i, h) = Mul(h, i) = s
-// 		Mul(h, s) = Mul(s, h) = -i
-// 		Mul(s, i) = Mul(i, s) = -h
+// 		Mul(i, i) = Mul(J, J) = -1
+// 		Mul(S, S) = +1
+// 		Mul(i, J) = Mul(J, i) = S
+// 		Mul(J, S) = Mul(S, J) = -i
+// 		Mul(S, i) = Mul(i, S) = -J
 // This binary operation is commutative and associative.
 func (z *BiComplex) Mul(x, y *BiComplex) *BiComplex {
 	a := new(Complex).Set(&x.l)
@@ -147,16 +147,16 @@ func (z *BiComplex) Mul(x, y *BiComplex) *BiComplex {
 	temp := new(Complex)
 	z.l.Sub(
 		z.l.Mul(a, c),
-		temp.Mul(b, d),
+		temp.Mul(d, b),
 	)
 	z.r.Add(
-		z.r.Mul(a, d),
+		z.r.Mul(d, a),
 		temp.Mul(b, c),
 	)
 	return z
 }
 
-// Quad returns the quadrance of z. If z = a+bi+ch+ds, then the quadrance is
+// Quad returns the quadrance of z. If z = a+bi+cJ+dS, then the quadrance is
 // 		a² - b² + c² - d² + 2(ab + cd)i
 // Note that this is a complex number.
 func (z *BiComplex) Quad() *Complex {
@@ -165,7 +165,7 @@ func (z *BiComplex) Quad() *Complex {
 	return quad.Add(quad, new(Complex).Mul(&z.r, &z.r))
 }
 
-// Norm returns the norm of z. If z = a+bi+ch+ds, then the norm is
+// Norm returns the norm of z. If z = a+bi+cJ+dS, then the norm is
 // 		(a² - b² + c² - d²)² + 4(ab + cd)²
 // This can also be written as
 // 		((a - d)² + (b + c)²)((a + d)² + (b - c)²)

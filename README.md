@@ -17,7 +17,7 @@ That is, addition is element-wise. The multiplication operation can be any of th
 	Neg(p) = (Neg(a), Neg(b))
 	Conj(p) = (Conj(a), Neg(b))
 ```
-With `Neg` you can define substraction:
+With `Neg` you can define subtraction:
 ```go
 	Sub(p, q) = Add(p, Neg(q))
 ```
@@ -60,20 +60,20 @@ The three "conic" multiplication operations above all use the `Conj` involution 
 
 The **non-sesquilinear elliptic** multiplication operation is:
 ```go
-	F(a, b, c, d) = Sub(Mul(a, c), Mul(b, d))
-	G(a, b, c, d) = Add(Mul(a, d), Mul(b, c))
+	F(a, b, c, d) = Sub(Mul(a, c), Mul(d, b))
+	G(a, b, c, d) = Add(Mul(d, a), Mul(b, c))
 ```
 The **non-sesquilinear parabolic** multiplication operation is:
 ```go
 	F(a, b, c, d) = Mul(a, c)
-	G(a, b, c, d) = Add(Mul(a, d), Mul(b, c))
+	G(a, b, c, d) = Add(Mul(d, a), Mul(b, c))
 ```
 The **non-sesquilinear hyperbolic** multiplication operation is:
 ```go
-	F(a, b, c, d) = Add(Mul(a, c), Mul(b, d))
-	G(a, b, c, d) = Add(Mul(a, d), Mul(b, c))
+	F(a, b, c, d) = Add(Mul(a, c), Mul(d, b))
+	G(a, b, c, d) = Add(Mul(d, a), Mul(b, c))
 ```
-Note the change in order of the arguments in some of the `Mul` calls.
+The resulting construct algebras are very different from the familiar Cayley-Dickson constructs.
 
 ## Two-Dimensional Types
 
@@ -412,24 +412,24 @@ Besides all the types mentioned above, other types are included. These types hav
 
 ### rational.BiComplex
 
-The `rational.BiComplex` type represents a bicomplex number. It corresponds to a non-sesquilinear elliptic construct with `rational.Complex` values. The imaginary units are denoted `i` and `h`, and the split unit is denoted `s`. The multiplication rules are:
+The `rational.BiComplex` type represents a [bicomplex number](https://en.wikipedia.org/wiki/Bicomplex_number). It corresponds to a non-sesquilinear elliptic construct with `rational.Complex` values. The imaginary units are denoted `i` and `J`, and the split unit is denoted `S`. The multiplication rules are:
 ```go
-	Mul(i, i) = Mul(h, h) = -1
-	Mul(s, s) = +1
-	Mul(i, h) = Mul(h, i) = +s
-	Mul(h, s) = Mul(s, h) = -i
-	Mul(s, i) = Mul(i, s) = -h
+	Mul(i, i) = Mul(J, J) = -1
+	Mul(S, S) = +1
+	Mul(i, J) = Mul(J, i) = +S
+	Mul(J, S) = Mul(S, J) = -i
+	Mul(S, i) = Mul(i, S) = -J
 ```
 Note that this multiplication operation is **commutative** and **associative**.
 
 ### rational.BiPerplex
 
-The `rational.BiPerplex` type represents a biperplex number. It corresponds to a non-sesquilinear hyperbolic construct with `rational.Perplex` values. The split units are denoted `s`, `r`, and `q`. The multiplication rules are:
+The `rational.BiPerplex` type represents a biperplex number. It corresponds to a non-sesquilinear hyperbolic construct with `rational.Perplex` values. The split units are denoted `s`, `T`, and `U`. The multiplication rules are:
 ```go
-	Mul(s, s) = Mul(r, r) = Mul(q, q) = +1
-	Mul(s, r) = Mul(r, s) = q
-	Mul(r, q) = Mul(q, r) = s
-	Mul(q, s) = Mul(s, q) = r
+	Mul(s, s) = Mul(T, T) = Mul(U, U) = +1
+	Mul(s, T) = Mul(T, s) = U
+	Mul(T, U) = Mul(U, T) = s
+	Mul(U, s) = Mul(s, U) = T
 ```
 Note that this multiplication operation is **commutative** and **associative**.
 
@@ -520,6 +520,7 @@ Again, `f`, `Div(f)`, and now `Hurl(f)` can be calculated at the point `a + bs` 
 1. TriPerplex type
 1. TriNilplex type
 1. BiHamilton type
+1. BiCockle type
 1. DualHamilton type
-1. Other types
+1. DualCockle type
 1. Elementary and special functions via Padé approximants
