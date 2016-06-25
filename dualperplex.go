@@ -11,7 +11,7 @@ import (
 	"strings"
 )
 
-var symbDualPerplex = [4]string{"", "s", "κ", "λ"}
+var symbDualPerplex = [4]string{"", "s", "Γ", "Λ"}
 
 // A DualPerplex represents a rational dual perplex number.
 type DualPerplex struct {
@@ -30,7 +30,7 @@ func (z *DualPerplex) Rats() (*big.Rat, *big.Rat, *big.Rat, *big.Rat) {
 
 // String returns the string representation of a DualPerplex value.
 //
-// If z corresponds to a + bs + cκ + dλ, then the string is "(a+bs+cκ+dλ)",
+// If z corresponds to a + bs + cΓ + dΛ, then the string is "(a+bs+cΓ+dΛ)",
 // similar to complex128 values.
 func (z *DualPerplex) String() string {
 	v := make([]*big.Rat, 4)
@@ -68,7 +68,7 @@ func (z *DualPerplex) Set(y *DualPerplex) *DualPerplex {
 	return z
 }
 
-// NewDualPerplex returns a *DualPerplex with value a+bs+cκ+dλ.
+// NewDualPerplex returns a *DualPerplex with value a+bs+cΓ+dΛ.
 func NewDualPerplex(a, b, c, d *big.Rat) *DualPerplex {
 	z := new(DualPerplex)
 	z.l.l.Set(a)
@@ -117,10 +117,10 @@ func (z *DualPerplex) Sub(x, y *DualPerplex) *DualPerplex {
 //
 // The multiplication rules are:
 // 		Mul(s, s) = +1
-// 		Mul(κ, κ) = Mul(λ, λ) = 0
-// 		Mul(s, κ) = Mul(κ, s) = λ
-// 		Mul(κ, λ) = Mul(λ, κ) = 0
-// 		Mul(λ, s) = Mul(s, λ) = κ
+// 		Mul(Γ, Γ) = Mul(Λ, Λ) = 0
+// 		Mul(s, Γ) = Mul(Γ, s) = Λ
+// 		Mul(Γ, Λ) = Mul(Λ, Γ) = 0
+// 		Mul(Λ, s) = Mul(s, Λ) = Γ
 // This binary operation is commutative and associative.
 func (z *DualPerplex) Mul(x, y *DualPerplex) *DualPerplex {
 	a := new(Perplex).Set(&x.l)
@@ -136,7 +136,7 @@ func (z *DualPerplex) Mul(x, y *DualPerplex) *DualPerplex {
 	return z
 }
 
-// Quad returns the quadrance of z. If z = a+bs+cκ+dλ, then the quadrance is
+// Quad returns the quadrance of z. If z = a+bs+cΓ+dΛ, then the quadrance is
 // 		a² + b² + 2abs
 // Note that this is a perplex number.
 func (z *DualPerplex) Quad() *Perplex {
@@ -144,7 +144,7 @@ func (z *DualPerplex) Quad() *Perplex {
 	return quad.Mul(&z.l, &z.l)
 }
 
-// Norm returns the norm of z. If z = a+bs+cκ+dλ, then the norm is
+// Norm returns the norm of z. If z = a+bs+cΓ+dΛ, then the norm is
 // 		(a² - b²)²
 // This is always non-negative.
 func (z *DualPerplex) Norm() *big.Rat {

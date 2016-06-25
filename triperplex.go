@@ -122,11 +122,29 @@ func (z *TriPerplex) Sub(x, y *TriPerplex) *TriPerplex {
 // Mul sets z equal to the product of x and y, and returns z.
 //
 // The multiplication rules are:
-// 		Mul(i, i) = Mul(J, J) = -1
-// 		Mul(S, S) = +1
-// 		Mul(i, J) = Mul(J, i) = S
-// 		Mul(J, S) = Mul(S, J) = -i
-// 		Mul(S, i) = Mul(i, S) = -J
+// 		Mul(s, s) = Mul(T, T) = Mul(U, U) = +1
+// 		Mul(V, V) = Mul(W, W) = Mul(X, X) = Mul(Y, Y) = +1
+// 		Mul(s, T) = Mul(T, s) = U
+// 		Mul(s, U) = Mul(U, s) = T
+// 		Mul(s, V) = Mul(V, s) = W
+// 		Mul(s, W) = Mul(W, s) = V
+// 		Mul(s, X) = Mul(X, s) = Y
+// 		Mul(s, Y) = Mul(Y, s) = X
+// 		Mul(T, U) = Mul(U, T) = s
+// 		Mul(T, V) = Mul(V, T) = X
+// 		Mul(T, W) = Mul(W, T) = Y
+// 		Mul(T, X) = Mul(X, T) = V
+// 		Mul(T, Y) = Mul(Y, T) = W
+// 		Mul(U, V) = Mul(V, U) = Y
+// 		Mul(U, W) = Mul(W, U) = X
+// 		Mul(U, X) = Mul(X, U) = W
+// 		Mul(U, Y) = Mul(Y, U) = V
+// 		Mul(V, W) = Mul(W, V) = s
+// 		Mul(V, X) = Mul(X, V) = T
+// 		Mul(V, Y) = Mul(Y, V) = U
+// 		Mul(W, X) = Mul(X, W) = U
+// 		Mul(W, Y) = Mul(Y, W) = T
+// 		Mul(X, Y) = Mul(Y, X) = s
 // This binary operation is commutative and associative.
 func (z *TriPerplex) Mul(x, y *TriPerplex) *TriPerplex {
 	a := new(BiPerplex).Set(&x.l)

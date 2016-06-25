@@ -11,7 +11,7 @@ import (
 	"strings"
 )
 
-var symbHyper = [4]string{"", "α", "κ", "λ"}
+var symbHyper = [4]string{"", "α", "Γ", "Λ"}
 
 // A Hyper represents a rational hyper-dual number.
 type Hyper struct {
@@ -30,7 +30,7 @@ func (z *Hyper) Rats() (*big.Rat, *big.Rat, *big.Rat, *big.Rat) {
 
 // String returns the string representation of a Hyper value.
 //
-// If z corresponds to a + bα + cκ + dλ, then the string is "(a+bα+cκ+dλ)",
+// If z corresponds to a + bα + cΓ + dΛ, then the string is "(a+bα+cΓ+dΛ)",
 // similar to complex128 values.
 func (z *Hyper) String() string {
 	v := make([]*big.Rat, 4)
@@ -68,7 +68,7 @@ func (z *Hyper) Set(y *Hyper) *Hyper {
 	return z
 }
 
-// NewHyper returns a *Hyper with value a+bα+cκ+dλ.
+// NewHyper returns a *Hyper with value a+bα+cΓ+dΛ.
 func NewHyper(a, b, c, d *big.Rat) *Hyper {
 	z := new(Hyper)
 	z.l.l.Set(a)
@@ -116,10 +116,10 @@ func (z *Hyper) Sub(x, y *Hyper) *Hyper {
 // Mul sets z equal to the product of x and y, and returns z.
 //
 // The multiplication rules are:
-// 		Mul(α, α) = Mul(κ, κ) = Mul(λ, λ) = 0
-// 		Mul(α, κ) = Mul(κ, α) = λ
-// 		Mul(κ, λ) = Mul(λ, κ) = 0
-// 		Mul(λ, α) = Mul(α, λ) = 0
+// 		Mul(α, α) = Mul(Γ, Γ) = Mul(Λ, Λ) = 0
+// 		Mul(α, Γ) = Mul(Γ, α) = Λ
+// 		Mul(Γ, Λ) = Mul(Λ, Γ) = 0
+// 		Mul(Λ, α) = Mul(α, Λ) = 0
 // This binary operation is commutative and associative.
 func (z *Hyper) Mul(x, y *Hyper) *Hyper {
 	a := new(Infra).Set(&x.l)
@@ -135,7 +135,7 @@ func (z *Hyper) Mul(x, y *Hyper) *Hyper {
 	return z
 }
 
-// Quad returns the quadrance of z. If z = a+bα+cκ+dλ, then the quadrance is
+// Quad returns the quadrance of z. If z = a+bα+cΓ+dΛ, then the quadrance is
 // 		a² + 2abα
 // Note that this is an infra number.
 func (z *Hyper) Quad() *Infra {
@@ -143,7 +143,7 @@ func (z *Hyper) Quad() *Infra {
 	return quad.Mul(&z.l, &z.l)
 }
 
-// Norm returns the norm of z. If z = a+bα+cκ+dλ, then the norm is
+// Norm returns the norm of z. If z = a+bα+cΓ+dΛ, then the norm is
 // 		(a²)²
 // This is always non-negative.
 func (z *Hyper) Norm() *big.Rat {

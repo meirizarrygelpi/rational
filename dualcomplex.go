@@ -11,7 +11,7 @@ import (
 	"strings"
 )
 
-var symbDualComplex = [4]string{"", "i", "κ", "λ"}
+var symbDualComplex = [4]string{"", "i", "Γ", "Λ"}
 
 // A DualComplex represents a rational dual-complex number.
 type DualComplex struct {
@@ -30,7 +30,7 @@ func (z *DualComplex) Rats() (*big.Rat, *big.Rat, *big.Rat, *big.Rat) {
 
 // String returns the string representation of a DualComplex value.
 //
-// If z corresponds to a + bi + cκ + dλ, then the string is "(a+bi+cκ+dλ)",
+// If z corresponds to a + bi + cΓ + dΛ, then the string is "(a+bi+cΓ+dΛ)",
 // similar to complex128 values.
 func (z *DualComplex) String() string {
 	v := make([]*big.Rat, 4)
@@ -68,7 +68,7 @@ func (z *DualComplex) Set(y *DualComplex) *DualComplex {
 	return z
 }
 
-// NewDualComplex returns a *DualComplex with value a+bi+cκ+dλ.
+// NewDualComplex returns a *DualComplex with value a+bi+cΓ+dΛ.
 func NewDualComplex(a, b, c, d *big.Rat) *DualComplex {
 	z := new(DualComplex)
 	z.l.l.Set(a)
@@ -117,10 +117,10 @@ func (z *DualComplex) Sub(x, y *DualComplex) *DualComplex {
 //
 // The multiplication rules are:
 // 		Mul(i, i) = -1
-// 		Mul(κ, κ) = Mul(λ, λ) = 0
-// 		Mul(i, κ) = Mul(κ, i) = λ
-// 		Mul(κ, λ) = Mul(λ, κ) = 0
-// 		Mul(λ, i) = Mul(i, λ) = -κ
+// 		Mul(Γ, Γ) = Mul(Λ, Λ) = 0
+// 		Mul(i, Γ) = Mul(Γ, i) = Λ
+// 		Mul(Γ, Λ) = Mul(Λ, Γ) = 0
+// 		Mul(Λ, i) = Mul(i, Λ) = -Γ
 // This binary operation is commutative and associative.
 func (z *DualComplex) Mul(x, y *DualComplex) *DualComplex {
 	a := new(Complex).Set(&x.l)
@@ -136,7 +136,7 @@ func (z *DualComplex) Mul(x, y *DualComplex) *DualComplex {
 	return z
 }
 
-// Quad returns the quadrance of z. If z = a+bi+cκ+dλ, then the quadrance is
+// Quad returns the quadrance of z. If z = a+bi+cΓ+dΛ, then the quadrance is
 // 		a² - b² + 2abi
 // Note that this is a complex number.
 func (z *DualComplex) Quad() *Complex {
@@ -144,7 +144,7 @@ func (z *DualComplex) Quad() *Complex {
 	return quad.Mul(&z.l, &z.l)
 }
 
-// Norm returns the norm of z. If z = a+bi+cκ+dλ, then the norm is
+// Norm returns the norm of z. If z = a+bi+cΓ+dΛ, then the norm is
 // 		(a² + b²)²
 // This is always non-negative.
 func (z *DualComplex) Norm() *big.Rat {

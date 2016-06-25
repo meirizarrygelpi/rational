@@ -435,30 +435,30 @@ Note that this multiplication operation is **commutative** and **associative**.
 
 ### rational.Hyper
 
-The `rational.Hyper` type represents a hyper-dual number. It corresponds to a non-sesquilinear parabolic construct with `rational.Infra` values. The dual units are denoted `α`, `κ`, and `λ`. The multiplication rules are:
+The `rational.Hyper` type represents a hyper-dual number. It corresponds to a non-sesquilinear parabolic construct with `rational.Infra` values. The dual units are denoted `α`, `Γ`, and `Λ`. The multiplication rules are:
 ```
-	Mul(α, α) = Mul(κ, κ) = Mul(λ, λ) = 0
-	Mul(α, κ) = Mul(κ, α) = λ
-	Mul(κ, λ) = Mul(λ, κ) = 0
-	Mul(λ, α) = Mul(α, λ) = 0
+	Mul(α, α) = Mul(Γ, Γ) = Mul(Λ, Λ) = 0
+	Mul(α, Γ) = Mul(Γ, α) = Λ
+	Mul(Γ, Λ) = Mul(Λ, Γ) = 0
+	Mul(Λ, α) = Mul(α, Λ) = 0
 ```
 Note that this multiplication operation is **commutative** and **associative**.
 
-Hyper-dual numbers are useful for computing second-order derivatives. If `z = a + 1α + 1κ + 0λ`, and `f` is a function, then
+Hyper-dual numbers are useful for computing second-order derivatives. If `z = a + 1α + 1Γ + 0Λ`, and `f` is a function, then
 ```
-	f(z) = f(a) + f'(a)α + f'(a)κ + f''(a)λ
+	f(z) = f(a) + f'(a)α + f'(a)Γ + f''(a)Λ
 ```
 Another name for the dual numbers could be the *nilplex* numbers. Thus, in analogy with the bicomplex numbers, another name for the hyper-dual numbers could be the *binilplex* numbers.
 
 ### rational.DualComplex
 
-The `rational.DualComplex` type represents a dual-complex number. It corresponds to a non-sesquilinear parabolic construct with `rational.Complex` values. The imaginary unit is denoted `i`, and the dual units are denoted `κ` and `λ`. The multiplication rules are:
+The `rational.DualComplex` type represents a dual-complex number. It corresponds to a non-sesquilinear parabolic construct with `rational.Complex` values. The imaginary unit is denoted `i`, and the dual units are denoted `Γ` and `Λ`. The multiplication rules are:
 ```
 	Mul(i, i) = -1
-	Mul(κ, κ) = Mul(λ, λ) = 0
-	Mul(i, κ) = Mul(κ, i) = +λ
-	Mul(κ, λ) = Mul(λ, κ) = 0
-	Mul(λ, i) = Mul(i, λ) = -κ
+	Mul(Γ, Γ) = Mul(Λ, Λ) = 0
+	Mul(i, Γ) = Mul(Γ, i) = +Λ
+	Mul(Γ, Λ) = Mul(Λ, Γ) = 0
+	Mul(Λ, i) = Mul(i, Λ) = -Γ
 ```
 Note that this multiplication operation is **commutative** and **associative**.
 
@@ -475,22 +475,22 @@ The function vector `(g, h)` becomes the complex number `f = g + hi`. Then:
 ```
 	2 * (∂f / ∂z) = Div(f) + (Curl(f))i
 ```
-Thus, in analogy with the dual numbers, given a dual-complex number `p = a + bi + 2κ + 0λ`, and a function `f`, then
+Thus, in analogy with the dual numbers, given a dual-complex number `p = a + bi + 2Γ + 0Λ`, and a function `f`, then
 ```
-	f(p) = f(a + bi) + (∂f / ∂z) * (2κ + 0λ)
-		 = f(a + bi) + (Div(f))κ + (Curl(f))λ
+	f(p) = f(a + bi) + (∂f / ∂z) * (2Γ + 0Λ)
+		 = f(a + bi) + (Div(f))Γ + (Curl(f))Λ
 ```
-In this manner, `f`, `Div(f)`, and `Curl(f)` can be calculated at the point `a + bi` by just evaluating `f(a + bi + 2κ + 0λ)`. Note that this derivation assumes that `f` is holomorphic (i.e. that it only depends on `a` and `b` in the combination `a + bi`).
+In this manner, `f`, `Div(f)`, and `Curl(f)` can be calculated at the point `a + bi` by just evaluating `f(a + bi + 2Γ + 0Λ)`. Note that this derivation assumes that `f` is holomorphic (i.e. that it only depends on `a` and `b` in the combination `a + bi`).
 
 ### rational.DualPerplex
 
-The `rational.DualPerplex` type represents a dual-perplex number. It corresponds to a non-sesquilinear parabolic construct with `rational.Perplex` values. The split unit is denoted `s`, and the dual units are denoted `κ` and `λ`. The multiplication rules are:
+The `rational.DualPerplex` type represents a dual-perplex number. It corresponds to a non-sesquilinear parabolic construct with `rational.Perplex` values. The split unit is denoted `s`, and the dual units are denoted `Γ` and `λ`. The multiplication rules are:
 ```
 	Mul(s, s) = +1
-	Mul(κ, κ) = Mul(λ, λ) = 0
-	Mul(s, κ) = Mul(κ, s) = +λ
-	Mul(κ, λ) = Mul(λ, κ) = 0
-	Mul(λ, s) = Mul(s, λ) = +κ
+	Mul(Γ, Γ) = Mul(Λ, Λ) = 0
+	Mul(s, Γ) = Mul(Γ, s) = +Λ
+	Mul(Γ, Λ) = Mul(Λ, Γ) = 0
+	Mul(Λ, s) = Mul(s, Λ) = +Γ
 ```
 Note that this multiplication operation is **commutative** and **associative**.
 
@@ -506,11 +506,11 @@ This suggests the introduction of the hyperbolic version of the curl:
 ```
 	Hurl(f) = (∂h / ∂x) + (∂g / ∂y)
 ```
-Now let `p = a + bs + 2κ + 0λ`. Thus,
+Now let `p = a + bs + 2Γ + 0Λ`. Thus,
 ```
-	f(p) = f(a + bs) + (Div(f))κ + (Hurl(f))λ
+	f(p) = f(a + bs) + (Div(f))Γ + (Hurl(f))Λ
 ```
-Again, `f`, `Div(f)`, and now `Hurl(f)` can be calculated at the point `a + bs` by just evaluating `f(a + bs + 2κ + 0λ)`.
+Again, `f`, `Div(f)`, and now `Hurl(f)` can be calculated at the point `a + bs` by just evaluating `f(a + bs + 2Γ + 0Λ)`.
 
 ## To Do
 

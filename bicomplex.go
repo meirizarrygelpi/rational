@@ -118,7 +118,7 @@ func (z *BiComplex) Sub(x, y *BiComplex) *BiComplex {
 // The multiplication rules are:
 // 		Mul(i, i) = Mul(J, J) = -1
 // 		Mul(S, S) = +1
-// 		Mul(i, J) = Mul(J, i) = S
+// 		Mul(i, J) = Mul(J, i) = +S
 // 		Mul(J, S) = Mul(S, J) = -i
 // 		Mul(S, i) = Mul(i, S) = -J
 // This binary operation is commutative and associative.
