@@ -516,7 +516,6 @@ Again, `f`, `Div(f)`, and now `Hurl(f)` can be calculated at the point `a + bs` 
 
 1. Improve documentation
 1. Tests
-1. BiHamilton type
 1. BiCockle type
 1. DualHamilton type
 1. DualCockle type

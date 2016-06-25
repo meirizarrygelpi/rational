@@ -13,7 +13,7 @@ import (
 
 var symbTriNilplex = [8]string{"", "α", "Γ", "Λ", "Σ", "Φ", "Ψ", "Ω"}
 
-// A TriNilplex represents a rational tricomplex number.
+// A TriNilplex represents a rational trinilplex number.
 type TriNilplex struct {
 	l, r Hyper
 }
@@ -160,8 +160,9 @@ func (z *TriNilplex) Mul(x, y *TriNilplex) *TriNilplex {
 	return z
 }
 
-// Quad returns the quadrance of z. If z = a+bi+cΓ+dΛ, then the quadrance is
-// 		a² - b² + c² - d² + 2(ab + cd)i
+// Quad returns the quadrance of z. If z = a+bα+cΓ+dΛ+eΣ+fΦ+gΨ+hΩ, then the
+// quadrance is
+// 		a² + 2abα + 2acΓ + 2(ad + bc)Λ
 // Note that this is a bicomplex number.
 func (z *TriNilplex) Quad() *Hyper {
 	quad := new(Hyper)
