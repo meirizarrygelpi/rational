@@ -92,27 +92,10 @@ func (z *DualComplex) Neg(y *DualComplex) *DualComplex {
 	return z
 }
 
-// Conj sets z equal to the dual-complex conjugate of y, and returns z.
-//
-// If y = a+bi+cκ+dλ, then the dual-complex conjugate is
-// 		a+bi-cκ-dλ
-// This differs from the usual conjugate by not changing the sign of the i
-// coefficient.
+// Conj sets z equal to the conjugate of y, and returns z.
 func (z *DualComplex) Conj(y *DualComplex) *DualComplex {
 	z.l.Set(&y.l)
 	z.r.Neg(&y.r)
-	return z
-}
-
-// Star sets z equal to the star conjugate of y, and returns z.
-//
-// If y = a+bi+cκ+dλ, then the star conjugate is
-// 		a-bi+cκ-dλ
-// This differs from the usual conjugate by not changing the sign of the κ
-// coefficient.
-func (z *DualComplex) Star(y *DualComplex) *DualComplex {
-	z.l.Conj(&y.l)
-	z.r.Conj(&y.r)
 	return z
 }
 

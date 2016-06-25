@@ -92,27 +92,10 @@ func (z *BiComplex) Neg(y *BiComplex) *BiComplex {
 	return z
 }
 
-// Conj sets z equal to the bicomplex conjugate of y, and returns z.
-//
-// If y = a+bi+cJ+dS, then the bicomplex conjugate is
-// 		a+bi-cJ-dS
-// This differs from the usual conjugate by not changing the sign of the i
-// coefficient.
+// Conj sets z equal to the conjugate of y, and returns z.
 func (z *BiComplex) Conj(y *BiComplex) *BiComplex {
 	z.l.Set(&y.l)
 	z.r.Neg(&y.r)
-	return z
-}
-
-// Star sets z equal to the star conjugate of y, and returns z.
-//
-// If y = a+bi+cJ+dS, then the star conjugate is
-// 		a-bi+cJ-dS
-// This differs from the usual conjugate by not changing the sign of the J
-// coefficient.
-func (z *BiComplex) Star(y *BiComplex) *BiComplex {
-	z.l.Conj(&y.l)
-	z.r.Conj(&y.r)
 	return z
 }
 

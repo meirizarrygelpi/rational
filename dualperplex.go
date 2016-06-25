@@ -92,27 +92,10 @@ func (z *DualPerplex) Neg(y *DualPerplex) *DualPerplex {
 	return z
 }
 
-// Conj sets z equal to the dual-perplex conjugate of y, and returns z.
-//
-// If y = a+bs+cκ+dλ, then the dual-perplex conjugate is
-// 		a+bs-cκ-dλ
-// This differs from the usual conjugate by not changing the sign of the s
-// coefficient.
+// Conj sets z equal to the conjugate of y, and returns z.
 func (z *DualPerplex) Conj(y *DualPerplex) *DualPerplex {
 	z.l.Set(&y.l)
 	z.r.Neg(&y.r)
-	return z
-}
-
-// Star sets z equal to the star conjugate of y, and returns z.
-//
-// If y = a+bs+cκ+dλ, then the star conjugate is
-// 		a-bs+cκ-dλ
-// This differs from the usual conjugate by not changing the sign of the κ
-// coefficient.
-func (z *DualPerplex) Star(y *DualPerplex) *DualPerplex {
-	z.l.Conj(&y.l)
-	z.r.Conj(&y.r)
 	return z
 }
 

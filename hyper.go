@@ -92,27 +92,10 @@ func (z *Hyper) Neg(y *Hyper) *Hyper {
 	return z
 }
 
-// Conj sets z equal to the hyper-dual conjugate of y, and returns z.
-//
-// If y = a+bα+cκ+dλ, then the hyper-dual conjugate is
-// 		a+bα-cκ-dλ
-// This differs from the usual conjugate by not changing the sign of the α
-// coefficient.
+// Conj sets z equal to the conjugate of y, and returns z.
 func (z *Hyper) Conj(y *Hyper) *Hyper {
 	z.l.Set(&y.l)
 	z.r.Neg(&y.r)
-	return z
-}
-
-// Star sets z equal to the star conjugate of y, and returns z.
-//
-// If y = a+bα+cκ+dλ, then the star conjugate is
-// 		a-bα+cκ-dλ
-// This differs from the usual conjugate by not changing the sign of the κ
-// coefficient.
-func (z *Hyper) Star(y *Hyper) *Hyper {
-	z.l.Conj(&y.l)
-	z.r.Conj(&y.r)
 	return z
 }
 

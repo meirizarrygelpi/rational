@@ -48,19 +48,6 @@ func TestTriComplexNegConjCommutative(t *testing.T) {
 	}
 }
 
-func TestTriComplexStarConjCommutative(t *testing.T) {
-	f := func(x *TriComplex) bool {
-		// t.Logf("x = %v", x)
-		l, r := new(TriComplex), new(TriComplex)
-		l.Star(l.Conj(x))
-		r.Conj(r.Star(x))
-		return l.Equals(r)
-	}
-	if err := quick.Check(f, nil); err != nil {
-		t.Error(err)
-	}
-}
-
 // Anti-commutativity
 
 func TestTriComplexSubAntiCommutative(t *testing.T) {
@@ -211,18 +198,6 @@ func TestTriComplexConjInvolutive(t *testing.T) {
 		// t.Logf("x = %v", x)
 		l := new(TriComplex)
 		l.Conj(l.Conj(x))
-		return l.Equals(x)
-	}
-	if err := quick.Check(f, nil); err != nil {
-		t.Error(err)
-	}
-}
-
-func TestTriComplexStarInvolutive(t *testing.T) {
-	f := func(x *TriComplex) bool {
-		// t.Logf("x = %v", x)
-		l := new(TriComplex)
-		l.Star(l.Star(x))
 		return l.Equals(x)
 	}
 	if err := quick.Check(f, nil); err != nil {

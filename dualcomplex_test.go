@@ -48,19 +48,6 @@ func TestDualComplexNegConjCommutative(t *testing.T) {
 	}
 }
 
-func TestDualComplexStarConjCommutative(t *testing.T) {
-	f := func(x *DualComplex) bool {
-		// t.Logf("x = %v", x)
-		l, r := new(DualComplex), new(DualComplex)
-		l.Star(l.Conj(x))
-		r.Conj(r.Star(x))
-		return l.Equals(r)
-	}
-	if err := quick.Check(f, nil); err != nil {
-		t.Error(err)
-	}
-}
-
 // Anti-commutativity
 
 func TestDualComplexSubAntiCommutative(t *testing.T) {
@@ -207,18 +194,6 @@ func TestDualComplexConjInvolutive(t *testing.T) {
 		// t.Logf("x = %v", x)
 		l := new(DualComplex)
 		l.Conj(l.Conj(x))
-		return l.Equals(x)
-	}
-	if err := quick.Check(f, nil); err != nil {
-		t.Error(err)
-	}
-}
-
-func TestDualComplexStarInvolutive(t *testing.T) {
-	f := func(x *DualComplex) bool {
-		// t.Logf("x = %v", x)
-		l := new(DualComplex)
-		l.Star(l.Star(x))
 		return l.Equals(x)
 	}
 	if err := quick.Check(f, nil); err != nil {

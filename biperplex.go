@@ -92,27 +92,10 @@ func (z *BiPerplex) Neg(y *BiPerplex) *BiPerplex {
 	return z
 }
 
-// Conj sets z equal to the biperplex conjugate of y, and returns z.
-//
-// If y = a+bs+cT+dU, then the biperplex conjugate is
-// 		a+bs-cT-dU
-// This differs from the usual conjugate by not changing the sign of the s
-// coefficient.
+// Conj sets z equal to the conjugate of y, and returns z.
 func (z *BiPerplex) Conj(y *BiPerplex) *BiPerplex {
 	z.l.Set(&y.l)
 	z.r.Neg(&y.r)
-	return z
-}
-
-// Star sets z equal to the star conjugate of y, and returns z.
-//
-// If y = a+bs+cT+dU, then the star conjugate is
-// 		a-bs+cT-dU
-// This differs from the usual conjugate by not changing the sign of the T
-// coefficient.
-func (z *BiPerplex) Star(y *BiPerplex) *BiPerplex {
-	z.l.Conj(&y.l)
-	z.r.Conj(&y.r)
 	return z
 }
 

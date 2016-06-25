@@ -48,19 +48,6 @@ func TestBiComplexNegConjCommutative(t *testing.T) {
 	}
 }
 
-func TestBiComplexStarConjCommutative(t *testing.T) {
-	f := func(x *BiComplex) bool {
-		// t.Logf("x = %v", x)
-		l, r := new(BiComplex), new(BiComplex)
-		l.Star(l.Conj(x))
-		r.Conj(r.Star(x))
-		return l.Equals(r)
-	}
-	if err := quick.Check(f, nil); err != nil {
-		t.Error(err)
-	}
-}
-
 // Anti-commutativity
 
 func TestBiComplexSubAntiCommutative(t *testing.T) {
@@ -207,18 +194,6 @@ func TestBiComplexConjInvolutive(t *testing.T) {
 		// t.Logf("x = %v", x)
 		l := new(BiComplex)
 		l.Conj(l.Conj(x))
-		return l.Equals(x)
-	}
-	if err := quick.Check(f, nil); err != nil {
-		t.Error(err)
-	}
-}
-
-func TestBiComplexStarInvolutive(t *testing.T) {
-	f := func(x *BiComplex) bool {
-		// t.Logf("x = %v", x)
-		l := new(BiComplex)
-		l.Star(l.Star(x))
 		return l.Equals(x)
 	}
 	if err := quick.Check(f, nil); err != nil {
