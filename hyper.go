@@ -129,7 +129,7 @@ func (z *Hyper) Mul(x, y *Hyper) *Hyper {
 	temp := new(Infra)
 	z.l.Mul(a, c)
 	z.r.Add(
-		z.r.Mul(a, d),
+		z.r.Mul(d, a),
 		temp.Mul(b, c),
 	)
 	return z

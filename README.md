@@ -484,13 +484,13 @@ In this manner, `f`, `Div(f)`, and `Curl(f)` can be calculated at the point `a +
 
 ### rational.DualPerplex
 
-The `rational.DualPerplex` type represents a dual-perplex number. It corresponds to a non-sesquilinear parabolic construct with `rational.Perplex` values. The split unit is denoted `s`, and the dual units are denoted `Γ` and `λ`. The multiplication rules are:
+The `rational.DualPerplex` type represents a dual-perplex number. It corresponds to a non-sesquilinear parabolic construct with `rational.Perplex` values. The split unit is denoted `s`, and the dual units are denoted `Γ` and `Λ`. The multiplication rules are:
 ```
 	Mul(s, s) = +1
 	Mul(Γ, Γ) = Mul(Λ, Λ) = 0
-	Mul(s, Γ) = Mul(Γ, s) = +Λ
+	Mul(s, Γ) = Mul(Γ, s) = Λ
 	Mul(Γ, Λ) = Mul(Λ, Γ) = 0
-	Mul(Λ, s) = Mul(s, Λ) = +Γ
+	Mul(Λ, s) = Mul(s, Λ) = Γ
 ```
 Note that this multiplication operation is **commutative** and **associative**.
 
@@ -516,7 +516,6 @@ Again, `f`, `Div(f)`, and now `Hurl(f)` can be calculated at the point `a + bs` 
 
 1. Improve documentation
 1. Tests
-1. TriNilplex type
 1. BiHamilton type
 1. BiCockle type
 1. DualHamilton type
