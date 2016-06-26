@@ -130,10 +130,10 @@ func (z *BiComplex) Mul(x, y *BiComplex) *BiComplex {
 	temp := new(Complex)
 	z.l.Sub(
 		z.l.Mul(a, c),
-		temp.Mul(d, b),
+		temp.Mul(b, d),
 	)
 	z.r.Add(
-		z.r.Mul(d, a),
+		z.r.Mul(a, d),
 		temp.Mul(b, c),
 	)
 	return z

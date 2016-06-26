@@ -129,10 +129,10 @@ func (z *BiPerplex) Mul(x, y *BiPerplex) *BiPerplex {
 	temp := new(Perplex)
 	z.l.Add(
 		z.l.Mul(a, c),
-		temp.Mul(d, b),
+		temp.Mul(b, d),
 	)
 	z.r.Add(
-		z.r.Mul(d, a),
+		z.r.Mul(a, d),
 		temp.Mul(b, c),
 	)
 	return z

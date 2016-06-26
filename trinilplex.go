@@ -154,7 +154,7 @@ func (z *TriNilplex) Mul(x, y *TriNilplex) *TriNilplex {
 	temp := new(Hyper)
 	z.l.Mul(a, c)
 	z.r.Add(
-		z.r.Mul(d, a),
+		z.r.Mul(a, d),
 		temp.Mul(b, c),
 	)
 	return z

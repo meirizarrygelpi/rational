@@ -60,20 +60,20 @@ The three "conic" multiplication operations above all use the `Conj` involution 
 
 The **non-sesquilinear elliptic** multiplication operation is:
 ```
-	F(a, b, c, d) = Sub(Mul(a, c), Mul(d, b))
-	G(a, b, c, d) = Add(Mul(d, a), Mul(b, c))
+	F(a, b, c, d) = Sub(Mul(a, c), Mul(b, d))
+	G(a, b, c, d) = Add(Mul(a, d), Mul(b, c))
 ```
 The **non-sesquilinear parabolic** multiplication operation is:
 ```
 	F(a, b, c, d) = Mul(a, c)
-	G(a, b, c, d) = Add(Mul(d, a), Mul(b, c))
+	G(a, b, c, d) = Add(Mul(a, d), Mul(b, c))
 ```
 The **non-sesquilinear hyperbolic** multiplication operation is:
 ```
-	F(a, b, c, d) = Add(Mul(a, c), Mul(d, b))
-	G(a, b, c, d) = Add(Mul(d, a), Mul(b, c))
+	F(a, b, c, d) = Add(Mul(a, c), Mul(b, d))
+	G(a, b, c, d) = Add(Mul(a, d), Mul(b, c))
 ```
-The resulting construct algebras are very different from the familiar Cayley-Dickson constructs.
+Note the different ordering in some of the `Mul` calls. The resulting construct algebras are very different from the familiar Cayley-Dickson constructs.
 
 ## Two-Dimensional Types
 

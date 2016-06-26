@@ -32,7 +32,7 @@ func (z *BiHamilton) Rats() (*big.Rat, *big.Rat, *big.Rat, *big.Rat,
 
 // String returns the string representation of a BiHamilton value.
 //
-// If z corresponds to a + bi + cj + dk + eH + fV + gW + hL, then the string is
+// If z corresponds to a + bi + cj + dk + eH + fS + gT + hU, then the string is
 // "(a+bi+cj+dk+eH+fV+gW+hL)", similar to complex128 values.
 func (z *BiHamilton) String() string {
 	v := make([]*big.Rat, 8)
@@ -70,7 +70,7 @@ func (z *BiHamilton) Set(y *BiHamilton) *BiHamilton {
 	return z
 }
 
-// NewBiHamilton returns a *BiHamilton with value a+bi+cJ+dS+eK+fV+gW+hL.
+// NewBiHamilton returns a *BiHamilton with value a+bi+cj+dk+eH+fS+gT+hU.
 func NewBiHamilton(a, b, c, d, e, f, g, h *big.Rat) *BiHamilton {
 	z := new(BiHamilton)
 	z.l.l.l.Set(a)
@@ -128,23 +128,23 @@ func (z *BiHamilton) Sub(x, y *BiHamilton) *BiHamilton {
 // 		Mul(i, k) = -Mul(k, i) = -j
 // 		Mul(i, H) = Mul(H, i) = +S
 // 		Mul(i, S) = Mul(S, i) = -H
-// 		Mul(i, T) = Mul(T, i) = -U
-// 		Mul(i, U) = Mul(U, i) = +T
+// 		Mul(i, T) = -Mul(T, i) = +U
+// 		Mul(i, U) = -Mul(U, i) = -T
 // 		Mul(j, k) = -Mul(k, j) = +i
 // 		Mul(j, H) = Mul(H, j) = +T
-// 		Mul(j, S) = Mul(S, j) = +U
+// 		Mul(j, S) = -Mul(S, j) = -U
 // 		Mul(j, T) = Mul(T, j) = -H
-// 		Mul(j, U) = Mul(U, j) = -S
+// 		Mul(j, U) = -Mul(U, j) = +S
 // 		Mul(k, H) = Mul(H, k) = +U
-// 		Mul(k, S) = Mul(S, k) = -T
-// 		Mul(k, T) = Mul(T, k) = +S
+// 		Mul(k, S) = -Mul(S, k) = +T
+// 		Mul(k, T) = -Mul(T, k) = -S
 // 		Mul(k, U) = Mul(U, k) = -H
 // 		Mul(H, S) = Mul(S, H) = -i
 // 		Mul(H, T) = Mul(T, H) = -j
 // 		Mul(H, U) = Mul(U, H) = -k
-// 		Mul(S, T) = -Mul(T, S) = +k
-// 		Mul(S, U) = -Mul(U, S) = -j
-// 		Mul(T, U) = -Mul(U, T) = +i
+// 		Mul(S, T) = -Mul(T, S) = -k
+// 		Mul(S, U) = -Mul(U, S) = +j
+// 		Mul(T, U) = -Mul(U, T) = -i
 // This binary operation is noncommutative but associative.
 func (z *BiHamilton) Mul(x, y *BiHamilton) *BiHamilton {
 	a := new(Hamilton).Set(&x.l)
@@ -154,10 +154,10 @@ func (z *BiHamilton) Mul(x, y *BiHamilton) *BiHamilton {
 	temp := new(Hamilton)
 	z.l.Sub(
 		z.l.Mul(a, c),
-		temp.Mul(d, b),
+		temp.Mul(b, d),
 	)
 	z.r.Add(
-		z.r.Mul(d, a),
+		z.r.Mul(a, d),
 		temp.Mul(b, c),
 	)
 	return z
@@ -173,8 +173,10 @@ func (z *BiHamilton) Commutator(x, y *BiHamilton) *BiHamilton {
 	)
 }
 
-// Quad returns the quadrance of z. If z = a+bi+cJ+dS, then the quadrance is
-// 		a² - b² + c² - d² + 2(ab + cd)i
+// Quad returns the quadrance of z. If z = a+bi+cj+dk+eH+fS+gT+hU, then the
+// quadrance is
+// 		a² - b² - c² - d² + e² - f² - g² - h² +
+// 		2(ab + ef)i + 2(ac + eg)j +2(ad + eh)k
 // Note that this is a Hamilton quaternion.
 func (z *BiHamilton) Quad() *Hamilton {
 	quad := new(Hamilton)
@@ -206,8 +208,8 @@ func (z *BiHamilton) Inv(y *BiHamilton) *BiHamilton {
 	quad := y.Quad()
 	quad.Inv(quad)
 	z.Conj(y)
-	z.l.Mul(&z.l, quad)
-	z.r.Mul(&z.r, quad)
+	z.l.Mul(quad, &z.l)
+	z.r.Mul(quad, &z.r)
 	return z
 }
 
