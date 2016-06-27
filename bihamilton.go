@@ -100,8 +100,8 @@ func (z *BiHamilton) Neg(y *BiHamilton) *BiHamilton {
 
 // Conj sets z equal to the conjugate of y, and returns z.
 func (z *BiHamilton) Conj(y *BiHamilton) *BiHamilton {
-	z.l.Set(&y.l)
-	z.r.Neg(&y.r)
+	z.l.Conj(&y.l)
+	z.r.Conj(&y.r)
 	return z
 }
 
@@ -175,19 +175,24 @@ func (z *BiHamilton) Commutator(x, y *BiHamilton) *BiHamilton {
 
 // Quad returns the quadrance of z. If z = a+bi+cj+dk+eH+fS+gT+hU, then the
 // quadrance is
-// 		a² - b² - c² - d² + e² - f² - g² - h² +
-// 		2(ab + ef)i + 2(ac + eg)j +2(ad + eh)k
-// Note that this is a Hamilton quaternion.
-func (z *BiHamilton) Quad() *Hamilton {
-	quad := new(Hamilton)
-	quad.Mul(&z.l, &z.l)
-	return quad.Add(quad, new(Hamilton).Mul(&z.r, &z.r))
+//		a² + b² + c² + d² - e² - f² - g² - h² +
+// 		2(ae + bf + cg + dh)H
+// Note that this is a Complex.
+func (z *BiHamilton) Quad() *Complex {
+	quad := new(Complex)
+	quad.l.Sub(z.l.Quad(), z.r.Quad())
+	temp := new(big.Rat)
+	quad.r.Mul(&z.l.l.l, &z.r.l.l)
+	quad.r.Add(&quad.r, temp.Mul(&z.l.l.r, &z.r.l.r))
+	quad.r.Add(&quad.r, temp.Mul(&z.l.r.l, &z.r.r.l))
+	quad.r.Add(&quad.r, temp.Mul(&z.l.r.r, &z.r.r.r))
+	quad.r.Add(&quad.r, &quad.r)
+	return quad
 }
 
-// Norm returns the norm of z. If z = a+bi+cJ+dS, then the norm is
-// 		(a² - b² + c² - d²)² + 4(ab + cd)²
-// This can also be written as
-// 		((a - d)² + (b + c)²)((a + d)² + (b - c)²)
+// Norm returns the norm of z. If z = a+bi+cj+dk+eH+fS+gT+hU, then the norm is
+// 		(a² + b² + c² + d² - e² - f² - g² - h²)² +
+// 		4(ae + bf + cg + dh)²
 // The norm is always non-negative.
 func (z *BiHamilton) Norm() *big.Rat {
 	return z.Quad().Quad()
@@ -195,7 +200,7 @@ func (z *BiHamilton) Norm() *big.Rat {
 
 // IsZeroDivisor returns true if z is a zero divisor.
 func (z *BiHamilton) IsZeroDivisor() bool {
-	zero := new(Hamilton)
+	zero := new(Complex)
 	return zero.Equals(z.Quad())
 }
 
@@ -205,27 +210,42 @@ func (z *BiHamilton) Inv(y *BiHamilton) *BiHamilton {
 	if y.IsZeroDivisor() {
 		panic("inverse of zero divisor")
 	}
+	p := new(BiHamilton).Conj(y)
 	quad := y.Quad()
 	quad.Inv(quad)
 	z.Conj(y)
-	z.l.Mul(quad, &z.l)
-	z.r.Mul(quad, &z.r)
+	temp := new(Hamilton)
+	z.l.Scal(&p.l, &quad.l)
+	z.l.Sub(&z.l, temp.Scal(&p.r, &quad.r))
+	z.r.Scal(&p.l, &quad.r)
+	z.r.Add(&z.r, temp.Scal(&p.r, &quad.l))
 	return z
 }
 
-// Quo sets z equal to the quotient of x and y. If y is a zero divisor, then
-// Quo panics.
-func (z *BiHamilton) Quo(x, y *BiHamilton) *BiHamilton {
+// QuoL sets z equal to the left quotient of x and y:
+// 		Mul(Inv(y), x)
+// Then it returns z. If y is zero, then QuoL panics.
+func (z *BiHamilton) QuoL(x, y *BiHamilton) *BiHamilton {
 	if y.IsZeroDivisor() {
 		panic("denominator is zero divisor")
 	}
 	return z.Mul(z.Inv(y), x)
 }
 
-// CrossRatio sets z equal to the cross-ratio of v, w, x, and y:
+// QuoR sets z equal to the right quotient of x and y:
+// 		Mul(x, Inv(y))
+// Then it returns z. If y is zero, then QuoR panics.
+func (z *BiHamilton) QuoR(x, y *BiHamilton) *BiHamilton {
+	if y.IsZeroDivisor() {
+		panic("denominator is zero divisor")
+	}
+	return z.Mul(x, z.Inv(y))
+}
+
+// CrossRatioL sets z equal to the left cross-ratio of v, w, x, and y:
 // 		Inv(w - x) * (v - x) * Inv(v - y) * (w - y)
 // Then it returns z.
-func (z *BiHamilton) CrossRatio(v, w, x, y *BiHamilton) *BiHamilton {
+func (z *BiHamilton) CrossRatioL(v, w, x, y *BiHamilton) *BiHamilton {
 	temp := new(BiHamilton)
 	z.Sub(w, x)
 	z.Inv(z)
@@ -238,10 +258,39 @@ func (z *BiHamilton) CrossRatio(v, w, x, y *BiHamilton) *BiHamilton {
 	return z.Mul(z, temp)
 }
 
-// Möbius sets z equal to the Möbius (fractional linear) transform of y:
+// CrossRatioR sets z equal to the right cross-ratio of v, w, x, and y:
+// 		(v - x) * Inv(w - x) * (w - y) * Inv(v - y)
+// Then it returns z.
+func (z *BiHamilton) CrossRatioR(v, w, x, y *BiHamilton) *BiHamilton {
+	temp := new(BiHamilton)
+	z.Sub(v, x)
+	temp.Sub(w, x)
+	temp.Inv(temp)
+	z.Mul(z, temp)
+	temp.Sub(w, y)
+	z.Mul(z, temp)
+	temp.Sub(v, y)
+	temp.Inv(temp)
+	return z.Mul(z, temp)
+}
+
+// MöbiusL sets z equal to the left Möbius (fractional linear) transform of y:
+// 		Inv(y*c + d) * (y*a + b)
+// Then it returns z.
+func (z *BiHamilton) MöbiusL(y, a, b, c, d *BiHamilton) *BiHamilton {
+	z.Mul(y, a)
+	z.Add(z, b)
+	temp := new(BiHamilton)
+	temp.Mul(y, c)
+	temp.Add(temp, d)
+	temp.Inv(temp)
+	return z.Mul(temp, z)
+}
+
+// MöbiusR sets z equal to the right Möbius (fractional linear) transform of y:
 // 		(a*y + b) * Inv(c*y + d)
 // Then it returns z.
-func (z *BiHamilton) Möbius(y, a, b, c, d *BiHamilton) *BiHamilton {
+func (z *BiHamilton) MöbiusR(y, a, b, c, d *BiHamilton) *BiHamilton {
 	z.Mul(a, y)
 	z.Add(z, b)
 	temp := new(BiHamilton)
