@@ -173,21 +173,21 @@ func (z *BiHamilton) Commutator(x, y *BiHamilton) *BiHamilton {
 	)
 }
 
-// Quad returns the quadrance of z. If z = a+bi+cj+dk+eH+fS+gT+hU, then the
+// quad returns the quadrance of z. If z = a+bi+cj+dk+eH+fS+gT+hU, then the
 // quadrance is
 //		a² + b² + c² + d² - e² - f² - g² - h² +
 // 		2(ae + bf + cg + dh)H
-// Note that this is a Complex.
-func (z *BiHamilton) Quad() *Complex {
-	quad := new(Complex)
-	quad.l.Sub(z.l.Quad(), z.r.Quad())
+// Note that this is a complex number with H serving as the imaginary unit.
+func (z *BiHamilton) quad() *Complex {
+	q := new(Complex)
+	q.l.Sub(z.l.Quad(), z.r.Quad())
 	temp := new(big.Rat)
-	quad.r.Mul(&z.l.l.l, &z.r.l.l)
-	quad.r.Add(&quad.r, temp.Mul(&z.l.l.r, &z.r.l.r))
-	quad.r.Add(&quad.r, temp.Mul(&z.l.r.l, &z.r.r.l))
-	quad.r.Add(&quad.r, temp.Mul(&z.l.r.r, &z.r.r.r))
-	quad.r.Add(&quad.r, &quad.r)
-	return quad
+	q.r.Mul(&z.l.l.l, &z.r.l.l)
+	q.r.Add(&q.r, temp.Mul(&z.l.l.r, &z.r.l.r))
+	q.r.Add(&q.r, temp.Mul(&z.l.r.l, &z.r.r.l))
+	q.r.Add(&q.r, temp.Mul(&z.l.r.r, &z.r.r.r))
+	q.r.Add(&q.r, &q.r)
+	return q
 }
 
 // Norm returns the norm of z. If z = a+bi+cj+dk+eH+fS+gT+hU, then the norm is
@@ -195,13 +195,13 @@ func (z *BiHamilton) Quad() *Complex {
 // 		4(ae + bf + cg + dh)²
 // The norm is always non-negative.
 func (z *BiHamilton) Norm() *big.Rat {
-	return z.Quad().Quad()
+	return z.quad().Quad()
 }
 
 // IsZeroDivisor returns true if z is a zero divisor.
 func (z *BiHamilton) IsZeroDivisor() bool {
 	zero := new(Complex)
-	return zero.Equals(z.Quad())
+	return zero.Equals(z.quad())
 }
 
 // Inv sets z equal to the inverse of y, and returns z. If y is a zero divisor,
@@ -211,14 +211,14 @@ func (z *BiHamilton) Inv(y *BiHamilton) *BiHamilton {
 		panic("inverse of zero divisor")
 	}
 	p := new(BiHamilton).Conj(y)
-	quad := y.Quad()
-	quad.Inv(quad)
+	q := y.quad()
+	q.Inv(q)
 	z.Conj(y)
 	temp := new(Hamilton)
-	z.l.Scal(&p.l, &quad.l)
-	z.l.Sub(&z.l, temp.Scal(&p.r, &quad.r))
-	z.r.Scal(&p.l, &quad.r)
-	z.r.Add(&z.r, temp.Scal(&p.r, &quad.l))
+	z.l.Scal(&p.l, &q.l)
+	z.l.Sub(&z.l, temp.Scal(&p.r, &q.r))
+	z.r.Scal(&p.l, &q.r)
+	z.r.Add(&z.r, temp.Scal(&p.r, &q.l))
 	return z
 }
 

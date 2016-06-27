@@ -11,6 +11,8 @@ import (
 	"strings"
 )
 
+var symbComplex = [2]string{"", "i"}
+
 // A Complex represents a rational complex number.
 type Complex struct {
 	l, r big.Rat
@@ -39,7 +41,7 @@ func (z *Complex) String() string {
 	} else {
 		a[2] = fmt.Sprintf("+%v", z.r.RatString())
 	}
-	a[3] = "i"
+	a[3] = symbComplex[1]
 	a[4] = ")"
 	return strings.Join(a, "")
 }
