@@ -412,53 +412,44 @@ Besides all the types mentioned above, other types are included. These types hav
 
 ### rational.BiComplex
 
-The `rational.BiComplex` type represents a [bicomplex number](https://en.wikipedia.org/wiki/Bicomplex_number). It corresponds to a non-sesquilinear elliptic construct with `rational.Complex` values. The imaginary units are denoted `i` and `J`, and the split unit is denoted `S`. The multiplication rules are:
+The `rational.BiComplex` type represents a [bicomplex number](https://en.wikipedia.org/wiki/Bicomplex_number). It corresponds to a non-sesquilinear elliptic construct with `rational.Complex` values. The imaginary units are denoted `i` and `J`. The multiplication rules are:
 ```
 	Mul(i, i) = Mul(J, J) = -1
-	Mul(S, S) = +1
-	Mul(i, J) = Mul(J, i) = +S
-	Mul(J, S) = Mul(S, J) = -i
-	Mul(S, i) = Mul(i, S) = -J
+	Mul(i, J) = Mul(J, i)
 ```
 Note that this multiplication operation is **commutative** and **associative**.
 
 ### rational.BiPerplex
 
-The `rational.BiPerplex` type represents a biperplex number. It corresponds to a non-sesquilinear hyperbolic construct with `rational.Perplex` values. The split units are denoted `s`, `T`, and `U`. The multiplication rules are:
+The `rational.BiPerplex` type represents a biperplex number. It corresponds to a non-sesquilinear hyperbolic construct with `rational.Perplex` values. The split units are denoted `s` and `T`. The multiplication rules are:
 ```
-	Mul(s, s) = Mul(T, T) = Mul(U, U) = +1
-	Mul(s, T) = Mul(T, s) = U
-	Mul(T, U) = Mul(U, T) = s
-	Mul(U, s) = Mul(s, U) = T
+	Mul(s, s) = Mul(T, T) = +1
+	Mul(s, T) = Mul(T, s)
 ```
 Note that this multiplication operation is **commutative** and **associative**.
 
 ### rational.Hyper
 
-The `rational.Hyper` type represents a hyper-dual number. It corresponds to a non-sesquilinear parabolic construct with `rational.Infra` values. The dual units are denoted `α`, `Γ`, and `Λ`. The multiplication rules are:
+The `rational.Hyper` type represents a hyper-dual number. It corresponds to a non-sesquilinear parabolic construct with `rational.Infra` values. The dual units are denoted `α` and `Γ`. The multiplication rules are:
 ```
-	Mul(α, α) = Mul(Γ, Γ) = Mul(Λ, Λ) = 0
-	Mul(α, Γ) = Mul(Γ, α) = Λ
-	Mul(Γ, Λ) = Mul(Λ, Γ) = 0
-	Mul(Λ, α) = Mul(α, Λ) = 0
+	Mul(α, α) = Mul(Γ, Γ) = 0
+	Mul(α, Γ) = Mul(Γ, α)
 ```
 Note that this multiplication operation is **commutative** and **associative**.
 
-Hyper-dual numbers are useful for computing second-order derivatives. If `z = a + 1α + 1Γ + 0Λ`, and `f` is a function, then
+Hyper-dual numbers are useful for computing second-order derivatives. If `z = a + 1α + 1Γ + 0αΓ`, and `f` is a function, then
 ```
-	f(z) = f(a) + f'(a)α + f'(a)Γ + f''(a)Λ
+	f(z) = f(a) + f'(a)α + f'(a)Γ + f''(a)αΓ
 ```
 Another name for the dual numbers could be the *nilplex* numbers. Thus, in analogy with the bicomplex numbers, another name for the hyper-dual numbers could be the *binilplex* numbers.
 
 ### rational.DualComplex
 
-The `rational.DualComplex` type represents a dual-complex number. It corresponds to a non-sesquilinear parabolic construct with `rational.Complex` values. The imaginary unit is denoted `i`, and the dual units are denoted `Γ` and `Λ`. The multiplication rules are:
+The `rational.DualComplex` type represents a dual-complex number. It corresponds to a non-sesquilinear parabolic construct with `rational.Complex` values. The imaginary unit is denoted `i`, and the dual unit is denoted `Γ`. The multiplication rules are:
 ```
 	Mul(i, i) = -1
-	Mul(Γ, Γ) = Mul(Λ, Λ) = 0
-	Mul(i, Γ) = Mul(Γ, i) = +Λ
-	Mul(Γ, Λ) = Mul(Λ, Γ) = 0
-	Mul(Λ, i) = Mul(i, Λ) = -Γ
+	Mul(Γ, Γ) = 0
+	Mul(i, Γ) = Mul(Γ, i)
 ```
 Note that this multiplication operation is **commutative** and **associative**.
 
@@ -475,22 +466,20 @@ The function vector `(g, h)` becomes the complex number `f = g + hi`. Then:
 ```
 	2 * (∂f / ∂z) = Div(f) + (Curl(f))i
 ```
-Thus, in analogy with the dual numbers, given a dual-complex number `p = a + bi + 2Γ + 0Λ`, and a function `f`, then
+Thus, in analogy with the dual numbers, given a dual-complex number `p = a + bi + 2Γ + 0iΓ`, and a function `f`, then
 ```
-	f(p) = f(a + bi) + (∂f / ∂z) * (2Γ + 0Λ)
-		 = f(a + bi) + (Div(f))Γ + (Curl(f))Λ
+	f(p) = f(a + bi) + (∂f / ∂z) * (2Γ + 0iΓ)
+		 = f(a + bi) + (Div(f))Γ + (Curl(f))iΓ
 ```
-In this manner, `f`, `Div(f)`, and `Curl(f)` can be calculated at the point `a + bi` by just evaluating `f(a + bi + 2Γ + 0Λ)`. Note that this derivation assumes that `f` is holomorphic (i.e. that it only depends on `a` and `b` in the combination `a + bi`).
+In this manner, `f`, `Div(f)`, and `Curl(f)` can be calculated at the point `a + bi` by just evaluating `f(a + bi + 2Γ + 0iΓ)`. Note that this derivation assumes that `f` is holomorphic (i.e. that it only depends on `a` and `b` in the combination `a + bi`).
 
 ### rational.DualPerplex
 
-The `rational.DualPerplex` type represents a dual-perplex number. It corresponds to a non-sesquilinear parabolic construct with `rational.Perplex` values. The split unit is denoted `s`, and the dual units are denoted `Γ` and `Λ`. The multiplication rules are:
+The `rational.DualPerplex` type represents a dual-perplex number. It corresponds to a non-sesquilinear parabolic construct with `rational.Perplex` values. The split unit is denoted `s`, and the dual unit is denoted `Γ`. The multiplication rules are:
 ```
 	Mul(s, s) = +1
-	Mul(Γ, Γ) = Mul(Λ, Λ) = 0
-	Mul(s, Γ) = Mul(Γ, s) = Λ
-	Mul(Γ, Λ) = Mul(Λ, Γ) = 0
-	Mul(Λ, s) = Mul(s, Λ) = Γ
+	Mul(Γ, Γ) = 0
+	Mul(s, Γ) = Mul(Γ, s)
 ```
 Note that this multiplication operation is **commutative** and **associative**.
 
@@ -506,11 +495,11 @@ This suggests the introduction of the hyperbolic version of the curl:
 ```
 	Hurl(f) = (∂h / ∂x) + (∂g / ∂y)
 ```
-Now let `p = a + bs + 2Γ + 0Λ`. Thus,
+Now let `p = a + bs + 2Γ + 0sΓ`. Thus,
 ```
-	f(p) = f(a + bs) + (Div(f))Γ + (Hurl(f))Λ
+	f(p) = f(a + bs) + (Div(f))Γ + (Hurl(f))sΓ
 ```
-Again, `f`, `Div(f)`, and now `Hurl(f)` can be calculated at the point `a + bs` by just evaluating `f(a + bs + 2Γ + 0Λ)`.
+Again, `f`, `Div(f)`, and now `Hurl(f)` can be calculated at the point `a + bs` by just evaluating `f(a + bs + 2Γ + 0sΓ)`.
 
 ## To Do
 
@@ -519,3 +508,5 @@ Again, `f`, `Div(f)`, and now `Hurl(f)` can be calculated at the point `a + bs` 
 1. DualHamilton type
 1. DualCockle type
 1. Elementary and special functions via Padé approximants
+1. Simplify symbols for constructs from plexification
+1. Complexification, Nilplexification, Perplexification

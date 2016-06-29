@@ -39,7 +39,7 @@ func (z *InfraHamilton) String() string {
 	v[0], v[1], v[2], v[3] = z.l.Rats()
 	v[4], v[5], v[6], v[7] = z.r.Rats()
 	a := make([]string, 17)
-	a[0] = "("
+	a[0] = leftBracket
 	a[1] = fmt.Sprintf("%v", v[0].RatString())
 	i := 1
 	for j := 2; j < 16; j = j + 2 {
@@ -51,7 +51,7 @@ func (z *InfraHamilton) String() string {
 		a[j+1] = symbInfraHamilton[i]
 		i++
 	}
-	a[16] = ")"
+	a[16] = rightBracket
 	return strings.Join(a, "")
 }
 

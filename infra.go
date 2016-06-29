@@ -32,7 +32,7 @@ func (z *Infra) Rats() (*big.Rat, *big.Rat) {
 // complex128 values.
 func (z *Infra) String() string {
 	a := make([]string, 5)
-	a[0] = "("
+	a[0] = leftBracket
 	a[1] = fmt.Sprintf("%v", z.l.RatString())
 	if z.r.Sign() == -1 {
 		a[2] = fmt.Sprintf("%v", z.r.RatString())
@@ -40,7 +40,7 @@ func (z *Infra) String() string {
 		a[2] = fmt.Sprintf("+%v", z.r.RatString())
 	}
 	a[3] = "α"
-	a[4] = ")"
+	a[4] = rightBracket
 	return strings.Join(a, "")
 }
 
@@ -232,6 +232,12 @@ func (z *Infra) PolyEval(y *Infra, poly Laurent) *Infra {
 		}
 	}
 	return z
+}
+
+// Dot returns the (rational) dot product of z and y.
+func (z *Infra) Dot(y *Infra) *big.Rat {
+	dot := new(big.Rat)
+	return dot.Mul(&z.l, &y.l)
 }
 
 // Generate returns a random Infra value for quick.Check testing.

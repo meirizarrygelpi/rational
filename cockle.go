@@ -36,7 +36,7 @@ func (z *Cockle) String() string {
 	v[0], v[1] = z.l.Rats()
 	v[2], v[3] = z.r.Rats()
 	a := make([]string, 9)
-	a[0] = "("
+	a[0] = leftBracket
 	a[1] = fmt.Sprintf("%v", v[0].RatString())
 	i := 1
 	for j := 2; j < 8; j = j + 2 {
@@ -48,7 +48,7 @@ func (z *Cockle) String() string {
 		a[j+1] = symbCockle[i]
 		i++
 	}
-	a[8] = ")"
+	a[8] = rightBracket
 	return strings.Join(a, "")
 }
 
@@ -267,6 +267,11 @@ func (z *Cockle) IsNilpotent(n int) bool {
 		}
 	}
 	return false
+}
+
+// Dot returns the (rational) dot product of z and y.
+func (z *Cockle) Dot(y *Cockle) *big.Rat {
+	return new(big.Rat).Sub(z.l.Dot(&y.l), z.r.Dot(&y.r))
 }
 
 // Generate returns a random Cockle value for quick.Check testing.

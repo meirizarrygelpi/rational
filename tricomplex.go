@@ -11,7 +11,7 @@ import (
 	"strings"
 )
 
-var symbTriComplex = [8]string{"", "i", "J", "S", "K", "V", "W", "L"}
+var symbTriComplex = [8]string{"", "i", "J", "iJ", "K", "iK", "JK", "iJK"}
 
 // A TriComplex represents a rational tricomplex number.
 type TriComplex struct {
@@ -31,15 +31,12 @@ func (z *TriComplex) Rats() (*big.Rat, *big.Rat, *big.Rat, *big.Rat,
 }
 
 // String returns the string representation of a TriComplex value.
-//
-// If z corresponds to a + bi + cJ + dS + eK + fV + gW + hL, then the string is
-// "(a+bi+cJ+dS+eK+fV+gW+hL)", similar to complex128 values.
 func (z *TriComplex) String() string {
 	v := make([]*big.Rat, 8)
 	v[0], v[1], v[2], v[3] = z.l.Rats()
 	v[4], v[5], v[6], v[7] = z.r.Rats()
 	a := make([]string, 17)
-	a[0] = "("
+	a[0] = leftBracket
 	a[1] = fmt.Sprintf("%v", v[0].RatString())
 	i := 1
 	for j := 2; j < 16; j = j + 2 {
@@ -51,7 +48,7 @@ func (z *TriComplex) String() string {
 		a[j+1] = symbTriComplex[i]
 		i++
 	}
-	a[16] = ")"
+	a[16] = rightBracket
 	return strings.Join(a, "")
 }
 
@@ -70,7 +67,7 @@ func (z *TriComplex) Set(y *TriComplex) *TriComplex {
 	return z
 }
 
-// NewTriComplex returns a *TriComplex with value a+bi+cJ+dS+eK+fV+gW+hL.
+// NewTriComplex returns a *TriComplex with value a+bi+cJ+diJ+eK+fiK+gJK+hiJK.
 func NewTriComplex(a, b, c, d, e, f, g, h *big.Rat) *TriComplex {
 	z := new(TriComplex)
 	z.l.l.l.Set(a)
@@ -122,29 +119,10 @@ func (z *TriComplex) Sub(x, y *TriComplex) *TriComplex {
 // Mul sets z equal to the product of x and y, and returns z.
 //
 // The multiplication rules are:
-// 		Mul(i, i) = Mul(J, J) = Mul(K, K) = Mul(L, L) = -1
-// 		Mul(S, S) = Mul(V, V) = Mul(W, W) = +1
-// 		Mul(i, J) = Mul(J, i) = +S
-// 		Mul(i, S) = Mul(S, i) = -J
-// 		Mul(i, K) = Mul(K, i) = +V
-// 		Mul(i, V) = Mul(V, i) = -K
-// 		Mul(i, W) = Mul(W, i) = +L
-// 		Mul(i, L) = Mul(L, i) = -W
-// 		Mul(J, S) = Mul(S, J) = -i
-// 		Mul(J, K) = Mul(K, J) = +W
-// 		Mul(J, V) = Mul(V, J) = +L
-// 		Mul(J, W) = Mul(W, J) = -K
-// 		Mul(J, L) = Mul(L, J) = -V
-// 		Mul(S, K) = Mul(K, S) = +L
-// 		Mul(S, V) = Mul(V, S) = -W
-// 		Mul(S, W) = Mul(W, S) = -V
-// 		Mul(S, L) = Mul(L, S) = +K
-// 		Mul(K, V) = Mul(V, K) = -i
-// 		Mul(K, W) = Mul(W, K) = -J
-// 		Mul(K, L) = Mul(L, K) = -S
-// 		Mul(V, W) = Mul(W, V) = -S
-// 		Mul(V, L) = Mul(L, V) = +J
-// 		Mul(W, L) = Mul(L, W) = +i
+// 		Mul(i, i) = Mul(J, J) = Mul(K, K) = -1
+// 		Mul(i, J) = Mul(J, i)
+// 		Mul(i, K) = Mul(K, i)
+// 		Mul(J, K) = Mul(K, J)
 // This binary operation is commutative and associative.
 func (z *TriComplex) Mul(x, y *TriComplex) *TriComplex {
 	a := new(BiComplex).Set(&x.l)

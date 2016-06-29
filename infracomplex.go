@@ -37,7 +37,7 @@ func (z *InfraComplex) String() string {
 	v[0], v[1] = z.l.Rats()
 	v[2], v[3] = z.r.Rats()
 	a := make([]string, 9)
-	a[0] = "("
+	a[0] = leftBracket
 	a[1] = fmt.Sprintf("%v", v[0].RatString())
 	i := 1
 	for j := 2; j < 8; j = j + 2 {
@@ -49,7 +49,7 @@ func (z *InfraComplex) String() string {
 		a[j+1] = symbInfraComplex[i]
 		i++
 	}
-	a[8] = ")"
+	a[8] = rightBracket
 	return strings.Join(a, "")
 }
 
@@ -247,6 +247,11 @@ func (z *InfraComplex) MöbiusR(y, a, b, c, d *InfraComplex) *InfraComplex {
 	temp.Add(temp, d)
 	temp.Inv(temp)
 	return z.Mul(z, temp)
+}
+
+// Dot returns the (rational) dot product of z and y.
+func (z *InfraComplex) Dot(y *InfraComplex) *big.Rat {
+	return z.l.Dot(&y.l)
 }
 
 // Generate returns a random InfraComplex value for quick.Check testing.

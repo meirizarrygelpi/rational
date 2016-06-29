@@ -11,7 +11,7 @@ import (
 	"strings"
 )
 
-var symbTriNilplex = [8]string{"", "α", "Γ", "Λ", "Σ", "Φ", "Ψ", "Ω"}
+var symbTriNilplex = [8]string{"", "α", "Γ", "αΓ", "Λ", "αΛ", "ΓΛ", "αΓΛ"}
 
 // A TriNilplex represents a rational trinilplex number.
 type TriNilplex struct {
@@ -31,15 +31,12 @@ func (z *TriNilplex) Rats() (*big.Rat, *big.Rat, *big.Rat, *big.Rat,
 }
 
 // String returns the string representation of a TriNilplex value.
-//
-// If z corresponds to a + bα + cΓ + dΛ + eΣ + fΦ + gΨ + hΩ, then the string is
-// "(a+bα+cΓ+dΛ+eΣ+fΦ+gΨ+hΩ)", similar to complex128 values.
 func (z *TriNilplex) String() string {
 	v := make([]*big.Rat, 8)
 	v[0], v[1], v[2], v[3] = z.l.Rats()
 	v[4], v[5], v[6], v[7] = z.r.Rats()
 	a := make([]string, 17)
-	a[0] = "("
+	a[0] = leftBracket
 	a[1] = fmt.Sprintf("%v", v[0].RatString())
 	i := 1
 	for j := 2; j < 16; j = j + 2 {
@@ -51,7 +48,7 @@ func (z *TriNilplex) String() string {
 		a[j+1] = symbTriNilplex[i]
 		i++
 	}
-	a[16] = ")"
+	a[16] = rightBracket
 	return strings.Join(a, "")
 }
 
@@ -70,7 +67,7 @@ func (z *TriNilplex) Set(y *TriNilplex) *TriNilplex {
 	return z
 }
 
-// NewTriNilplex returns a *TriNilplex with value a+bα+cΓ+dΛ+eΣ+fΦ+gΨ+hΩ.
+// NewTriNilplex returns a *TriNilplex with value a+bα+cΓ+dαΓ+eΛ+fαΛ+gΓΛ+hαΓΛ.
 func NewTriNilplex(a, b, c, d, e, f, g, h *big.Rat) *TriNilplex {
 	z := new(TriNilplex)
 	z.l.l.l.Set(a)
@@ -123,28 +120,9 @@ func (z *TriNilplex) Sub(x, y *TriNilplex) *TriNilplex {
 //
 // The multiplication rules are:
 // 		Mul(α, α) = Mul(Γ, Γ) = Mul(Λ, Λ) = 0
-// 		Mul(Σ, Σ) = Mul(Φ, Φ) = Mul(Ψ, Ψ) = Mul(Ω, Ω) = 0
-// 		Mul(α, Γ) = Mul(Γ, α) = Λ
-// 		Mul(α, Λ) = Mul(Λ, α) = 0
-// 		Mul(α, Σ) = Mul(Σ, α) = Φ
-// 		Mul(α, Φ) = Mul(Φ, α) = 0
-// 		Mul(α, Ψ) = Mul(Ψ, α) = Ω
-// 		Mul(α, Ω) = Mul(Ω, α) = 0
-// 		Mul(Γ, Λ) = Mul(Λ, Γ) = 0
-// 		Mul(Γ, Σ) = Mul(Σ, Γ) = Ψ
-// 		Mul(Γ, Φ) = Mul(Φ, Γ) = Ω
-// 		Mul(Γ, Ψ) = Mul(Ψ, Γ) = 0
-// 		Mul(Γ, Ω) = Mul(Ω, Γ) = 0
-// 		Mul(Λ, Σ) = Mul(Σ, Λ) = Ω
-// 		Mul(Λ, Φ) = Mul(Φ, Λ) = 0
-// 		Mul(Λ, Ψ) = Mul(Ψ, Λ) = 0
-// 		Mul(Λ, Ω) = Mul(Ω, Λ) = 0
-// 		Mul(Σ, Φ) = Mul(Φ, Σ) = 0
-// 		Mul(Σ, Ψ) = Mul(Ψ, Σ) = 0
-// 		Mul(Σ, Ω) = Mul(Ω, Σ) = 0
-// 		Mul(Φ, Ψ) = Mul(Ψ, Φ) = 0
-// 		Mul(Φ, Ω) = Mul(Ω, Φ) = 0
-// 		Mul(Ψ, Ω) = Mul(Ω, Ψ) = 0
+// 		Mul(α, Γ) = Mul(Γ, α)
+// 		Mul(α, Λ) = Mul(Λ, α)
+// 		Mul(Γ, Λ) = Mul(Λ, Γ)
 // This binary operation is commutative and associative.
 func (z *TriNilplex) Mul(x, y *TriNilplex) *TriNilplex {
 	a := new(Hyper).Set(&x.l)
@@ -160,16 +138,17 @@ func (z *TriNilplex) Mul(x, y *TriNilplex) *TriNilplex {
 	return z
 }
 
-// Quad returns the quadrance of z. If z = a+bα+cΓ+dΛ+eΣ+fΦ+gΨ+hΩ, then the
-// quadrance is
-// 		a² + 2abα + 2acΓ + 2(ad + bc)Λ
+// Quad returns the quadrance of z. If z = a+bα+cΓ+dαΓ+eΛ+fαΛ+gΓΛ+hαΓΛ, then
+// the quadrance is
+// 		a² + 2abα + 2acΓ + 2(ad + bc)αΓ
 // Note that this is a bicomplex number.
 func (z *TriNilplex) Quad() *Hyper {
 	quad := new(Hyper)
 	return quad.Mul(&z.l, &z.l)
 }
 
-// Norm returns the norm of z. If z = a+bα+cΓ+dΛ+eΣ+fΦ+gΨ+hΩ, then the norm is
+// Norm returns the norm of z. If z = a+bα+cΓ+dαΓ+eΛ+fαΛ+gΓΛ+hαΓΛ, then the
+// norm is
 // 		((a²)²)²
 // The norm is always non-negative.
 func (z *TriNilplex) Norm() *big.Rat {

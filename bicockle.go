@@ -11,7 +11,7 @@ import (
 	"strings"
 )
 
-var symbBiCockle = [8]string{"", "i", "t", "u", "H", "S", "J", "K"}
+var symbBiCockle = [8]string{"", "i", "t", "u", "H", "iH", "tH", "uH"}
 
 // A BiCockle represents a rational Cockle biquaternion.
 type BiCockle struct {
@@ -31,15 +31,12 @@ func (z *BiCockle) Rats() (*big.Rat, *big.Rat, *big.Rat, *big.Rat,
 }
 
 // String returns the string representation of a BiCockle value.
-//
-// If z corresponds to a + bi + cj + dk + eH + fS + gT + hU, then the string is
-// "(a+bi+cj+dk+eH+fV+gW+hL)", similar to complex128 values.
 func (z *BiCockle) String() string {
 	v := make([]*big.Rat, 8)
 	v[0], v[1], v[2], v[3] = z.l.Rats()
 	v[4], v[5], v[6], v[7] = z.r.Rats()
 	a := make([]string, 17)
-	a[0] = "("
+	a[0] = leftBracket
 	a[1] = fmt.Sprintf("%v", v[0].RatString())
 	i := 1
 	for j := 2; j < 16; j = j + 2 {
@@ -51,7 +48,7 @@ func (z *BiCockle) String() string {
 		a[j+1] = symbBiCockle[i]
 		i++
 	}
-	a[16] = ")"
+	a[16] = rightBracket
 	return strings.Join(a, "")
 }
 
@@ -70,7 +67,7 @@ func (z *BiCockle) Set(y *BiCockle) *BiCockle {
 	return z
 }
 
-// NewBiCockle returns a *BiCockle with value a+bi+cj+dk+eH+fS+gT+hU.
+// NewBiCockle returns a *BiCockle with value a+bi+ct+du+eH+fiH+gtH+huH.
 func NewBiCockle(a, b, c, d, e, f, g, h *big.Rat) *BiCockle {
 	z := new(BiCockle)
 	z.l.l.l.Set(a)
@@ -122,29 +119,14 @@ func (z *BiCockle) Sub(x, y *BiCockle) *BiCockle {
 // Mul sets z equal to the product of x and y, and returns z.
 //
 // The multiplication rules are:
-// 		Mul(i, i) = Mul(H, H) = Mul(J, J) = Mul(K, K) = -1
-// 		Mul(S, S) = Mul(t, t) = Mul(u, u) = +1
+// 		Mul(i, i) = Mul(H, H) = -1
+// 		Mul(t, t) = Mul(u, u) = +1
 // 		Mul(i, t) = -Mul(t, i) = +u
 // 		Mul(i, u) = -Mul(u, i) = -t
-// 		Mul(i, H) = Mul(H, i) = +S
-// 		Mul(i, S) = Mul(S, i) = -H
-// 		Mul(i, J) = -Mul(J, i) = +K
-// 		Mul(i, K) = -Mul(K, i) = -J
+// 		Mul(i, H) = Mul(H, i)
 // 		Mul(t, u) = -Mul(u, t) = -i
-// 		Mul(t, H) = Mul(H, t) = +J
-// 		Mul(t, S) = -Mul(S, t) = -K
-// 		Mul(t, J) = Mul(J, t) = +H
-// 		Mul(t, K) = -Mul(K, t) = -S
-// 		Mul(u, H) = Mul(H, u) = +K
-// 		Mul(u, S) = -Mul(S, u) = +J
-// 		Mul(u, J) = -Mul(J, u) = +S
-// 		Mul(u, K) = Mul(K, u) = +H
-// 		Mul(H, S) = Mul(S, H) = -i
-// 		Mul(H, J) = Mul(J, H) = -t
-// 		Mul(H, K) = Mul(K, H) = -u
-// 		Mul(S, J) = -Mul(J, S) = -u
-// 		Mul(S, K) = -Mul(K, S) = +t
-// 		Mul(J, K) = -Mul(K, J) = +i
+// 		Mul(t, H) = Mul(H, t)
+// 		Mul(u, H) = Mul(H, u)
 // This binary operation is noncommutative but associative.
 func (z *BiCockle) Mul(x, y *BiCockle) *BiCockle {
 	a := new(Cockle).Set(&x.l)
@@ -173,7 +155,7 @@ func (z *BiCockle) Commutator(x, y *BiCockle) *BiCockle {
 	)
 }
 
-// quad returns the quadrance of z. If z = a+bi+ct+du+eH+fS+gT+hU, then the
+// quad returns the quadrance of z. If z = a+bi+ct+du+eH+fiH+gtH+huH, then the
 // quadrance is
 //		a² + b² - c² - d² - e² - f² + g² + h² +
 // 		2(ae + bf - cg - dh)H
@@ -190,7 +172,7 @@ func (z *BiCockle) quad() *Complex {
 	return q
 }
 
-// Norm returns the norm of z. If z = a+bi+cj+dk+eH+fS+gT+hU, then the norm is
+// Norm returns the norm of z. If z = a+bi+ct+du+eH+fiH+gtH+huH, then the norm is
 // 		(a² + b² - c² - d² - e² - f² + g² + h²)² +
 // 		4(ae + bf - cg - dh)²
 // The norm is always non-negative.

@@ -11,7 +11,7 @@ import (
 	"strings"
 )
 
-var symbDualPerplex = [4]string{"", "s", "Γ", "Λ"}
+var symbDualPerplex = [4]string{"", "s", "Γ", "sΓ"}
 
 // A DualPerplex represents a rational dual perplex number.
 type DualPerplex struct {
@@ -29,15 +29,12 @@ func (z *DualPerplex) Rats() (*big.Rat, *big.Rat, *big.Rat, *big.Rat) {
 }
 
 // String returns the string representation of a DualPerplex value.
-//
-// If z corresponds to a + bs + cΓ + dΛ, then the string is "(a+bs+cΓ+dΛ)",
-// similar to complex128 values.
 func (z *DualPerplex) String() string {
 	v := make([]*big.Rat, 4)
 	v[0], v[1] = z.l.Rats()
 	v[2], v[3] = z.r.Rats()
 	a := make([]string, 9)
-	a[0] = "("
+	a[0] = leftBracket
 	a[1] = fmt.Sprintf("%v", v[0].RatString())
 	i := 1
 	for j := 2; j < 8; j = j + 2 {
@@ -49,7 +46,7 @@ func (z *DualPerplex) String() string {
 		a[j+1] = symbDualPerplex[i]
 		i++
 	}
-	a[8] = ")"
+	a[8] = rightBracket
 	return strings.Join(a, "")
 }
 
@@ -68,7 +65,7 @@ func (z *DualPerplex) Set(y *DualPerplex) *DualPerplex {
 	return z
 }
 
-// NewDualPerplex returns a *DualPerplex with value a+bs+cΓ+dΛ.
+// NewDualPerplex returns a *DualPerplex with value a+bs+cΓ+dsΓ.
 func NewDualPerplex(a, b, c, d *big.Rat) *DualPerplex {
 	z := new(DualPerplex)
 	z.l.l.Set(a)
@@ -117,10 +114,8 @@ func (z *DualPerplex) Sub(x, y *DualPerplex) *DualPerplex {
 //
 // The multiplication rules are:
 // 		Mul(s, s) = +1
-// 		Mul(Γ, Γ) = Mul(Λ, Λ) = 0
-// 		Mul(s, Γ) = Mul(Γ, s) = Λ
-// 		Mul(Γ, Λ) = Mul(Λ, Γ) = 0
-// 		Mul(Λ, s) = Mul(s, Λ) = Γ
+// 		Mul(Γ, Γ) = 0
+// 		Mul(s, Γ) = Mul(Γ, s)
 // This binary operation is commutative and associative.
 func (z *DualPerplex) Mul(x, y *DualPerplex) *DualPerplex {
 	a := new(Perplex).Set(&x.l)
@@ -136,7 +131,7 @@ func (z *DualPerplex) Mul(x, y *DualPerplex) *DualPerplex {
 	return z
 }
 
-// Quad returns the quadrance of z. If z = a+bs+cΓ+dΛ, then the quadrance is
+// Quad returns the quadrance of z. If z = a+bs+cΓ+dsΓ, then the quadrance is
 // 		a² + b² + 2abs
 // Note that this is a perplex number.
 func (z *DualPerplex) Quad() *Perplex {
@@ -144,7 +139,7 @@ func (z *DualPerplex) Quad() *Perplex {
 	return quad.Mul(&z.l, &z.l)
 }
 
-// Norm returns the norm of z. If z = a+bs+cΓ+dΛ, then the norm is
+// Norm returns the norm of z. If z = a+bs+cΓ+dsΓ, then the norm is
 // 		(a² - b²)²
 // This is always non-negative.
 func (z *DualPerplex) Norm() *big.Rat {

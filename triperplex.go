@@ -11,7 +11,7 @@ import (
 	"strings"
 )
 
-var symbTriPerplex = [8]string{"", "s", "T", "U", "V", "W", "X", "Y"}
+var symbTriPerplex = [8]string{"", "s", "T", "sT", "U", "sU", "TU", "sTU"}
 
 // A TriPerplex represents a rational triperplex number.
 type TriPerplex struct {
@@ -31,15 +31,12 @@ func (z *TriPerplex) Rats() (*big.Rat, *big.Rat, *big.Rat, *big.Rat,
 }
 
 // String returns the string representation of a TriPerplex value.
-//
-// If z corresponds to a + bs + cT + dU + eV + fW + gX + hY, then the string is
-// "(a+bs+cT+dU+eV+fW+gX+hY)", similar to complex128 values.
 func (z *TriPerplex) String() string {
 	v := make([]*big.Rat, 8)
 	v[0], v[1], v[2], v[3] = z.l.Rats()
 	v[4], v[5], v[6], v[7] = z.r.Rats()
 	a := make([]string, 17)
-	a[0] = "("
+	a[0] = leftBracket
 	a[1] = fmt.Sprintf("%v", v[0].RatString())
 	i := 1
 	for j := 2; j < 16; j = j + 2 {
@@ -51,7 +48,7 @@ func (z *TriPerplex) String() string {
 		a[j+1] = symbTriPerplex[i]
 		i++
 	}
-	a[16] = ")"
+	a[16] = rightBracket
 	return strings.Join(a, "")
 }
 
@@ -70,7 +67,7 @@ func (z *TriPerplex) Set(y *TriPerplex) *TriPerplex {
 	return z
 }
 
-// NewTriPerplex returns a *TriPerplex with value a+bs+cT+dU+eV+fW+gX+hY.
+// NewTriPerplex returns a *TriPerplex with value a+bs+cT+dsT+eU+fsU+gTU+hsTU.
 func NewTriPerplex(a, b, c, d, e, f, g, h *big.Rat) *TriPerplex {
 	z := new(TriPerplex)
 	z.l.l.l.Set(a)
@@ -123,28 +120,9 @@ func (z *TriPerplex) Sub(x, y *TriPerplex) *TriPerplex {
 //
 // The multiplication rules are:
 // 		Mul(s, s) = Mul(T, T) = Mul(U, U) = +1
-// 		Mul(V, V) = Mul(W, W) = Mul(X, X) = Mul(Y, Y) = +1
-// 		Mul(s, T) = Mul(T, s) = U
-// 		Mul(s, U) = Mul(U, s) = T
-// 		Mul(s, V) = Mul(V, s) = W
-// 		Mul(s, W) = Mul(W, s) = V
-// 		Mul(s, X) = Mul(X, s) = Y
-// 		Mul(s, Y) = Mul(Y, s) = X
-// 		Mul(T, U) = Mul(U, T) = s
-// 		Mul(T, V) = Mul(V, T) = X
-// 		Mul(T, W) = Mul(W, T) = Y
-// 		Mul(T, X) = Mul(X, T) = V
-// 		Mul(T, Y) = Mul(Y, T) = W
-// 		Mul(U, V) = Mul(V, U) = Y
-// 		Mul(U, W) = Mul(W, U) = X
-// 		Mul(U, X) = Mul(X, U) = W
-// 		Mul(U, Y) = Mul(Y, U) = V
-// 		Mul(V, W) = Mul(W, V) = s
-// 		Mul(V, X) = Mul(X, V) = T
-// 		Mul(V, Y) = Mul(Y, V) = U
-// 		Mul(W, X) = Mul(X, W) = U
-// 		Mul(W, Y) = Mul(Y, W) = T
-// 		Mul(X, Y) = Mul(Y, X) = s
+// 		Mul(s, T) = Mul(T, s)
+// 		Mul(s, U) = Mul(U, s)
+// 		Mul(T, U) = Mul(U, T)
 // This binary operation is commutative and associative.
 func (z *TriPerplex) Mul(x, y *TriPerplex) *TriPerplex {
 	a := new(BiPerplex).Set(&x.l)
@@ -163,8 +141,8 @@ func (z *TriPerplex) Mul(x, y *TriPerplex) *TriPerplex {
 	return z
 }
 
-// Quad returns the quadrance of z. If z = a+bs+cT+dU+eV+fW+gX+hY, then the
-// quadrance is
+// Quad returns the quadrance of z. If z = a+bs+cT+dsT+eU+fsU+gTU+hsTU, then
+// the quadrance is
 // 		a² - b² + c² - d² + 2(ab + cd)i
 // Note that this is a biperplex number.
 func (z *TriPerplex) Quad() *BiPerplex {
@@ -173,7 +151,8 @@ func (z *TriPerplex) Quad() *BiPerplex {
 	return quad.Sub(quad, new(BiPerplex).Mul(&z.r, &z.r))
 }
 
-// Norm returns the norm of z. If z = a+bi+cJ+dS, then the norm is
+// Norm returns the norm of z. If z = a+bs+cT+dsT+eU+fsU+gTU+hsTU, then the
+// norm is
 // 		(a² - b² + c² - d²)² + 4(ab + cd)²
 // This can also be written as
 // 		((a - d)² + (b + c)²)((a + d)² + (b - c)²)

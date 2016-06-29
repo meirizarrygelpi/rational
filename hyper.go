@@ -11,7 +11,7 @@ import (
 	"strings"
 )
 
-var symbHyper = [4]string{"", "α", "Γ", "Λ"}
+var symbHyper = [4]string{"", "α", "Γ", "αΓ"}
 
 // A Hyper represents a rational hyper-dual number.
 type Hyper struct {
@@ -29,15 +29,12 @@ func (z *Hyper) Rats() (*big.Rat, *big.Rat, *big.Rat, *big.Rat) {
 }
 
 // String returns the string representation of a Hyper value.
-//
-// If z corresponds to a + bα + cΓ + dΛ, then the string is "(a+bα+cΓ+dΛ)",
-// similar to complex128 values.
 func (z *Hyper) String() string {
 	v := make([]*big.Rat, 4)
 	v[0], v[1] = z.l.Rats()
 	v[2], v[3] = z.r.Rats()
 	a := make([]string, 9)
-	a[0] = "("
+	a[0] = leftBracket
 	a[1] = fmt.Sprintf("%v", v[0].RatString())
 	i := 1
 	for j := 2; j < 8; j = j + 2 {
@@ -49,7 +46,7 @@ func (z *Hyper) String() string {
 		a[j+1] = symbHyper[i]
 		i++
 	}
-	a[8] = ")"
+	a[8] = rightBracket
 	return strings.Join(a, "")
 }
 
@@ -68,7 +65,7 @@ func (z *Hyper) Set(y *Hyper) *Hyper {
 	return z
 }
 
-// NewHyper returns a *Hyper with value a+bα+cΓ+dΛ.
+// NewHyper returns a *Hyper with value a+bα+cΓ+dαΓ.
 func NewHyper(a, b, c, d *big.Rat) *Hyper {
 	z := new(Hyper)
 	z.l.l.Set(a)
@@ -116,10 +113,8 @@ func (z *Hyper) Sub(x, y *Hyper) *Hyper {
 // Mul sets z equal to the product of x and y, and returns z.
 //
 // The multiplication rules are:
-// 		Mul(α, α) = Mul(Γ, Γ) = Mul(Λ, Λ) = 0
-// 		Mul(α, Γ) = Mul(Γ, α) = Λ
-// 		Mul(Γ, Λ) = Mul(Λ, Γ) = 0
-// 		Mul(Λ, α) = Mul(α, Λ) = 0
+// 		Mul(α, α) = Mul(Γ, Γ) = 0
+// 		Mul(α, Γ) = Mul(Γ, α)
 // This binary operation is commutative and associative.
 func (z *Hyper) Mul(x, y *Hyper) *Hyper {
 	a := new(Infra).Set(&x.l)
@@ -135,7 +130,7 @@ func (z *Hyper) Mul(x, y *Hyper) *Hyper {
 	return z
 }
 
-// Quad returns the quadrance of z. If z = a+bα+cΓ+dΛ, then the quadrance is
+// Quad returns the quadrance of z. If z = a+bα+cΓ+dαΓ, then the quadrance is
 // 		a² + 2abα
 // Note that this is an infra number.
 func (z *Hyper) Quad() *Infra {
@@ -143,7 +138,7 @@ func (z *Hyper) Quad() *Infra {
 	return quad.Mul(&z.l, &z.l)
 }
 
-// Norm returns the norm of z. If z = a+bα+cΓ+dΛ, then the norm is
+// Norm returns the norm of z. If z = a+bα+cΓ+dαΓ, then the norm is
 // 		(a²)²
 // This is always non-negative.
 func (z *Hyper) Norm() *big.Rat {

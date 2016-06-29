@@ -34,7 +34,7 @@ func (z *Complex) Rats() (*big.Rat, *big.Rat) {
 // complex128 values.
 func (z *Complex) String() string {
 	a := make([]string, 5)
-	a[0] = "("
+	a[0] = leftBracket
 	a[1] = fmt.Sprintf("%v", z.l.RatString())
 	if z.r.Sign() < 0 {
 		a[2] = fmt.Sprintf("%v", z.r.RatString())
@@ -42,7 +42,7 @@ func (z *Complex) String() string {
 		a[2] = fmt.Sprintf("+%v", z.r.RatString())
 	}
 	a[3] = symbComplex[1]
-	a[4] = ")"
+	a[4] = rightBracket
 	return strings.Join(a, "")
 }
 
@@ -241,6 +241,14 @@ func (z *Complex) PolyEval(y *Complex, poly Laurent) *Complex {
 		}
 	}
 	return z
+}
+
+// Dot returns the (rational) dot product of z and y.
+func (z *Complex) Dot(y *Complex) *big.Rat {
+	dot := new(big.Rat)
+	temp := new(big.Rat)
+	dot.Mul(&z.l, &y.l)
+	return dot.Add(dot, temp.Mul(&z.r, &z.r))
 }
 
 // Generate returns a random Complex value for quick.Check testing.

@@ -11,7 +11,7 @@ import (
 	"strings"
 )
 
-var symbBiPerplex = [4]string{"", "s", "T", "U"}
+var symbBiPerplex = [4]string{"", "s", "T", "sT"}
 
 // A BiPerplex represents a rational biperplex number.
 type BiPerplex struct {
@@ -29,15 +29,12 @@ func (z *BiPerplex) Rats() (*big.Rat, *big.Rat, *big.Rat, *big.Rat) {
 }
 
 // String returns the string representation of a BiPerplex value.
-//
-// If z corresponds to a + bs + cT + dU, then the string is "(a+bs+cT+dU)",
-// similar to complex128 values.
 func (z *BiPerplex) String() string {
 	v := make([]*big.Rat, 4)
 	v[0], v[1] = z.l.Rats()
 	v[2], v[3] = z.r.Rats()
 	a := make([]string, 9)
-	a[0] = "("
+	a[0] = leftBracket
 	a[1] = fmt.Sprintf("%v", v[0].RatString())
 	i := 1
 	for j := 2; j < 8; j = j + 2 {
@@ -49,7 +46,7 @@ func (z *BiPerplex) String() string {
 		a[j+1] = symbBiPerplex[i]
 		i++
 	}
-	a[8] = ")"
+	a[8] = rightBracket
 	return strings.Join(a, "")
 }
 
@@ -68,7 +65,7 @@ func (z *BiPerplex) Set(y *BiPerplex) *BiPerplex {
 	return z
 }
 
-// NewBiPerplex returns a *BiPerplex with value a+bs+cr+dq.
+// NewBiPerplex returns a *BiPerplex with value a+bs+cR+dsT.
 func NewBiPerplex(a, b, c, d *big.Rat) *BiPerplex {
 	z := new(BiPerplex)
 	z.l.l.Set(a)
@@ -116,10 +113,8 @@ func (z *BiPerplex) Sub(x, y *BiPerplex) *BiPerplex {
 // Mul sets z equal to the product of x and y, and returns z.
 //
 // The multiplication rules are:
-// 		Mul(s, s) = Mul(T, T) = Mul(U, U) = +1
-// 		Mul(s, T) = Mul(T, s) = U
-// 		Mul(T, U) = Mul(U, T) = s
-// 		Mul(U, s) = Mul(s, U) = T
+// 		Mul(s, s) = Mul(T, T) = +1
+// 		Mul(s, T) = Mul(T, s)
 // This binary operation is commutative and associative.
 func (z *BiPerplex) Mul(x, y *BiPerplex) *BiPerplex {
 	a := new(Perplex).Set(&x.l)
@@ -138,7 +133,7 @@ func (z *BiPerplex) Mul(x, y *BiPerplex) *BiPerplex {
 	return z
 }
 
-// Quad returns the quadrance of z. If z = a+bs+cT+dU, then the quadrance is
+// Quad returns the quadrance of z. If z = a+bs+cR+dsT, then the quadrance is
 // 		a² + b² - c² - d² + 2(ab - cd)s
 // Note that this is a perplex number.
 func (z *BiPerplex) Quad() *Perplex {
@@ -147,7 +142,7 @@ func (z *BiPerplex) Quad() *Perplex {
 	return quad.Sub(quad, new(Perplex).Mul(&z.r, &z.r))
 }
 
-// Norm returns the norm of z. If z = a+bs+cT+dU, then the norm is
+// Norm returns the norm of z. If z = a+bs+cR+dsT, then the norm is
 // 		(a² + b² - c² - d²)² - 4(ab - cd)²
 // This can also be written as
 // 		(a + b + c + d)(a + b - c - d)(a - b + c - d)(a - b - c + d)
