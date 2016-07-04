@@ -96,6 +96,13 @@ func (z *BiPerplex) Conj(y *BiPerplex) *BiPerplex {
 	return z
 }
 
+// Star sets z equal to the star conjugate of y, and returns z.
+func (z *BiPerplex) Star(y *BiPerplex) *BiPerplex {
+	z.l.Conj(&y.l)
+	z.r.Conj(&y.r)
+	return z
+}
+
 // Add sets z equal to x+y, and returns z.
 func (z *BiPerplex) Add(x, y *BiPerplex) *BiPerplex {
 	z.l.Add(&x.l, &y.l)
@@ -145,6 +152,9 @@ func (z *BiPerplex) Quad() *Perplex {
 // Norm returns the norm of z. If z = a+bs+cR+dsT, then the norm is
 // 		(a² + b² - c² - d²)² - 4(ab - cd)²
 // This can also be written as
+//		((a + b)² - (c + d)²)((a - b)² - (c + d)²)
+// In this form, the norm looks similar to the norm of the BiComplex type.
+// The norm can also be written as
 // 		(a + b + c + d)(a + b - c - d)(a - b + c - d)(a - b - c + d)
 // In this form the norm looks similar to Brahmagupta's formula for the area
 // of a cyclic quadrilateral. The norm can be positive, negative, or zero.

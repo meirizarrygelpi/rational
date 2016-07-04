@@ -96,6 +96,13 @@ func (z *Hyper) Conj(y *Hyper) *Hyper {
 	return z
 }
 
+// Star sets z equal to the star conjugate of y, and returns z.
+func (z *Hyper) Star(y *Hyper) *Hyper {
+	z.l.Conj(&y.l)
+	z.r.Conj(&y.r)
+	return z
+}
+
 // Add sets z equal to x+y, and returns z.
 func (z *Hyper) Add(x, y *Hyper) *Hyper {
 	z.l.Add(&x.l, &y.l)

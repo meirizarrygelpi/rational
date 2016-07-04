@@ -96,6 +96,13 @@ func (z *DualPerplex) Conj(y *DualPerplex) *DualPerplex {
 	return z
 }
 
+// Star sets z equal to the star conjugate of y, and returns z.
+func (z *DualPerplex) Star(y *DualPerplex) *DualPerplex {
+	z.l.Conj(&y.l)
+	z.r.Conj(&y.r)
+	return z
+}
+
 // Add sets z equal to x+y, and returns z.
 func (z *DualPerplex) Add(x, y *DualPerplex) *DualPerplex {
 	z.l.Add(&x.l, &y.l)

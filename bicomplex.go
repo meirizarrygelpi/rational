@@ -89,10 +89,18 @@ func (z *BiComplex) Neg(y *BiComplex) *BiComplex {
 	return z
 }
 
-// Conj sets z equal to the conjugate of y, and returns z.
+// Conj sets z equal to the conjugate of y, and returns z. This operation
+// changes the sign of all the components with J.
 func (z *BiComplex) Conj(y *BiComplex) *BiComplex {
 	z.l.Set(&y.l)
 	z.r.Neg(&y.r)
+	return z
+}
+
+// Star sets z equal to the star conjugate of y, and returns z.
+func (z *BiComplex) Star(y *BiComplex) *BiComplex {
+	z.l.Conj(&y.l)
+	z.r.Conj(&y.r)
 	return z
 }
 
@@ -144,9 +152,13 @@ func (z *BiComplex) Quad() *Complex {
 
 // Norm returns the norm of z. If z = a+bi+cJ+diJ, then the norm is
 // 		(a² - b² + c² - d²)² + 4(ab + cd)²
-// This can also be written as
+// There is another way to write the norm as a sum of two squares:
+// 		(a² + b² - c² - d²)² + 4(ac + bd)²
+// Alternatively, it can also be written as a difference of two squares:
+//		(a² + b² + c² + d²)² - 4(ad - bc)²
+// Finally, you have the factorized form:
 // 		((a - d)² + (b + c)²)((a + d)² + (b - c)²)
-// The norm is always non-negative.
+// In this form it is clear that the norm is always non-negative.
 func (z *BiComplex) Norm() *big.Rat {
 	return z.Quad().Quad()
 }
